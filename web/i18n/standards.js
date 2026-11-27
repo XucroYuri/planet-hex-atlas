@@ -104,4 +104,5 @@ export default [
   ['来源', 'source', '來源', 'fuente', 'source', '出典', '출처', 'المصدر'],
   ['世界地图标准图幅（37 幅，含审图号）', 'World map standard sheets (37 sheets with approval numbers)', '世界地圖標準圖幅（37 幅，含審圖號）', 'Hojas normalizadas del mapa mundial (37 con número de aprobación)', 'Planches normalisées du monde (37 avec numéro d’approbation)', '世界地図の標準図幅（37図幅、審図番号付き）', '세계 지도 표준 도엽(37도엽, 심도 번호 포함)', 'الأوراق القياسية لخريطة العالم (37 ورقة بأرقام اعتماد)'],
   ['开发者建议记录', 'Developer recommendations', '開發者建議記錄', 'Recomendaciones para el desarrollo', 'Recommandations aux développeurs', '開発者向け提案記録', '개발자 제안 기록', 'سجل توصيات المطورين'],
+  ['送审路径与材料清单', 'Map review path and materials', '送審路徑與材料清單', 'Vía de revisión y materiales', 'Procédure de révision et pièces', '審査申請の流れと資料', '심의 경로와 자료 목록', 'مسار المراجعة والمواد المطلوبة'],
 ];

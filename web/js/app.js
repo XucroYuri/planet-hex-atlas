@@ -336,7 +336,7 @@ function insertStandards(host, official) {
       [msg('历史与统计缺失显示'), msg('缺失保持为空，不填补')],
     ].map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
     <p class="atlas-memo">${htmlText('在取得审图号和权威几何之前，本站不会声称符合中国标准地图；相关检查可重复运行于 pipeline/china_source_audit.py。')}</p>
-    <div class="panel-buttons"><button class="panel-action" data-action="feedback">${htmlText('提交数据来源或纠错建议')}</button><a class="panel-action" href="${REPOSITORY}/blob/main/docs/china-standards.md" target="_blank" rel="noopener">${htmlText('查看标准核查记录')} ↗</a></div>`;
+    <div class="panel-buttons"><button class="panel-action" data-action="feedback">${htmlText('提交数据来源或纠错建议')}</button><a class="panel-action" href="${REPOSITORY}/blob/main/docs/china-standards.md" target="_blank" rel="noopener">${htmlText('查看标准核查记录')} ↗</a><a class="panel-action" href="${REPOSITORY}/tree/main/docs/china-map-submission" target="_blank" rel="noopener">${htmlText('送审路径与材料清单')} ↗</a></div>`;
 }
 
 function insertFeedback(host) {

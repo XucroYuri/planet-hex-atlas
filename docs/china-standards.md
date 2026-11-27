@@ -42,6 +42,10 @@ uv run python pipeline/china_gdp_series.py --cache .cache/china
 
 上述数据存于 `web/data/china-official.json`，由 `tests/china-official.test.mjs` 校验年度值、阶段、范围说明和来源链接。
 
+## 送审路径
+
+法规与受理要求已整理为可执行的送审材料清单：[`docs/china-map-submission/README.md`](china-map-submission/README.md)。核心约束是《地图管理条例》第十六条要求申请表、样图/样品、**编制单位测绘资质证书**，而本项目没有测绘资质，需由持资质单位作为编制与送审主体；在完成几何替换并取得审图号前，应用不声称合规。填写底稿见 [`application-fields.md`](china-map-submission/application-fields.md)。
+
 ## 标准地图导入核验
 
 在送审或取得授权图幅后，几何替换前先运行导入核验：
