@@ -24,6 +24,12 @@ def main(url):
         assert data['display'] == 'standalone'
         assert data['background_color'] == '#f5f4eb'
         assert len(data['icons']) >= 3
+        assert data.get('id') == '/'
+        shortcuts = data.get('shortcuts') or []
+        assert len(shortcuts) == 3, shortcuts
+        assert {shortcut['url'] for shortcut in shortcuts} == {'/?mode=space', '/?mode=history', '/?mode=sources'}
+        for shortcut in shortcuts:
+            assert shortcut['name'] and shortcut['description'] and shortcut['icons']
         for icon in data['icons']:
             assert icon['sizes'] in ('192x192', '512x512'), icon
             response = page.request.get(page.evaluate('href => new URL(href, document.querySelector("link[rel=manifest]").href).href', icon['src']))

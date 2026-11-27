@@ -10,10 +10,67 @@
   "orientation": "any",
   "background_color": "#f5f4eb",
   "theme_color": "#f5f4eb",
-  "categories": ["education", "reference"],
+  "categories": [
+    "education",
+    "reference"
+  ],
   "icons": [
-    { "src": "meta/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "meta/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "meta/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "meta/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "meta/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "meta/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "id": "/",
+  "shortcuts": [
+    {
+      "name": "太空足迹 Space",
+      "short_name": "太空 Space",
+      "description": "行星位置、入轨发射与载人任务",
+      "url": "/?mode=space",
+      "icons": [
+        {
+          "src": "meta/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "历史工作台 History",
+      "short_name": "历史 History",
+      "description": "长时段人口、GDP、寿命与回测",
+      "url": "/?mode=history",
+      "icons": [
+        {
+          "src": "meta/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "数据来源 Sources",
+      "short_name": "来源 Sources",
+      "description": "数据来源、方法与版本信息",
+      "url": "/?mode=sources",
+      "icons": [
+        {
+          "src": "meta/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
