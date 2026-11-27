@@ -213,6 +213,30 @@
      "https://creativecommons.org/licenses/by/3.0/igo/"
     ]
    ]
+  },
+  "chinaOfficialPopulation": {
+   "url": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "chart": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "citation": "国家统计局《中国统计年鉴 2024》表 2-1 人口数及构成（选年）与 2024–2025 年国民经济和社会发展统计公报。",
+   "note": "官方选年序列：1949、1950、1951、1955、1960、1965 及 1970–2023；2024–2025 来自年度公报。表 2-1 不列 1952–1954 等年份，不插值。",
+   "licenses": [
+    [
+     "国家统计局公开数据",
+     "https://www.stats.gov.cn/"
+    ]
+   ]
+  },
+  "officialPopulation": {
+   "url": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "chart": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "citation": "国家统计局《中国统计年鉴 2024》表 2-1 人口数及构成（选年）与 2024–2025 年国民经济和社会发展统计公报。",
+   "note": "官方选年序列：1949、1950、1951、1955、1960、1965 及 1970–2023；2024–2025 来自年度公报。表 2-1 不列 1952–1954 等年份，不插值。",
+   "licenses": [
+    [
+     "国家统计局公开数据",
+     "https://www.stats.gov.cn/"
+    ]
+   ]
   }
  }
 }

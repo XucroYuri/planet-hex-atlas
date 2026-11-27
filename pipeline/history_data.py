@@ -175,6 +175,18 @@ def build(input_dir, output_dir, fetch):
     wdi_codes = {key: key for key in countries} | {"WLD": "WORLD"}
     add_wdi(shards, inputs["wdi-cropland.zip"], wdi_codes)
 
+    population_file = ROOT / "web/data/china-population-official.json"
+    official_file = ROOT / "web/data/china-official.json"
+    if population_file.is_file() and official_file.is_file():
+        benchmark = json.loads(population_file.read_text())
+        for year, row in benchmark["years"].items():
+            add_point(shards, "CHN", "officialPopulation", int(year), row["total"])
+        official = json.loads(official_file.read_text())
+        for year in ("2024", "2025"):
+            value = official["series"].get(year, {}).get("population")
+            if value is not None:
+                add_point(shards, "CHN", "officialPopulation", int(year), value)
+
     crop_path = DATA / "hyde-land-use.csv"
     crop_raw = crop_path.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
     blob = hashlib.sha1(f"blob {len(crop_raw)}\0".encode() + crop_raw).hexdigest()
@@ -236,6 +248,13 @@ def build(input_dir, output_dir, fetch):
         output_dir.mkdir(parents=True, exist_ok=True)
         for name, raw in [("evidence.json", evidence), ("maddison-sources.json", maddison_raw)]:
             (output_dir / name).write_bytes(raw)
+    if population_file.is_file() and official_file.is_file():
+        local_inputs["china-population-official.json"] = {
+            "url": benchmark["url"], "sha256": digest(population_file.read_bytes()),
+        }
+        local_inputs["china-official.json"] = {
+            "url": official["source"]["yearbook"]["url"], "sha256": digest(official_file.read_bytes()),
+        }
     write_json(output_dir / "catalog.json", {"schema": 1, "areas": areas, "totals": totals})
     write_json(output_dir / "provenance.json", {**sources, "localInputs": local_inputs})
     print(json.dumps({"areasWithSeries": len(shards), "evidence": len(sites), "metrics": totals}, ensure_ascii=False))
