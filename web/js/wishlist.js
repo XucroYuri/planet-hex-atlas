@@ -22,7 +22,18 @@ export function renderWishlist(host,ctx) {
   const {t}=ctx;
   const groups=[['all','全部','All'],['history','历史','History'],['markets','市场','Markets'],['space','太空','Space'],['society','社会','Society']];
   host.className='coverage-lab';
-  host.innerHTML=`<p>${esc(t('每个愿望项列出当前证据、取得渠道和下一项接入条件。历史时段、地理边界和授权会随数据集分别记录。','Each item records current evidence, an acquisition route and the next acceptance condition. Time intervals, geographic boundaries and rights are tracked per dataset.'))}</p><section class="coverage-summary" data-coverage-summary aria-live="polite"></section><label>${esc(t('专题','Collection'))} <select name="wish-category">${groups.map(([key,zh,en])=>`<option value="${key}">${esc(t(zh,en))}</option>`).join('')}</select></label><div class="coverage-grid"></div>`;
+  host.innerHTML=`<p>${esc(t('每个愿望项列出当前证据、取得渠道和下一项接入条件。历史时段、地理边界和授权会随数据集分别记录。','Each item records current evidence, an acquisition route and the next acceptance condition. Time intervals, geographic boundaries and rights are tracked per dataset.'))}</p><section class="coverage-summary" data-coverage-summary aria-live="polite"></section><label>${esc(t('专题','Collection'))} <select name="wish-category">${groups.map(([key,zh,en])=>`<option value="${key}">${esc(t(zh,en))}</option>`).join('')}</select></label><div class="coverage-grid"></div>
+    <section class="data-downloads" data-downloads><h3>${esc(t('原始数据下载','Raw data downloads'))}</h3>
+      <p>${esc(t('以 JSON 形式提供本站使用的静态数据；缺失与来源说明见上。','Static JSON used by this site; missing values and sources are documented above.'))}</p>
+      <ul>
+        <li><a href="data/annual/${Number(ctx.year)}.json" download>${esc(t('当前年度观测（{year}）','Annual observations ({year})').replace('{year}',String(Number(ctx.year))))}</a><small>data/annual/${Number(ctx.year)}.json</small></li>
+        <li><a href="data/history/catalog.json" download>${esc(t('历史序列目录','History catalog'))}</a><small>data/history/catalog.json</small></li>
+        <li><a href="data/history/series/WORLD.json" download>${esc(t('逐地区历史序列示例','Example regional history series'))}</a><small>data/history/series/&lt;ISO3&gt;.json</small></li>
+        <li><a href="data/space/launches.json" download>${esc(t('太空发射序列','Space launch series'))}</a><small>data/space/launches.json</small></li>
+        <li><a href="data/markets/index.json" download>${esc(t('市场数据目录','Market data index'))}</a><small>data/markets/index.json</small></li>
+        <li><a href="data/atlas.json" download>${esc(t('指标与来源清单','Indicator and source catalog'))}</a><small>data/atlas.json · data/source-lock.json</small></li>
+      </ul>
+    </section>`;
   const draw=()=>{
     const selected=host.querySelector('select').value;
     host.querySelector('.coverage-grid').innerHTML=backlog.filter(([key])=>selected==='all'||key===selected).map(([key,zh,en,nowZh,nowEn,nextZh,nextEn,source,url])=>{

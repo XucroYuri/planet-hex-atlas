@@ -57,7 +57,11 @@ test('规范化保存语言偏好，储存受限时仍可解析指定语言', as
 
 test('覆盖范围内的源码和数据标签均有目录条目', () => {
   assert.equal(keys.size, rows.length, '文案键重复');
-  const html = read('index.html').split('<noscript>')[0];
+  // Social/JSON-LD metadata is intentionally static for crawlers and is not part of
+  // the in-page locale switch, so it is excluded from the dictionary coverage check.
+  const html = read('index.html').split('<noscript>')[0]
+    .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/g, '')
+    .replace(/<meta (?:property="og:[^"]*"|name="twitter:[^"]*")[^>]*>/g, '');
   const sources = [...html.matchAll(/>([^<>]*\p{Script=Han}[^<>]*)</gu)].map(match => match[1].trim());
   sources.push(...[...html.matchAll(/\b(?:aria-label|title|content)="([^"]*)"/g)].map(match => match[1]).filter(value => han.test(value)));
   for (const file of ['app', 'data', 'map', 'globe', 'inspector', 'explorer', 'scenario', 'sim-model', 'council', 'council-model', 'i18n-places']) {
