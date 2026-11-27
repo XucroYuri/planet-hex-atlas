@@ -328,13 +328,13 @@ function insertStandards(host, official) {
       <article><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('中国档案优先展示国家统计局的年度 GDP 公告，并区分初步核算、修订与最终核实。跨地区比较仍使用世界银行序列，两个口径不混算。')}</p><a href="https://www.stats.gov.cn/" target="_blank" rel="noopener">${htmlText('国家统计局')} ↗</a></article>
     </div>
     <h3>${htmlText('合规状态')}</h3>
-    <dl class="detail-list">${[
+    <div class="detail-list">${[
       [msg('中国省级以上行政区划与规范命名'), msg('已按官方名称与行政层级标注')],
-      [msg('全国经济总量中国官方基准'), official ? htmlText('已接入 {n} 个年度公告', { n: formatCount(Object.keys(official.series).length) }) : msg('未载入')],
+      [msg('全国经济总量中国官方基准'), official ? htmlText('已接入 {n} 个年度官方值', { n: formatCount(Object.keys(official.series).length) }) : msg('未载入')],
       [msg('官方标准地图几何与审图号'), msg('未完成：当前底图来自 Natural Earth，需替换或送审')],
       [msg('中国主张岛礁的权威图幅核对'), msg('未完成：需对照标准地图逐幅核实')],
       [msg('历史与统计缺失显示'), msg('缺失保持为空，不填补')],
-    ].map(([label, value]) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl>
+    ].map(([label, value]) => `<div><span class="row-label">${esc(label)}</span><span class="row-value">${esc(value)}</span></div>`).join('')}</div>
     <p class="atlas-memo">${htmlText('在取得审图号和权威几何之前，本站不会声称符合中国标准地图；相关检查可重复运行于 pipeline/china_source_audit.py。')}</p>
     <div class="panel-buttons"><button class="panel-action" data-action="feedback">${htmlText('提交数据来源或纠错建议')}</button><a class="panel-action" href="${REPOSITORY}/blob/main/docs/china-standards.md" target="_blank" rel="noopener">${htmlText('查看标准核查记录')} ↗</a><a class="panel-action" href="${REPOSITORY}/tree/main/docs/china-map-submission" target="_blank" rel="noopener">${htmlText('送审路径与材料清单')} ↗</a></div>`;
 }

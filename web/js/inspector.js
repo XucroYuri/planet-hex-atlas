@@ -10,9 +10,9 @@ const count = formatCount;
 const worldBank = (year) => msg('{year} · 世界银行', { year: formatYear(year) });
 
 function stat(label, value, subtitle = '') {
-  return `<div><dt>${htmlText(label)}</dt><dd>${esc(value)}</dd>${subtitle ? `<small>${esc(subtitle)}</small>` : ''}</div>`;
+  return `<div class="stat"><span class="stat-label">${htmlText(label)}</span><span class="stat-value">${esc(value)}</span>${subtitle ? `<small>${esc(subtitle)}</small>` : ''}</div>`;
 }
-function row(label, value) { return `<div><dt>${htmlText(label)}</dt><dd>${esc(value)}</dd></div>`; }
+function row(label, value) { return `<div><span class="row-label">${htmlText(label)}</span><span class="row-value">${esc(value)}</span></div>`; }
 function button(label, key, value = '', primary = false) {
   return `<button class="panel-action${primary ? ' is-primary' : ''}" data-action="${key}" data-value="${esc(value)}">${esc(label)}</button>`;
 }
@@ -28,7 +28,7 @@ function yields(id, year, value) {
   const research = value(id, 'research', year);
   const science = Number.isFinite(gdp) && Number.isFinite(research) ? gdp * research / 100 : null;
   return `<section class="inspector-section"><h3>${htmlText('{year} 年产出账簿', { year: formatYear(year) })}</h3>
-    <dl class="detail-list">${row('粮食 · 谷物产量', compactNumber(value(id, 'grain', year), '吨'))}${row('金币 · 名义 GDP', compactNumber(gdp, '美元'))}${row('工坊 · 制造业增加值', compactNumber(value(id, 'manufacture', year), '美元'))}${row('科学 · 研发支出估算', compactNumber(science, '美元'))}</dl>
+    <div class="detail-list">${row('粮食 · 谷物产量', compactNumber(value(id, 'grain', year), '吨'))}${row('金币 · 名义 GDP', compactNumber(gdp, '美元'))}${row('工坊 · 制造业增加值', compactNumber(value(id, 'manufacture', year), '美元'))}${row('科学 · 研发支出估算', compactNumber(science, '美元'))}</div>
     <small class="micro">${htmlText('研发支出按同年 GDP × 研发支出占比计算。')}</small></section>`;
 }
 
@@ -46,7 +46,7 @@ export function renderInspector(host, ctx) {
     const counts = atlas.counts;
     const featured = LANDING_CITIES.map((id) => cities.find((c) => c[0] === id)).filter(Boolean);
     content = header('全球图谱', msg('世界概览'), msg('从地球全景缩放到一格，查看地形、人口与城市。'), 'H3 · WGS 84', false);
-    content += `<dl class="atlas-stats">${stat('世界人口', people('WLD'), worldBank(year))}${stat('六角格', count(counts.cells), msg('H3 R4 · 平均边长 26 公里'))}${stat('地图地域', count(counts.regions), msg('含国家与地区'))}${stat('城市与居民点', count(counts.cities), 'GeoNames')}</dl>`;
+    content += `<div class="atlas-stats">${stat('世界人口', people('WLD'), worldBank(year))}${stat('六角格', count(counts.cells), msg('H3 R4 · 平均边长 26 公里'))}${stat('地图地域', count(counts.regions), msg('含国家与地区'))}${stat('城市与居民点', count(counts.cities), 'GeoNames')}</div>`;
     if (featured.length) content += `<section class="inspector-section"><h3>${htmlText('从一座城市开始')}</h3><div class="quick-list">${featured.map(quickCity).join('')}</div></section>`;
     content += `<section class="inspector-section"><h3>${htmlText('比较地区与时间')}</h3>
       <div class="panel-buttons">${button(msg('打开数据台'), 'explorer', '', true)}${button(msg('九组数据顾问'), 'advisors')}${button(msg('地方议事'), 'council')}</div><div class="panel-buttons">${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div></section>
@@ -63,7 +63,7 @@ export function renderInspector(host, ctx) {
         const industries = [['第一产业', official.primary], ['第二产业', official.secondary], ['第三产业', official.tertiary]];
         content += `<section class="inspector-section"><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('{year} 年国内生产总值（{revision}）：{value} 亿元人民币', {
           year: formatYear(year), revision: msg(official.revision), value: format(official.gdp),
-        })}</p><dl class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}</dl>
+        })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}</div>
           <p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p>
           <a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText(official.revision.includes('年鉴') ? '《中国统计年鉴 2024》表 3-1（当年价）' : '国家统计局公告（{date}）', { date: official.published })} ↗</a>
           <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p></section>`;
@@ -78,8 +78,8 @@ export function renderInspector(host, ctx) {
       const entry = note.gdp || note.all;
       if (entry) content += `<p class="atlas-memo">${esc(t(entry.zh, entry.en))} <a href="${esc(entry.source)}" target="_blank" rel="noopener">${htmlText('来源')} ↗</a></p>`;
     }
-    content += `<dl class="atlas-stats">${stat('人口', people(c.id), worldBank(year))}${stat('经济总量', economy(c.id), `${formatYear(year)} · ${msg('名义 GDP')} · World Bank`)}${stat('预期寿命', format(value(c.id, 'life', year), '岁'), worldBank(year))}${stat('电力可及率', format(value(c.id, 'electric', year), '%'), worldBank(year))}</dl>`;
-    if (lens.code) content += `<dl class="detail-list">${row(lens.name, compactNumber(value(c.id, lens.id, year), lens.unit))}</dl>`;
+    content += `<div class="atlas-stats">${stat('人口', people(c.id), worldBank(year))}${stat('经济总量', economy(c.id), `${formatYear(year)} · ${msg('名义 GDP')} · World Bank`)}${stat('预期寿命', format(value(c.id, 'life', year), '岁'), worldBank(year))}${stat('电力可及率', format(value(c.id, 'electric', year), '%'), worldBank(year))}</div>`;
+    if (lens.code) content += `<div class="detail-list">${row(lens.name, compactNumber(value(c.id, lens.id, year), lens.unit))}</div>`;
     if (features.length) content += `<section class="inspector-section"><h3>${htmlText('主要居民点')}</h3><div class="quick-list">${features.map(quickCity).join('')}</div></section>`;
     content += `<div class="panel-buttons">${button(msg('比较历史指标'), 'explorer', '', true)}${button(msg('以此地为推演起点'), 'scenario')}${button(msg('查看顾问'), 'advisors')}${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>`;
     content += yields(c.id, year, value);
@@ -90,8 +90,8 @@ export function renderInspector(host, ctx) {
     const land = cell.land > 0;
     const elevation = cell.elevation;
     content = header('格网档案', land ? (countryName(country) || msg('陆地格网')) : msg('海洋格网'), coordinates(cell.lat, cell.lon), `H3 R${level}`);
-    content += `<dl class="atlas-stats">${stat('格网人口', compactNumber(Math.round(cell.pop), '人'), `GHSL · ${formatYear(atlas.gridYear)}`)}${stat(level === 4 ? '中心高程' : '平均高程', format(elevation, '米'), 'GMT / SRTM15+')}${stat('格网面积', format(Math.round(area), 'km²'), msg('H3 球面面积'))}${stat('陆地比例', format(Math.round(cell.land * 100), '%'), msg('7 点抽样估计'))}</dl>`;
-    content += `<section class="inspector-section"><h3>${htmlText('地块与邻近地点')}</h3><dl class="detail-list">${row('主要生态带', msg(land ? atlas.biomes[cell.biome]?.[0] || '无分类' : '海洋'))}${row('人口 / 整格面积', format(cell.pop / area, '人/km²'))}${row('格网编号', cell.id)}</dl></section>`;
+    content += `<div class="atlas-stats">${stat('格网人口', compactNumber(Math.round(cell.pop), '人'), `GHSL · ${formatYear(atlas.gridYear)}`)}${stat(level === 4 ? '中心高程' : '平均高程', format(elevation, '米'), 'GMT / SRTM15+')}${stat('格网面积', format(Math.round(area), 'km²'), msg('H3 球面面积'))}${stat('陆地比例', format(Math.round(cell.land * 100), '%'), msg('7 点抽样估计'))}</div>`;
+    content += `<section class="inspector-section"><h3>${htmlText('地块与邻近地点')}</h3><div class="detail-list">${row('主要生态带', msg(land ? atlas.biomes[cell.biome]?.[0] || '无分类' : '海洋'))}${row('人口 / 整格面积', format(cell.pop / area, '人/km²'))}${row('格网编号', cell.id)}</div></section>`;
     const nearby = cities.filter((city) => Math.abs(city[4]-cell.lat) < .8 && distanceKm(cell.lat, cell.lon, city[4], city[5]) <= 85).slice(0, 4);
     if (nearby.length) content += `<div class="quick-list" style="margin-top:10px">${nearby.map(quickCity).join('')}</div>`;
     content += `<div class="panel-buttons">${level < 4 ? button(msg('查看 26 公里格网'), 'fine-cell', `${lat},${lon}`, true) : ''}${country && land ? countryButton(country) : ''}</div>`;
@@ -109,8 +109,8 @@ export function renderInspector(host, ctx) {
     const top = [...fuels].sort((a,b) => b[1]-a[1])[0];
     const name = cityName(city);
     content = header('城市档案', name, [name !== city[1] ? city[1] : '', countryName(c) || regionName(city[8]), coordinates(city[4], city[5])].filter(Boolean).join(' · '), `GEO ${city[0]}`);
-    content += `<dl class="atlas-stats">${stat('居民点人口', city[6] ? compactNumber(city[6], '人') : msg('无记录'), msg('GeoNames · 居民点口径'))}${stat('邻近发电站', nearby ? count(totals[2]) : waiting, msg('WRI · 100 公里半径'))}${stat('邻近港口', nearby ? count(totals[0]) : waiting, msg('Natural Earth · 100 公里'))}${stat('邻近定期航班机场', nearby ? count(totals[1]) : waiting, msg('OurAirports · 100 公里'))}</dl>`;
-    content += `<section class="inspector-section"><h3>${htmlText('城市周边')}</h3><dl class="detail-list">${row('最大装机能源类型', top ? `${msg(top[0])} · ${compactNumber(top[1], 'MW')}` : msg('无记录'))}${row('行政属性', msg(city[7] ? '首都／行政中心' : '居民点'))}${row('统计范围', msg('城市中心周边 100 公里'))}</dl></section>`;
+    content += `<div class="atlas-stats">${stat('居民点人口', city[6] ? compactNumber(city[6], '人') : msg('无记录'), msg('GeoNames · 居民点口径'))}${stat('邻近发电站', nearby ? count(totals[2]) : waiting, msg('WRI · 100 公里半径'))}${stat('邻近港口', nearby ? count(totals[0]) : waiting, msg('Natural Earth · 100 公里'))}${stat('邻近定期航班机场', nearby ? count(totals[1]) : waiting, msg('OurAirports · 100 公里'))}</div>`;
+    content += `<section class="inspector-section"><h3>${htmlText('城市周边')}</h3><div class="detail-list">${row('最大装机能源类型', top ? `${msg(top[0])} · ${compactNumber(top[1], 'MW')}` : msg('无记录'))}${row('行政属性', msg(city[7] ? '首都／行政中心' : '居民点'))}${row('统计范围', msg('城市中心周边 100 公里'))}</div></section>`;
     if (nearby) {
       const districts = [[totals[0], '港务区', '港口'], [totals[1], '航空区', '定期航班机场'], [totals[2], '能源区', '发电站'], [totals[3], '遗产区', '遗产组件']].filter(([total]) => total > 0);
       if (districts.length) content += `<section class="inspector-section"><h3>${htmlText('文明城区')}</h3><div class="districts">${districts.map(([total, title, type]) => `<span>${htmlText(title)}<small>${htmlText('{count} 个{type}', { count: count(total), type: msg(type) })}</small></span>`).join('')}</div><p class="atlas-memo">${htmlText('100 公里内有对应记录即显示该城区。图块建筑为人口等级示意。')}</p></section>`;
@@ -124,14 +124,14 @@ export function renderInspector(host, ctx) {
     const c = findCountry(site[3]);
     content = header('基础设施档案', siteName(site), [countryName(c), coordinates(site[4], site[5])].filter(Boolean).join(' · '), SITES[site[1]]);
     if (site[1] === 3) {
-      content += `<dl class="atlas-stats">${stat('遗产类别', msg(site[7]), 'UNESCO')}${stat('列入年份', Number.isFinite(site[6]) ? formatYear(site[6]) : msg('无记录'), msg('组件 {part}/{total}', { part: count(site[10]), total: count(site[11]) }))}</dl>
+      content += `<div class="atlas-stats">${stat('遗产类别', msg(site[7]), 'UNESCO')}${stat('列入年份', Number.isFinite(site[6]) ? formatYear(site[6]) : msg('无记录'), msg('组件 {part}/{total}', { part: count(site[10]), total: count(site[11]) }))}</div>
         ${site[8] && site[8] !== siteName(site) ? `<p class="atlas-memo" dir="auto">${esc(site[8])}</p>` : ''}
         <div class="panel-buttons"><a class="panel-action" href="https://whc.unesco.org/en/list/${encodeURIComponent(site[9])}/" rel="noopener" target="_blank">${htmlText('UNESCO 遗产档案')} ↗</a>${button(msg('查看遗产所在格'), 'fine-cell', `${site[4]},${site[5]}`)}</div>`;
       host.innerHTML = content;
       return;
     }
     const types = ['Natural Earth', 'OurAirports', 'WRI GPPD v1.3.0'];
-    content += `<dl class="atlas-stats">${stat('设施类型', SITES[site[1]], types[site[1]])}${stat(site[1] === 2 ? '名义装机' : '设施编号', site[1] === 2 ? compactNumber(site[6], 'MW') : (site[7] || site[0] || msg('无编号')), site[1] === 2 ? msg(site[7]) : '')}</dl>`;
+    content += `<div class="atlas-stats">${stat('设施类型', SITES[site[1]], types[site[1]])}${stat(site[1] === 2 ? '名义装机' : '设施编号', site[1] === 2 ? compactNumber(site[6], 'MW') : (site[7] || site[0] || msg('无编号')), site[1] === 2 ? msg(site[7]) : '')}</div>`;
     content += `<div class="panel-buttons">${button(msg('查看设施所在格'), 'fine-cell', `${site[4]},${site[5]}`, true)}${c ? countryButton(c) : ''}</div>`;
   }
   host.innerHTML = content;

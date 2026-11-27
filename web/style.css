@@ -123,8 +123,8 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .close-inspector:hover { color: var(--ink); }
 .atlas-stats { display: grid; grid-template-columns: 1fr 1fr; margin: 21px 0 0; padding: 0; border-top: 1px solid var(--line); border-inline-start: 1px solid var(--line); }
 .atlas-stats > div { margin: 0; padding: 12px 11px; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); min-width: 0; }
-.atlas-stats dt { margin: 0; font-size: 12px; line-height: 1.4; color: var(--muted); }
-.atlas-stats dd { margin: 4px 0 0; font: 700 clamp(17px, 2.1vw, 27px)/1.1 var(--mono); letter-spacing: -.066em; overflow-wrap: anywhere; }
+.atlas-stats .stat-label { display: block; margin: 0; font-size: 12px; line-height: 1.4; color: var(--muted); }
+.atlas-stats .stat-value { display: block; margin: 4px 0 0; font: 700 clamp(17px, 2.1vw, 27px)/1.1 var(--mono); letter-spacing: -.066em; overflow-wrap: anywhere; }
 .atlas-stats small { display: block; font-size: 10px; font-weight: 550; line-height: 1.4; color: var(--muted); margin-top: 5px; }
 .inspector-section { margin-top: 23px; }
 .inspector-section h3 { margin: 0 0 8px; font-size: 13px; font-weight: 750; }
@@ -140,8 +140,8 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .atlas-memo { margin: 15px 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); line-height: 1.65; }
 .detail-list { display: grid; margin: 0; }
 .detail-list > div { display: flex; justify-content: space-between; gap: 7px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13px; align-items: baseline; }
-.detail-list dt { color: var(--muted); }
-.detail-list dd { margin: 0; font: 650 12px/1.5 var(--sans); text-align: end; overflow-wrap: anywhere; }
+.detail-list .row-label { color: var(--muted); }
+.detail-list .row-value { margin: 0; font: 650 12px/1.5 var(--sans); text-align: end; overflow-wrap: anywhere; }
 .detail-list button { border: 0; font-weight: 650; background: transparent; text-decoration: underline; text-underline-offset: 3px; }
 .timebar { grid-row: 2; grid-column: 1; display: grid; align-items: center; grid-template-columns: 42px auto minmax(124px, 1fr) auto; padding: 8px 18px; gap: 12px; border-top: 1px solid #c8d3c8; background: var(--paper); }
 .play-button { width: 42px; height: 42px; padding: 0; display: grid; place-items: center; background: #e6eee2; border: 1px solid #cddbcc; color: var(--marine); border-radius: 4px; font-size: 14px; }
@@ -202,7 +202,7 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
   .timebar { order: 1; min-height: 62px; }
   .inspector { order: 2; padding: 18px 16px 22px; border-inline-start: 0; border-top: 1px solid var(--line); overflow: visible; }
   .inspector-heading { font-size: 32px; }
-  .atlas-stats dd { font-size: 23px; }
+  .atlas-stats .stat-value { display: block; font-size: 23px; }
   .map-actions { inset-inline-end: 11px; top: 12px; }
   .map-tools { inset-inline-start: 11px; top: 12px; }
   .map-foot { bottom: 11px; right: 11px; left: 11px; }
