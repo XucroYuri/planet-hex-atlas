@@ -127,6 +127,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   wdi: { zh: 'FAO · 世界银行 WDI', en: 'FAO · World Bank WDI' },
   censusBureau: { zh: '美国人口普查局', en: 'U.S. Census Bureau' },
   backtest: { zh: '时间回归与留后回测', en: 'Time regression and holdout test' },
+  exportSeries: { zh: '导出当前序列 CSV', en: 'Export current series CSV' },
   modelBetterNote: { zh: '留后区间内，对数线性拟合的 MAPE 为 {model}，低于末值持平基线的 {baseline}。', en: 'In the holdout window the log-linear fit has MAPE {model}, better than the last-value baseline at {baseline}.' },
   baselineBetterNote: { zh: '留后区间内，末值持平基线的 MAPE 为 {baseline}，低于对数线性拟合的 {model}；这一序列更适合把基线作为默认外推。', en: 'In the holdout window the last-value baseline has MAPE {baseline}, better than the log-linear fit at {model}; for this series the baseline is the safer default.' },
   similarNote: { zh: '两种方法的留后 MAPE 接近（拟合 {model}，基线 {baseline}），差异不足以支持模型偏好。', en: 'The two methods have similar holdout MAPE ({model} for the fit, {baseline} for the baseline); the difference does not justify a model preference.' },
@@ -364,6 +365,20 @@ function elements(doc) {
     return { wrapper, body: grid.createTBody() };
   };
   return { node, button, link, select, option, table };
+}
+
+function exportSeriesCsv(id, metric, points) {
+  const lines = ['year,value,unit,status,source'];
+  for (const [year, value] of points) {
+    lines.push([year, value, METRICS[metric].unit, METRICS[metric].status, pointSource(metric, id, year)].join(','));
+  }
+  const blob = new Blob(['\ufeff' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `orbis-${id}-${metric}.csv`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function publishedValue(locale, metric, value, withUnit = false) {
@@ -780,7 +795,9 @@ function mountWorkbench(root, ctx, ui, locale, catalog, evidence, provenance) {
 
     cutoff.input.addEventListener('change', runTest);
     yearField.input.addEventListener('change', () => selectPoint(Number(yearField.input.value), true));
-    seriesBody.replaceChildren(description, summary, frame, legend, node('p', 'hl-note', tr('noInterpolation')), inspector, grid.wrapper, backtest, attribution);
+    const exporter = button(tr('exportSeries'), () => exportSeriesCsv(id, metric, points), 'hl-text-button');
+    exporter.dataset.export = 'series';
+    seriesBody.replaceChildren(description, summary, exporter, frame, legend, node('p', 'hl-note', tr('noInterpolation')), inspector, grid.wrapper, backtest, attribution);
     if (points.some(([date]) => date === 0)) {
       grid.wrapper.after(node('p', 'hl-note', tr('epochNote', { zero: number(0) })));
     }
