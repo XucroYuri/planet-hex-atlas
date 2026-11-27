@@ -56,6 +56,11 @@ test('later revisions supersede the yearbook for their year', () => {
   assert.equal(record.series['2025'].urbanizationRate, 67.89);
   assert.equal(record.series['2025'].urbanDisposableIncome, 56502);
   assert.equal(record.series['2025'].ruralDisposableIncome, 24456);
+  assert.equal(record.series['2025'].eastGdp, 730876);
+  assert.equal(record.series['2025'].centralGdp, 299108);
+  assert.equal(record.series['2025'].westGdp, 298750);
+  assert.equal(record.series['2025'].northeastGdp, 65035);
+  assert.equal(record.series['2025'].northeastGrowth, 4.1);
   assert.equal(record.series['2023'].population, undefined);
   assert.match(record.populationNote, /2024、2025/);
 });

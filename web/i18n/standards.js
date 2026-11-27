@@ -216,4 +216,8 @@ export default [
   ['城镇居民人均可支配收入', 'Urban per capita disposable income', '城鎮居民人均可支配收入', 'Renta disponible per cápita urbana', 'Revenu disponible par habitant en ville', '都市部一人当たり可処分所得', '도시 1인당 가처분소득', 'الدخل المتاح للفرد في الحضر'],
   ['农村居民人均可支配收入', 'Rural per capita disposable income', '農村居民人均可支配收入', 'Renta disponible per cápita rural', 'Revenu disponible par habitant à la campagne', '農村部一人当たり可処分所得', '농촌 1인당 가처분소득', 'الدخل المتاح للفرد في الريف'],
   ['下载指标字典 CSV', 'Download indicator dictionary CSV', '下載指標字典 CSV', 'Descargar diccionario de indicadores en CSV', 'Télécharger le dictionnaire des indicateurs en CSV', '指標辞書を CSV でダウンロード', '지표 사전 CSV 다운로드', 'تنزيل قاموس المؤشرات بصيغة CSV'],
+  ['东部地区生产总值', 'Eastern region GDP', '東部地區生產總值', 'PIB de la región oriental', 'PIB de la région orientale', '東部地域のGDP', '동부 지역 GDP', 'الناتج المحلي الإجمالي للمنطقة الشرقية'],
+  ['中部地区生产总值', 'Central region GDP', '中部地區生產總值', 'PIB de la región central', 'PIB de la région centrale', '中部地域のGDP', '중부 지역 GDP', 'الناتج المحلي الإجمالي للمنطقة الوسطى'],
+  ['西部地区生产总值', 'Western region GDP', '西部地區生產總值', 'PIB de la región occidental', 'PIB de la région occidentale', '西部地域のGDP', '서부 지역 GDP', 'الناتج المحلي الإجمالي للمنطقة الغربية'],
+  ['东北地区生产总值', 'Northeast region GDP', '東北地區生產總值', 'PIB de la región nororiental', 'PIB de la région du Nord-Est', '東北地域のGDP', '동북 지역 GDP', 'الناتج المحلي الإجمالي لمنطقة الشمال الشرقي'],
 ];
