@@ -16,7 +16,7 @@ def main(url):
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
         manifest_href = page.locator('link[rel="manifest"]').get_attribute('href')
         assert manifest_href, 'manifest link missing'
-        manifest = page.request.get(page.evaluate('href => new URL(href, location.href).href', manifest_href))
+        manifest = page.request.get(page.evaluate('href => new URL(href, document.baseURI).href', manifest_href))
         assert manifest.ok, manifest.status
         data = json.loads(manifest.body())
         assert data['name'] and data['short_name']
@@ -32,12 +32,12 @@ def main(url):
             assert shortcut['name'] and shortcut['description'] and shortcut['icons']
         for icon in data['icons']:
             assert icon['sizes'] in ('192x192', '512x512'), icon
-            response = page.request.get(page.evaluate('href => new URL(href, document.querySelector("link[rel=manifest]").href).href', icon['src']))
+            response = page.request.get(page.evaluate('href => new URL(href, new URL(document.querySelector("link[rel=manifest]").href, document.baseURI)).href', icon['src']))
             assert response.ok, (icon['src'], response.status)
             assert response.headers.get('content-type', '').startswith('image/png')
             assert response.body()[:8] == b'\x89PNG\r\n\x1a\n'
         apple = page.locator('link[rel="apple-touch-icon"]').get_attribute('href')
-        assert apple and page.request.get(page.evaluate('href => new URL(href, location.href).href', apple)).ok
+        assert apple and page.request.get(page.evaluate('href => new URL(href, document.baseURI).href', apple)).ok
         browser.close()
         print('Manifest, icons and apple-touch-icon are valid.')
 
