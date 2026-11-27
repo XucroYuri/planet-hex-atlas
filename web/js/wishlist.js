@@ -49,7 +49,7 @@ export function renderWishlist(host,ctx) {
     const box=host.querySelector('[data-coverage-summary]');
     const labels=[['population','人口估计','Population'],['gdp','人均 GDP','GDP per capita'],['lifeExpectancy','预期寿命','Life expectancy'],['literacy','成人识字率','Adult literacy'],['cropland','耕地总面积','Cropland area'],['pasture','牧场面积','Pasture area'],['density','历史人口密度','Historical population density'],['worldGdp','全球 GDP 总量','World GDP'],['urbanShare','城镇人口占比','Urban population share'],['arable','可耕地占比','Arable share'],['census','人口普查实报','Census counts']];
     try {
-      const [annual,history,provenance]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json'),load('history/sources.json')]);
+      const [annual,history,provenance,launches,market]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json'),load('history/sources.json'),load('space/launches.json').catch(()=>null),load('markets/index.json').catch(()=>null)]);
       const regions=Object.values(annual.regions);
       const total=regions.length;
       const rows=ctx.metrics.map((metric)=>{
@@ -70,6 +70,15 @@ export function renderWishlist(host,ctx) {
         <h4>${esc(t('历史序列','Historical series'))}</h4>
         <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${historyRows.map(row=>{let host='';try{host=new URL(row.url).hostname.replace(/^www\./,'')}catch{}return `<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td><td>${host?`<a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(host)} ↗</a>`:'—'}</td></tr>`}).join('')}</tbody></table></div>
         <p><button type="button" class="panel-action" data-export-coverage>${esc(t('下载覆盖数据 CSV','Download coverage CSV'))}</button></p>
+        ${launches || market ? `<h4>${esc(t('其他数据集','Other datasets'))}</h4><ul class="coverage-other">${launches ? `<li>${esc(t('太空发射：{years} 年、{parties} 个登记方、{objects} 个入轨物体（{year} 年 {count} 个）', {
+          years: launches.years.length, parties: Object.keys(launches.countries).length,
+          objects: launches.totals.objects.toLocaleString(ctx.locale || undefined),
+          year: launches.totals.latest.year, count: launches.totals.latest.count.toLocaleString(ctx.locale || undefined),
+        }))} <a href="${esc(launches.source.chart)}" target="_blank" rel="noopener">OWID ↗</a></li>` : ''}${market ? `<li>${esc(t('市场快照：{symbols} 只证券、{sessions} 个交易日、{rows} 条逐日记录（{first}–{last}）', {
+          symbols: market.symbols.length.toLocaleString(ctx.locale || undefined),
+          sessions: market.sessions.toLocaleString(ctx.locale || undefined),
+          rows: market.rows.toLocaleString(ctx.locale || undefined), first: market.first, last: market.last,
+        }))} <a href="./data/markets/index.json" download>JSON</a></li>` : ''}<li>${esc(t('本地 A 股：仅在你的浏览器中读取本地文件，本站不保存或再分发。','Local A-shares: files are read in your browser only; nothing is uploaded or redistributed.'))}</li></ul>` : ''}
         <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
       const exporter = box.querySelector('[data-export-coverage]');
       exporter.addEventListener('click', () => exportCoverage(rows, historyRows));

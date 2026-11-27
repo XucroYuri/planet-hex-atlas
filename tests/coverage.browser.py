@@ -36,6 +36,10 @@ def main(url):
         assert history_links.count() >= 11, history_links.count()
         expect(annual_links.first).to_contain_text('SP.')
         expect(summary).to_contain_text('2026-11-11')
+        expect(summary).to_contain_text('其他数据集')
+        expect(summary).to_contain_text('太空发射')
+        expect(summary).to_contain_text('市场快照')
+        expect(summary).to_contain_text('本地 A 股')
         with page.expect_download(timeout=30000) as pending:
             summary.locator('[data-export-coverage]').click()
         download = pending.value
