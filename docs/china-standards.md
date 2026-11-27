@@ -42,6 +42,16 @@ uv run python pipeline/china_gdp_series.py --cache .cache/china
 
 上述数据存于 `web/data/china-official.json`，由 `tests/china-official.test.mjs` 校验年度值、阶段、范围说明和来源链接。
 
+## 标准地图导入核验
+
+在送审或取得授权图幅后，几何替换前先运行导入核验：
+
+```sh
+uv run pipeline/standard_map_intake.py --geojson <授权几何.geojson> --approval-number 'GS(年份)编号号' --source-url <来源> --report docs/china-map-intake/report.json
+```
+
+工具检查 FeatureCollection 结构、WGS84 经纬度范围、审图号格式、中国/台湾省/香港/澳门要素是否存在，以及九个样点（北京、台湾本岛、香港、澳门、黄岩岛、东沙岛、太平岛、曾母暗沙、钓鱼岛）是否落入对应行政区。通过只表示“可进入人工审图”，不构成审图结论，也不会自动替换线上几何。说明见 [`docs/china-map-intake/README.md`](china-map-intake/README.md)。
+
 ## 达到合规发布所需的下一步
 
 按优先级排列，每项都要有可核验产物：

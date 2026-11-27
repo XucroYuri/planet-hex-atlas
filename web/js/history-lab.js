@@ -74,17 +74,20 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   population: { zh: '人口估计', en: 'Population estimates' },
   gdp: { zh: '人均 GDP', en: 'GDP per capita' },
   lifeExpectancy: { zh: '预期寿命', en: 'Life expectancy' },
+  literacy: { zh: '成人识字率', en: 'Adult literacy' },
   cropland: { zh: '耕地总面积', en: 'Cropland area' },
   arable: { zh: '可耕地占陆地比例', en: 'Arable land share' },
   census: { zh: '人口普查实报', en: 'Census population counts' },
   people: { zh: '人', en: 'people' },
   years: { zh: '岁', en: 'years' },
+  percent: { zh: '%', en: '%' },
   dollars: { zh: '{year} 年价格国际元', en: 'international dollars at {year} prices' },
   squareKm: { zh: '平方公里', en: 'km²' },
   share: { zh: '占陆地比例', en: 'of land area' },
   populationNote: { zh: 'OWID 汇编的历史重建和人口估计。不同来源之间可能存在断点。逐地区逐年来源可在方法页核对。', en: 'OWID combines historical reconstructions and population estimates. Source changes can introduce breaks. The methodology page lists sources by region and year.' },
   gdpNote: { zh: 'Maddison 统一价格基准后的来源估计，早期样本尤其稀疏。', en: 'Maddison estimates use harmonized price benchmarks. Early samples are particularly sparse.' },
   lifeExpectancyNote: { zh: '出生时预期寿命，由 Riley、Zijdeman 等、人类死亡率数据库与联合国世界人口展望汇编；英国样本可追溯至 1543 年，全球合计自 1770 年起。单年危机可能造成明显下凹。', en: 'Period life expectancy at birth, compiled from Riley, Zijdeman et al., the Human Mortality Database and UN World Population Prospects. Country samples reach back to 1543 and the world aggregate to 1770. Single-year crises can cause sharp dips.' },
+  literacyNote: { zh: '成人识字率来自联合国教科文组织统计研究所的调查与估计，按不规则的调查年份发布，后一次调查可能修订先前值；100% 表示报告值，不代表已逐人测量。', en: 'Adult literacy comes from UNESCO Institute for Statistics surveys and estimates, reported at irregular survey years; later surveys may revise earlier values. A reported 100% is a published rate, not a person-by-person measurement.' },
   croplandNote: { zh: 'HYDE 全球耕地面积模型估计，包含永久作物。发布的零值保留。', en: 'HYDE models global cropland area including permanent crops. Published zero values are retained.' },
   croplandRegionalNote: { zh: 'HYDE 3.2 论文表 2 的区域耕地基准点，已换算为平方公里。分区与现代地图边界可能不同。', en: 'Regional cropland benchmarks from HYDE 3.2 Table 2, converted to square kilometres. Study regions may differ from present-day map boundaries.' },
   arableNote: { zh: 'FAO 经世界银行发布的可耕地占比。下载表未提供逐条观测标志，记为汇编统计。此指标采用可耕地口径和比例单位。', en: 'FAO arable land share via the World Bank. The download lacks point-level observation flags, so entries are labelled as compiled statistics. The definition is arable land and the unit is a share.' },
@@ -110,6 +113,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   hydeTable: { zh: 'HYDE 3.2 · 论文表 2', en: 'HYDE 3.2 · Table 2' },
   maddison: { zh: 'Maddison 2023 · OWID', en: 'Maddison 2023 · OWID' },
   owidLife: { zh: 'OWID · 预期寿命长序列', en: 'OWID · long-run life expectancy' },
+  owidLiteracy: { zh: 'UNESCO UIS · OWID', en: 'UNESCO UIS · OWID' },
   wdi: { zh: 'FAO · 世界银行 WDI', en: 'FAO · World Bank WDI' },
   censusBureau: { zh: '美国人口普查局', en: 'U.S. Census Bureau' },
   backtest: { zh: '时间回归与留后回测', en: 'Time regression and holdout test' },
@@ -165,6 +169,7 @@ const METRICS = {
   population: { unit: 'people', status: 'estimated' },
   gdp: { unit: 'dollars', status: 'estimated', source: 'maddison' },
   lifeExpectancy: { unit: 'years', status: 'estimated', source: 'owidLife' },
+  literacy: { unit: 'percent', status: 'estimated', source: 'owidLiteracy' },
   cropland: { unit: 'squareKm', status: 'estimated', source: 'hyde' },
   arable: { unit: 'share', status: 'compiled', source: 'wdi' },
   census: { unit: 'people', status: 'observed', source: 'censusBureau' },
@@ -337,7 +342,7 @@ function elements(doc) {
 }
 
 function publishedValue(locale, metric, value, withUnit = false) {
-  if (metric === 'arable') return locale.percent.format(value / 100);
+  if (metric === 'arable' || METRICS[metric].unit === 'percent') return locale.percent.format(value / 100);
   return withUnit
     ? `${locale.number(value)} ${locale.tr(METRICS[metric].unit, { year: locale.dates.format(2011) })}`
     : locale.number(value);

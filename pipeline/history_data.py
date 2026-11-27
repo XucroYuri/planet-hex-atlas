@@ -111,6 +111,8 @@ def add_grapher(shards, raw, column, areas, metric):
             value = float(row[column])
         if metric == "lifeExpectancy" and not 0 < value <= 120:
             raise ValueError(f"Life expectancy outside 0–120 years for {area} at {year}")
+        if metric == "literacy" and not 0 <= value <= 100:
+            raise ValueError(f"Literacy outside 0–100% for {area} at {year}")
         add_point(shards, area, metric, year, value)
 
 
@@ -158,6 +160,7 @@ def build(input_dir, output_dir, fetch):
     gdp_file = "gdp-per-capita-maddison-project-database.csv"
     add_grapher(shards, inputs[gdp_file], "GDP per capita", grapher_codes, "gdp")
     add_grapher(shards, inputs["life-expectancy.csv"], "Life expectancy", grapher_codes, "lifeExpectancy")
+    add_grapher(shards, inputs["literacy-rate.csv"], "Literacy rate among adults", grapher_codes, "literacy")
     wdi_codes = {key: key for key in countries} | {"WLD": "WORLD"}
     add_wdi(shards, inputs["wdi-cropland.zip"], wdi_codes)
 

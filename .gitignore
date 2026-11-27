@@ -9,3 +9,6 @@ __pycache__/
 .env*
 .tmp/
 progress.md
+
+# Candidate standard-map intake reports are reviewed before being archived.
+docs/china-map-intake/report.json

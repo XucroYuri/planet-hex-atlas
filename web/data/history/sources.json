@@ -28,6 +28,14 @@
   "life-expectancy.metadata.json": {
    "url": "https://ourworldindata.org/grapher/life-expectancy.metadata.json",
    "sha256": "928a1aef9db887cc0d01fb3dfb4f542b1b18e4b2dd7c238c4a685e4c9f695d0d"
+  },
+  "literacy-rate.csv": {
+   "url": "https://ourworldindata.org/grapher/literacy-rate.csv",
+   "sha256": "ae1ab2d7d9c824642d314c4c218e4a6bd1baf262b4ee51ca7d698a036f4e8739"
+  },
+  "literacy-rate.metadata.json": {
+   "url": "https://ourworldindata.org/grapher/literacy-rate.metadata.json",
+   "sha256": "e5a94381c04fbec4fcd92b2f864a40edeac3e931554c53f6f7a40b68fe2d22b0"
   }
  },
  "sources": {
@@ -118,6 +126,18 @@
    "licenses": [
     [
      "OWID processing · CC BY 4.0",
+     "https://creativecommons.org/licenses/by/4.0/"
+    ]
+   ]
+  },
+  "literacy": {
+   "url": "https://ourworldindata.org/grapher/literacy?age_group=adult&sex=both",
+   "chart": "https://ourworldindata.org/grapher/literacy-rate",
+   "citation": "Adult literacy rate, UNESCO Institute for Statistics (2026), compiled by Our World in Data.",
+   "note": "Adult literacy is survey-based and reported at irregular intervals; later surveys replace or revise earlier estimates. A 100% value reflects the reported rate, not universal measurement.",
+   "licenses": [
+    [
+     "UNESCO UIS / OWID · CC BY 4.0",
      "https://creativecommons.org/licenses/by/4.0/"
     ]
    ]
