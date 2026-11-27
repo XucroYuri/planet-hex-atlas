@@ -656,13 +656,16 @@ async function init() {
     map.onScale = (classifier) => renderLegend(classifier, state.lens, new Map());
     renderLenses();
     bind();
-    const [overview, official, missingNotes] = await Promise.all([load('overview.json'), load('china-official.json'), load('missing-notes.json'), observations.ensureYear(atlas.year), map.getTile(2, 'world')]);
+    const [official, missingNotes] = await Promise.all([load('china-official.json'), load('missing-notes.json')]);
     state.chinaOfficial = official;
     state.missingNotes = missingNotes;
-    map.setGeography(overview.outlines, overview.water);
-    state.cities = overview.cities;
-    map.setCities(overview.cities);
+    // Paint the inspector and map theme from the smaller annual payload first; the
+    // larger overview (cities, coastlines, water) arrives after first paint.
     await changeYear(atlas.year);
+    const overview = await load('overview.json');
+    state.cities = overview.cities;
+    map.setGeography(overview.outlines, overview.water);
+    map.setCities(overview.cities);
     await restoreLink();
     window.addEventListener('hashchange', () => {
       setSelection(null);
