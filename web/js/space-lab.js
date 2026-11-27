@@ -1,4 +1,5 @@
 import { esc, load } from './data.js';
+import { countryName } from './i18n-places.js';
 
 const CREW = 'https://www.nasa.gov/news-release/nasa-welcomes-record-setting-artemis-ii-moonfarers-back-to-earth/';
 const HORIZONS = 'https://ssd.jpl.nasa.gov/horizons/';
@@ -41,8 +42,8 @@ export async function renderSpace(host, ctx) {
   const number = (value) => f.format(value);
   const label = (b) => t(b.zh,b.en);
   host.textContent = t('载入星历…','Loading ephemerides…');
-  if (!pending) pending = load('space/ephemeris.json').catch((err) => {pending=null;throw err;});
-  const archive = await pending;
+  if (!pending) pending = Promise.all([load('space/ephemeris.json'), load('space/launches.json')]).catch((err) => {pending=null;throw err;});
+  const [archive, launches] = await pending;
   const bodies = archive.objects;
   const lastYear = Number(archive.issue.slice(0,4));
   let year = lastYear;
@@ -54,11 +55,68 @@ export async function renderSpace(host, ctx) {
     <div class="space-layout"><figure class="space-plot"><svg viewBox="0 0 560 400" role="img" aria-label="${esc(t('日心黄道面位置图','Heliocentric ecliptic chart'))}"></svg><figcaption>${esc(t('日心黄道面俯视图。地面投影半径采用对数刻度，虚线连接探测器的年度样本。','Ecliptic-plane view. Projected radius uses a logarithmic scale. Dashed tracks connect annual spacecraft samples.'))}</figcaption></figure><div data-details></div></div>
     <div class="space-boundaries"><article><h3>${esc(t('载人离地纪录','Crewed distance record'))}</h3><strong>${integer.format(EARTH_RECORD_KM)} km</strong><p>${esc(t('2026 年 4 月，阿尔忒弥斯 II。NASA 公布的最远离地距离为 252,756 英里。','Artemis II, April 2026. NASA reported a maximum distance of 252,756 miles from Earth.'))}</p><a href="${CREW}" target="_blank" rel="noopener">NASA ↗</a></article>
     <article><h3>${esc(t('理想光信号前沿','Ideal light-signal front'))}</h3><strong data-light></strong><label>${esc(t('假设发射年份','Assumed emission year'))}<input name="signal-year" type="number" min="1800" max="${lastYear}" value="${signalYear}"></label><p>${esc(t('思考实验：到所选星历年，真空中每经过一年光前进一光年。实际天线方向、衰减和电离层影响可探测范围。','Thought experiment: light travels one light-year per year in vacuum until the selected epoch. Direction, attenuation and the ionosphere affect detectability.'))}</p></article></div>
+    <section class="space-launches"><h3>${esc(t('轨道发射活动','Orbital launch activity'))}</h3>
+      <p class="space-launch-summary" data-launch-summary></p>
+      <div class="space-launch-chart" data-launch-chart></div>
+      <div class="space-launch-controls"><label>${esc(t('年份','Year'))}<input type="range" name="launch-year" min="${launches.years[0]}" max="${launches.years.at(-1)}" value="${launches.years.at(-1)}"><output data-launch-year></output></label></div>
+      <ol class="space-launch-top" data-launch-top></ol>
+      <p class="space-launch-note">${esc(t('按 UNOOSA 登记的处理国或组织统计，不等同于卫星制造国；世界合计可能大于逐国之和。','Counts follow the UNOOSA registering state or organisation, not the satellite manufacturer; the world total can exceed the sum of countries.'))} <a href="${launches.source.chart}" target="_blank" rel="noopener">${esc(t('数据来源：UNOOSA · OWID','Source: UNOOSA · OWID'))} ↗</a></p>
+    </section>
     <section><h3>${esc(t('人类活动记录','Human activity record'))}</h3><ol class="space-events" data-events></ol></section>
     <details class="space-method"><summary>${esc(t('坐标、依据与数据边界','Coordinates, provenance and coverage'))}</summary><p>${esc(t('各年取 11 月 27 日 00:00 TDB。坐标为 J2000 黄道面的日心几何位置，距离使用三维向量计算。历史轨迹来自 JPL 星历模型；探测器失联后仍可有轨道估计。没有覆盖的年份留空。','Each sample is taken on November 27 at 00:00 TDB. Heliocentric positions use the J2000 ecliptic frame; distances use all three coordinates. JPL ephemerides are modeled trajectories and may extend beyond last contact. Missing years are left empty.'))}</p><a href="${HORIZONS}" target="_blank" rel="noopener">NASA/JPL Horizons ↗</a></details>`;
   const sel = host.querySelector('[name=space-body]');
   for (const b of [...bodies].sort((a,b) => a.kind === b.kind ? 0 : a.kind==='probe' ? -1 : 1)) sel.add(new Option(label(b), b.id));
   const chart = host.querySelector('svg');
+  const launchChart = host.querySelector('[data-launch-chart]');
+  const launchYear = host.querySelector('[name=launch-year]');
+  const launchTop = host.querySelector('[data-launch-top]');
+  const launchSummary = host.querySelector('[data-launch-summary]');
+  const localName = (code, fallback) => {
+    try { return countryName(code) || fallback; } catch { return fallback; }
+  };
+  function drawLaunches() {
+    const series = launches.world;
+    const width = 560, height = 150, pad = 10, base = height - 18;
+    const max = Math.max(...series.map(([, value]) => value));
+    const step = (width - pad * 2) / series.length;
+    const frame = svg('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': t('各年入轨物体数', 'Objects launched per year') });
+    series.forEach(([year, value], index) => {
+      const heightValue = Math.max(1.5, (base - 10) * value / max);
+      const bar = svg('rect', {
+        x: (pad + index * step).toFixed(2), y: (base - heightValue).toFixed(2),
+        width: Math.max(1.5, step - 1.2).toFixed(2), height: heightValue.toFixed(2),
+        fill: index === series.length - 1 ? '#e0b26a' : '#8fb8a6',
+      });
+      bar.append(svg('title', {}, `${year} · ${integer.format(value)}`));
+      frame.append(bar);
+    });
+    frame.append(svg('text', { x: pad, y: height - 4, fill: '#cfe0d8', 'font-size': 10 }, String(series[0][0])));
+    frame.append(svg('text', { x: width - pad, y: height - 4, 'text-anchor': 'end', fill: '#cfe0d8', 'font-size': 10 }, String(series.at(-1)[0])));
+    frame.append(svg('text', { x: pad, y: 12, fill: '#edf2de', 'font-size': 11 },
+      `${t('峰值', 'Peak')} ${launches.totals.peak.year} · ${integer.format(launches.totals.peak.count)}`));
+    launchChart.replaceChildren(frame);
+  }
+  function updateLaunches() {
+    const year = launchYear.valueAsNumber;
+    const count = launches.world.find(([date]) => date === year)?.[1] ?? 0;
+    launchYear.parentElement.querySelector('output').value = String(year);
+    launchSummary.textContent = `${t('入轨物体总数', 'Objects launched in total')} ${integer.format(launches.totals.objects)} · ${year} · ${integer.format(count)} ${t('个物体', 'objects')}`;
+    const ranked = Object.entries(launches.countries)
+      .map(([code, entry]) => ({ code, name: localName(code, entry.name), value: entry.series.find(([date]) => date === year)?.[1] ?? 0 }))
+      .filter((entry) => entry.value > 0)
+      .sort((left, right) => right.value - left.value || left.name.localeCompare(right.name))
+      .slice(0, 8);
+    launchTop.replaceChildren(...ranked.map((entry) => {
+      const item = document.createElement('li');
+      const strong = document.createElement('strong');
+      strong.textContent = integer.format(entry.value);
+      item.append(document.createTextNode(`${entry.name} `), strong, document.createTextNode(` ${t('个物体', 'objects')}`));
+      return item;
+    }));
+  }
+  drawLaunches();
+  launchYear.addEventListener('input', updateLaunches);
+  updateLaunches();
   const projection = (row) => {
     const len = Math.hypot(row[1],row[2]);
     const radius = Math.log1p(len)/Math.log(201) * 162;
