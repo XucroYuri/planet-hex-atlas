@@ -192,4 +192,7 @@ export default [
   ['月面着陆', 'Lunar landing', '月面著陸', 'Alunizaje', 'Atterrissage lunaire', '月面着陸', '달 착륙', 'الهبوط على القمر'],
   ['数据更新', 'Data updates', '資料更新', 'Actualizaciones de datos', 'Mises à jour des données', 'データ更新', '데이터 업데이트', 'تحديثات البيانات'],
   ['更新日志载入中…', 'Loading update log…', '更新日誌載入中…', 'Cargando registro de actualizaciones…', 'Chargement du journal des mises à jour…', '更新履歴を読み込み中…', '업데이트 기록을 불러오는 중…', 'جارٍ تحميل سجل التحديثات…'],
+  ['人均国内生产总值', 'GDP per capita', '人均國內生產總值', 'PIB per cápita', 'PIB par habitant', '一人当たりGDP', '1인당 GDP', 'الناتج المحلي الإجمالي للفرد'],
+  ['国民总收入', 'Gross national income', '國民總收入', 'Renta nacional bruta', 'Revenu national brut', '国民総所得', '국민총소득', 'الدخل القومي الإجمالي'],
+  ['全员劳动生产率', 'Labor productivity', '全員勞動生產率', 'Productividad laboral', 'Productivité du travail', '労働生産性', '노동생산성', 'إنتاجية العمل'],
 ];
