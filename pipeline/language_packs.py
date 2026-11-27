@@ -15,7 +15,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RESEARCH = ['research', 'space-lab', 'history-lab', 'markets', 'wishlist']
 AUTHORED = ['zh-CN', 'en', 'zh-TW', 'es', 'fr', 'ja', 'ko', 'ar']
-EXTRA = ['de', 'pt', 'hi', 'ru', 'id', 'it', 'tr', 'vi', 'bn', 'uk', 'pl', 'fa', 'ur', 'sw', 'nl', 'th']
+EXTRA = [
+    'de', 'pt', 'hi', 'ru', 'id', 'it', 'tr', 'vi', 'bn', 'uk', 'pl', 'fa', 'ur', 'sw', 'nl', 'th',
+    'he', 'el', 'cs', 'ro', 'hu', 'sv', 'da', 'fi', 'no', 'bg', 'hr', 'sk', 'sl', 'lt', 'lv', 'et',
+    'ta',
+]
 MODEL = 'jncraton/m2m100_418M-ct2-int8@7c1b2620a4e58dacecbd8bf89cfd6da7eb9eb7b0'
 # Proper names are reviewed separately from prose translation: preserve the shared brand.
 BRAND = {
@@ -23,6 +27,11 @@ BRAND = {
     'id':'Orbis Atlas', 'it':'Orbis Atlas', 'tr':'Orbis Atlas', 'vi':'Orbis Atlas',
     'bn':'অরবিস অ্যাটলাস', 'uk':'Орбіс Атлас', 'pl':'Orbis Atlas', 'fa':'اطلس اوربیس',
     'ur':'اوربِس اٹلس', 'sw':'Orbis Atlas', 'nl':'Orbis Atlas', 'th':'ออร์บิส แอตลาส',
+    'he':'Orbis Atlas', 'el':'Orbis Atlas', 'cs':'Orbis Atlas', 'ro':'Orbis Atlas',
+    'hu':'Orbis Atlas', 'sv':'Orbis Atlas', 'da':'Orbis Atlas', 'fi':'Orbis Atlas',
+    'no':'Orbis Atlas', 'bg':'Orbis Atlas', 'hr':'Orbis Atlas', 'sk':'Orbis Atlas',
+    'sl':'Orbis Atlas', 'lt':'Orbis Atlas', 'lv':'Orbis Atlas', 'et':'Orbis Atlas',
+    'ta':'Orbis Atlas', 'te':'Orbis Atlas', 'ml':'Orbis Atlas', 'mr':'Orbis Atlas', 'pa':'Orbis Atlas', 'ka':'Orbis Atlas', 'kk':'Orbis Atlas',
 }
 QUOTED = r'''(?:'(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*")'''
 PAIR = re.compile(fr'(?P<zh>{QUOTED})\s*,\s*(?:en\s*:\s*)?(?P<en>{QUOTED})')
@@ -69,11 +78,11 @@ def translate(model, spm, language, strings, cache):
     missing = sorted({part.strip() for text in strings for part in split_text(text)
                       if part.strip() and not TOKENS.fullmatch(part) and re.search('[A-Za-z]',part) and part.strip() not in cache},key=len)
     if not missing: return
-    translator = ctranslate2.Translator(str(model),device='cpu',compute_type='int8',intra_threads=5,inter_threads=1)
+    translator = ctranslate2.Translator(str(model),device='cpu',compute_type='int8',intra_threads=8,inter_threads=1)
     for start in range(0,len(missing),32):
         batch=missing[start:start+32]
         source=[['__en__',*spm.encode(s,out_type=str),'</s>'] for s in batch]
-        result=translator.translate_batch(source,target_prefix=[target for _ in batch],beam_size=2,max_batch_size=16,
+        result=translator.translate_batch(source,target_prefix=[target for _ in batch],beam_size=1,max_batch_size=32,
                                           max_decoding_length=240,repetition_penalty=1.06)
         for text,item in zip(batch,result,strict=True):
             pieces=item.hypotheses[0]

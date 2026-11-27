@@ -324,7 +324,7 @@ function insertStandards(host, official) {
   host.innerHTML = `
     <p class="method">${htmlText('本图是使用公开数据制作的科学可视化交互地图，不是经自然资源主管部门审核的标准地图，尚未取得审图号，也不作为任何领土主张或边界表达的依据。正式发布标准地图请使用自然资源部标准地图服务。')}</p>
     <div class="source-grid">
-      <article><h3>${htmlText('地图审核与标准地图')}</h3><p>${htmlText('《地图管理条例》要求公开的世界地图、历史地图等依法送审。自然资源部提供免费标准地图与审核服务，并说明规范用图需经审核、标准地图可免费下载。')}</p><a href="https://www.ngcc.cn/xwzx/ywcg/202401/t20240103_1233.html" target="_blank" rel="noopener">${htmlText('自然资源部：标准地图服务说明')} ↗</a><br><a href="http://bzdt.ch.mnr.gov.cn/" target="_blank" rel="noopener">${htmlText('标准地图服务系统')} ↗</a></article>
+      <article><h3>${htmlText('地图审核与标准地图')}</h3><p>${htmlText('《地图管理条例》要求公开的世界地图、历史地图等依法送审。自然资源部提供免费标准地图与审核服务，并说明规范用图需经审核、标准地图可免费下载。')}</p><a href="https://www.ngcc.cn/xwzx/ywcg/202401/t20240103_1233.html" target="_blank" rel="noopener">${htmlText('自然资源部：标准地图服务说明')} ↗</a><br><a href="http://bzdt.ch.mnr.gov.cn/" target="_blank" rel="noopener">${htmlText('标准地图服务系统')} ↗</a><br><a href="http://bzdt.ch.mnr.gov.cn/download.html?superclassName=%E4%B8%96%E7%95%8C%E5%9C%B0%E5%9B%BE" target="_blank" rel="noopener">${htmlText('世界地图标准图幅（37 幅，含审图号）')} ↗</a></article>
       <article><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('中国档案优先展示国家统计局的年度 GDP 公告，并区分初步核算、修订与最终核实。跨地区比较仍使用世界银行序列，两个口径不混算。')}</p><a href="https://www.stats.gov.cn/" target="_blank" rel="noopener">${htmlText('国家统计局')} ↗</a></article>
     </div>
     <h3>${htmlText('合规状态')}</h3>

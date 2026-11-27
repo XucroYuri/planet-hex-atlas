@@ -58,4 +58,5 @@ uv run python pipeline/china_gdp_series.py --cache .cache/china
 - [自然资源部：规范用图需经自然资源部门审核，免费提供标准地图服务](https://www.ngcc.cn/xwzx/ywcg/202401/t20240103_1233.html)
 - [自然资源部：快速识别“问题地图”](https://www.ngcc.cn/xwzx/ywcg/202401/t20240103_1232.html)
 - [标准地图服务系统](http://bzdt.ch.mnr.gov.cn/)
+- [世界地图标准图幅（37 幅，含审图号）](http://bzdt.ch.mnr.gov.cn/download.html?superclassName=%E4%B8%96%E7%95%8C%E5%9C%B0%E5%9B%BE)：服务目录可见 37 幅 1:4100 万世界地图及审图号字段，可免费下载。本应用未嵌入这些受审图约束的图幅，只提供入口；以交互叠加方式使用仍需按“谁公开、谁送审”另行确认。
 - [国家统计局](https://www.stats.gov.cn/)

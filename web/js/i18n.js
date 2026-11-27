@@ -26,6 +26,23 @@ export const LOCALES = Object.freeze([
   { tag: 'sw', label: 'Kiswahili · MT', dir: 'ltr', machine: true },
   { tag: 'nl', label: 'Nederlands · MT', dir: 'ltr', machine: true },
   { tag: 'th', label: 'ไทย · MT', dir: 'ltr', machine: true },
+  { tag: 'he', label: 'עברית · MT', dir: 'rtl', machine: true },
+  { tag: 'el', label: 'Ελληνικά · MT', dir: 'ltr', machine: true },
+  { tag: 'cs', label: 'Čeština · MT', dir: 'ltr', machine: true },
+  { tag: 'ro', label: 'Română · MT', dir: 'ltr', machine: true },
+  { tag: 'hu', label: 'Magyar · MT', dir: 'ltr', machine: true },
+  { tag: 'sv', label: 'Svenska · MT', dir: 'ltr', machine: true },
+  { tag: 'da', label: 'Dansk · MT', dir: 'ltr', machine: true },
+  { tag: 'fi', label: 'Suomi · MT', dir: 'ltr', machine: true },
+  { tag: 'no', label: 'Norsk · MT', dir: 'ltr', machine: true },
+  { tag: 'bg', label: 'Български · MT', dir: 'ltr', machine: true },
+  { tag: 'hr', label: 'Hrvatski · MT', dir: 'ltr', machine: true },
+  { tag: 'sk', label: 'Slovenčina · MT', dir: 'ltr', machine: true },
+  { tag: 'sl', label: 'Slovenščina · MT', dir: 'ltr', machine: true },
+  { tag: 'lt', label: 'Lietuvių · MT', dir: 'ltr', machine: true },
+  { tag: 'lv', label: 'Latviešu · MT', dir: 'ltr', machine: true },
+  { tag: 'et', label: 'Eesti · MT', dir: 'ltr', machine: true },
+  { tag: 'ta', label: 'தமிழ் · MT', dir: 'ltr', machine: true },
 ].map(Object.freeze));
 
 const localesByTag = new Map(LOCALES.map((entry, index) => [entry.tag, index]));
