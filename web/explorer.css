@@ -1,0 +1,528 @@
+.orbis-explorer {
+  --oe-ink: #153e47;
+  --oe-paper: #faf9f0;
+  --oe-surface: #fefdf7;
+  --oe-teal: #28796d;
+  --oe-copper: #b76a3e;
+  --oe-muted: #496464;
+  --oe-line: #cbd6cc;
+  --oe-tint: #e8efe6;
+  container: orbis-explorer / inline-size;
+  display: grid;
+  gap: 0.75rem;
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--oe-paper);
+  color: var(--oe-ink);
+  color-scheme: light;
+  font: 0.875rem/1.5 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.orbis-explorer *,
+.orbis-explorer *::before,
+.orbis-explorer *::after {
+  box-sizing: border-box;
+}
+
+.orbis-explorer :where(h3, p, ul) {
+  margin: 0;
+}
+
+.orbis-explorer h3 {
+  color: var(--oe-ink);
+  font: 650 1.125rem/1.35 "Noto Serif SC", "Songti SC", "STSong", serif;
+}
+
+.orbis-explorer :where(button, select, a, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--oe-teal);
+  outline-offset: 2px;
+}
+
+.orbis-explorer :where(button, select) {
+  min-block-size: 2.75rem;
+  margin: 0;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--oe-line);
+  border-radius: 0.38rem;
+  background: var(--oe-surface);
+  color: var(--oe-ink);
+  font: inherit;
+}
+
+.orbis-explorer :where(button, summary, select) {
+  cursor: pointer;
+}
+
+.orbis-explorer :where(button, select):disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.orbis-explorer button:not(:disabled):hover {
+  border-color: var(--oe-teal);
+  background: var(--oe-tint);
+}
+
+.orbis-explorer a {
+  color: var(--oe-teal);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-controls,
+.orbis-explorer .oe-history-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 0.65rem;
+}
+
+.orbis-explorer .oe-field {
+  display: grid;
+  min-inline-size: 0;
+  gap: 0.22rem;
+  color: var(--oe-muted);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.orbis-explorer .oe-field select {
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding-inline-end: 0.3rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.orbis-explorer .oe-toolbar,
+.orbis-explorer .oe-panel-heading,
+.orbis-explorer .oe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orbis-explorer .oe-toolbar,
+.orbis-explorer .oe-panel-heading {
+  justify-content: space-between;
+}
+
+.orbis-explorer .oe-toolbar {
+  padding-block: 0.1rem 0.65rem;
+  border-block-end: 1px solid var(--oe-line);
+}
+
+.orbis-explorer .oe-actions {
+  gap: 0.4rem 0.55rem;
+}
+
+.orbis-explorer .oe-selection {
+  color: var(--oe-muted);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-button-primary {
+  border-color: var(--oe-ink);
+  background: var(--oe-ink);
+  color: var(--oe-paper);
+}
+
+.orbis-explorer .oe-button-primary:not(:disabled):hover {
+  border-color: var(--oe-teal);
+  background: var(--oe-teal);
+}
+
+.orbis-explorer .oe-overview {
+  display: grid;
+  align-items: stretch;
+  gap: 0.75rem;
+  min-inline-size: 0;
+}
+
+.orbis-explorer .oe-panel {
+  min-inline-size: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--oe-line);
+  border-block-start: 2px solid var(--oe-teal);
+  border-radius: 0.45rem;
+  background: var(--oe-surface);
+}
+
+.orbis-explorer .oe-totals {
+  margin-block-start: 0.45rem;
+  color: var(--oe-ink);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.orbis-explorer .oe-note {
+  color: var(--oe-muted);
+  font-size: 0.8125rem;
+}
+
+.orbis-explorer .oe-missing-counts {
+  margin-block-end: 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.orbis-explorer .oe-axis {
+  color: var(--oe-muted);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-axis-x {
+  margin-block: 0.1rem 0.55rem;
+  text-align: end;
+}
+
+.orbis-explorer .oe-plot {
+  position: relative;
+  block-size: 11.5rem;
+  margin: 0.4rem 1.25rem 1.55rem 3.75rem;
+  border: 1px solid var(--oe-line);
+  border-radius: 0.2rem;
+  background: var(--oe-paper);
+}
+
+.orbis-explorer .oe-plot-svg,
+.orbis-explorer .oe-ticks {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.orbis-explorer .oe-ticks,
+.orbis-explorer .oe-plot-svg :is(line, circle, path) {
+  pointer-events: none;
+}
+
+.orbis-explorer .oe-tick-x,
+.orbis-explorer .oe-tick-y {
+  position: absolute;
+  color: var(--oe-muted);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.orbis-explorer .oe-tick-x {
+  inset-block-start: calc(100% + 0.42rem);
+  max-inline-size: 3.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateX(-50%);
+}
+
+.orbis-explorer .oe-tick-y {
+  inset-inline-end: calc(100% + 0.4rem);
+  max-inline-size: 3.35rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(-50%);
+}
+
+.orbis-explorer .oe-grid {
+  stroke: var(--oe-line);
+  stroke-dasharray: 2 3;
+  stroke-width: 1;
+}
+
+.orbis-explorer .oe-dot {
+  fill: var(--oe-teal);
+  fill-opacity: 0.76;
+}
+
+.orbis-explorer .oe-hit {
+  cursor: pointer;
+}
+
+.orbis-explorer .oe-compare-dot {
+  r: 4.5px;
+  fill: var(--oe-paper);
+  fill-opacity: 1;
+  stroke: var(--oe-copper);
+  stroke-width: 2;
+}
+
+.orbis-explorer .oe-selected-dot {
+  r: 5.4px;
+  fill: var(--oe-ink);
+  fill-opacity: 1;
+  stroke: var(--oe-paper);
+  stroke-width: 1.5;
+}
+
+.orbis-explorer .oe-hovered {
+  r: 6.4px;
+  stroke: var(--oe-ink);
+  stroke-width: 1.5;
+}
+
+.orbis-explorer .oe-readout {
+  min-block-size: 2.25rem;
+  padding: 0.4rem 0.55rem;
+  border-inline-start: 2px solid var(--oe-copper);
+  background: var(--oe-tint);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-empty {
+  padding: 0.7rem;
+  color: var(--oe-muted);
+  text-align: center;
+}
+
+.orbis-explorer .oe-chart-empty {
+  display: grid;
+  place-items: center;
+  min-block-size: 6rem;
+  margin-block: 0.45rem;
+  border: 1px dashed var(--oe-line);
+  background: var(--oe-paper);
+}
+
+.orbis-explorer .oe-table-scroll {
+  max-block-size: 18rem;
+  margin-block-start: 0.55rem;
+  overflow: auto;
+  border: 1px solid var(--oe-line);
+  border-radius: 0.38rem;
+  background: var(--oe-surface);
+  scrollbar-color: var(--oe-line) var(--oe-paper);
+  scroll-padding-block-start: 3.5rem;
+}
+
+.orbis-explorer .oe-table {
+  inline-size: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-table th,
+.orbis-explorer .oe-table td {
+  padding: 0.4rem 0.5rem;
+  border-block-end: 1px solid var(--oe-line);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.orbis-explorer .oe-table thead th {
+  position: sticky;
+  z-index: 1;
+  inset-block-start: 0;
+  background: var(--oe-tint);
+  font-weight: 700;
+}
+
+.orbis-explorer .oe-data .oe-table thead th,
+.orbis-explorer .oe-data .oe-table tbody th {
+  padding: 0;
+}
+
+.orbis-explorer .oe-data .oe-table thead th:first-child {
+  inline-size: 27%;
+}
+
+.orbis-explorer .oe-sort,
+.orbis-explorer .oe-country {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding-inline: 0.45rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+.orbis-explorer .oe-sort {
+  justify-content: space-between;
+  gap: 0.2rem;
+  font-weight: 700;
+}
+
+.orbis-explorer .oe-sort:focus-visible,
+.orbis-explorer .oe-country:focus-visible {
+  outline-offset: -2px;
+}
+
+.orbis-explorer .oe-sort-arrow {
+  flex: none;
+  color: var(--oe-muted);
+}
+
+.orbis-explorer .oe-table th[aria-sort] .oe-sort-arrow {
+  color: var(--oe-teal);
+  font-weight: 800;
+}
+
+.orbis-explorer .oe-country[aria-pressed="true"],
+.orbis-explorer .oe-current-year {
+  background: var(--oe-tint);
+  font-weight: 750;
+}
+
+.orbis-explorer .oe-table .oe-number {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.orbis-explorer .oe-missing {
+  color: var(--oe-muted);
+}
+
+.orbis-explorer .oe-history-controls {
+  margin-block: 0.55rem 0.6rem;
+}
+
+.orbis-explorer .oe-history-controls .oe-field:first-child {
+  grid-column: 1 / -1;
+}
+
+.orbis-explorer .oe-history-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  font-size: 0.8125rem;
+}
+
+.orbis-explorer .oe-series-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.orbis-explorer .oe-series-key::before {
+  flex: none;
+  inline-size: 1.35rem;
+  border-block-start: 2px solid var(--oe-teal);
+  content: "";
+}
+
+.orbis-explorer .oe-series-key-1::before {
+  border-block-start: 2px dashed var(--oe-copper);
+}
+
+.orbis-explorer .oe-history .oe-axis {
+  margin-block-start: 0.4rem;
+}
+
+.orbis-explorer .oe-year-marker {
+  stroke: var(--oe-ink);
+  stroke-dasharray: 3 4;
+  stroke-opacity: 0.65;
+}
+
+.orbis-explorer .oe-trend {
+  fill: none;
+  stroke: var(--oe-teal);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.orbis-explorer .oe-trend.oe-trend-1 {
+  stroke: var(--oe-copper);
+  stroke-dasharray: 5 4;
+}
+
+.orbis-explorer .oe-trend-dot {
+  fill: var(--oe-teal);
+  stroke: var(--oe-paper);
+  stroke-width: 1;
+}
+
+.orbis-explorer .oe-trend-dot.oe-trend-1 {
+  fill: var(--oe-paper);
+  stroke: var(--oe-copper);
+  stroke-width: 1.6;
+}
+
+.orbis-explorer .oe-details summary {
+  min-block-size: 2.75rem;
+  padding-block: 0.65rem;
+  font-weight: 700;
+}
+
+.orbis-explorer .oe-sources {
+  padding-block: 0 0.1rem;
+  border-block-start-color: var(--oe-copper);
+}
+
+.orbis-explorer .oe-source-list {
+  display: grid;
+  gap: 0.65rem;
+  padding-inline-start: 1.1rem;
+}
+
+.orbis-explorer .oe-source-list a {
+  display: block;
+  inline-size: fit-content;
+}
+
+.orbis-explorer .oe-sources[open] > .oe-note {
+  margin-block: 0.65rem;
+}
+
+.orbis-explorer .oe-sr {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@container orbis-explorer (min-width: 42rem) {
+  .orbis-explorer .oe-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.55fr) minmax(0, 0.7fr);
+  }
+
+  .orbis-explorer .oe-history-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .orbis-explorer .oe-history-controls .oe-field:first-child {
+    grid-column: auto;
+  }
+
+  .orbis-explorer .oe-history .oe-plot {
+    block-size: 13rem;
+  }
+}
+
+@container orbis-explorer (min-width: 48rem) {
+  .orbis-explorer .oe-overview {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  }
+
+  .orbis-explorer .oe-data {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .orbis-explorer .oe-table-scroll {
+    max-block-size: 19rem;
+  }
+}
+
+.orbis-explorer [hidden] {
+  display: none;
+}

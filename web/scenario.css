@@ -1,0 +1,541 @@
+.oa-scenario {
+  --oas-ink: #153e47;
+  --oas-paper: #faf9f0;
+  --oas-copper: #b76a3e;
+  --oas-green: #28796d;
+  --oas-sheet: #fffef8;
+  --oas-muted: #50645e;
+  --oas-rule: #cbd7ce;
+  --oas-wash: #edf1e8;
+  --oas-error: #903b27;
+  --oas-numeric: ui-monospace, "SF Mono", Consolas, monospace;
+  container: oa-scenario / inline-size;
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: clamp(8px, 2vw, 18px);
+  border-radius: 12px;
+  background: var(--oas-paper);
+  color: var(--oas-ink);
+  color-scheme: light;
+  font: 14px/1.5 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.oa-scenario,
+.oa-scenario * {
+  box-sizing: border-box;
+}
+
+.oa-scenario :where(h3, h4, p, dl, dd, ul, ol) {
+  margin: 0;
+}
+
+.oa-scenario [hidden] {
+  display: none !important;
+}
+
+.oa-scenario .oas-panel,
+.oa-scenario .oas-details {
+  min-width: 0;
+  border: 1px solid var(--oas-rule);
+  border-radius: 9px;
+  background: var(--oas-sheet);
+}
+
+.oa-scenario .oas-panel {
+  display: grid;
+  gap: 10px;
+  padding: clamp(10px, 1.8vw, 16px);
+}
+
+.oa-scenario .oas-panel > [role="status"]:empty {
+  margin-block-start: -10px;
+}
+
+.oa-scenario .oas-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 3px 14px;
+}
+
+.oa-scenario h3 {
+  font: 700 1.2rem/1.25 "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+}
+
+.oa-scenario label,
+.oa-scenario legend,
+.oa-scenario h4 {
+  font-weight: 650;
+}
+
+.oa-scenario .oas-context,
+.oa-scenario .oas-note,
+.oa-scenario .oas-unit,
+.oa-scenario .oas-muted {
+  color: var(--oas-muted);
+  font-size: 0.8125rem;
+}
+
+.oa-scenario .oas-error {
+  color: var(--oas-error);
+}
+
+.oa-scenario :where(button, input, select) {
+  max-width: 100%;
+  min-height: 44px;
+  color: var(--oas-ink);
+  font: inherit;
+}
+
+.oa-scenario :where(button, input[type="number"], select) {
+  border: 1px solid #849c90;
+  border-radius: 5px;
+  background-color: var(--oas-sheet);
+}
+
+.oa-scenario :where(input[type="number"], select) {
+  width: 100%;
+  padding: 6px 9px;
+  font-size: 1rem;
+}
+
+.oa-scenario input[type="number"] {
+  font-family: var(--oas-numeric);
+}
+
+.oa-scenario input[aria-invalid="true"] {
+  border-color: var(--oas-error);
+}
+
+.oa-scenario button {
+  width: auto;
+  padding: 7px 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.oa-scenario button:hover:not(:disabled) {
+  background-color: var(--oas-wash);
+}
+
+.oa-scenario .oas-primary {
+  border-color: var(--oas-ink);
+  background-color: var(--oas-ink);
+  color: var(--oas-paper);
+}
+
+.oa-scenario .oas-primary:hover:not(:disabled) {
+  background-color: #20535e;
+}
+
+.oa-scenario button:disabled {
+  border-color: var(--oas-rule);
+  background-color: var(--oas-wash);
+  color: var(--oas-muted);
+  cursor: default;
+}
+
+.oa-scenario :where(button, input, select, summary):focus-visible {
+  outline: 2px solid var(--oas-green);
+  outline-offset: 2px;
+}
+
+.oa-scenario .oas-origin-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 8px;
+}
+
+.oa-scenario :where(.oas-origin-controls, .oas-sector-inputs, .oas-floor) label {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.oa-scenario .oas-observations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 6.3rem), 1fr));
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--oas-rule);
+  border-radius: 5px;
+  background: var(--oas-rule);
+}
+
+.oa-scenario .oas-reading {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 4px;
+  padding: 7px 8px;
+  background: var(--oas-paper);
+  overflow-wrap: anywhere;
+}
+
+.oa-scenario .oas-reading dt {
+  color: var(--oas-muted);
+  font-size: 0.8125rem;
+}
+
+.oa-scenario .oas-reading dd,
+.oa-scenario .oas-compare-values dd {
+  font-family: var(--oas-numeric);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.oa-scenario .oas-budget-grid,
+.oa-scenario .oas-charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 8px;
+}
+
+.oa-scenario .oas-budget {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  gap: 8px;
+  padding: 6px 10px 9px;
+  border: 1px solid var(--oas-rule);
+  border-radius: 5px;
+}
+
+.oa-scenario .oas-budget legend {
+  padding-inline: 4px;
+}
+
+.oa-scenario .oas-sector-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.oa-scenario .oas-budget-track {
+  display: flex;
+  overflow: hidden;
+  height: 7px;
+  border-radius: 3px;
+  background: var(--oas-wash);
+}
+
+.oa-scenario .oas-budget-track span {
+  flex: 0 0 auto;
+  background: var(--oas-sector-color);
+}
+
+.oa-scenario .oas-sector-inputs input {
+  border-block-start: 3px solid var(--oas-sector-color);
+}
+
+.oa-scenario [data-sector="services"],
+.oa-scenario [data-path="baseline"] {
+  --oas-sector-color: var(--oas-ink);
+  --oas-path-color: var(--oas-ink);
+}
+
+.oa-scenario [data-sector="production"],
+.oa-scenario [data-path="a"] {
+  --oas-sector-color: var(--oas-copper);
+  --oas-path-color: var(--oas-copper);
+}
+
+.oa-scenario [data-sector="ecology"],
+.oa-scenario [data-path="b"] {
+  --oas-sector-color: var(--oas-green);
+  --oas-path-color: var(--oas-green);
+}
+
+.oa-scenario .oas-floor {
+  display: grid;
+  grid-template-columns: minmax(8rem, 10rem) minmax(0, 1fr);
+  align-items: end;
+  gap: 2px 10px;
+}
+
+.oa-scenario .oas-floor .oas-note {
+  align-self: center;
+}
+
+.oa-scenario .oas-floor .oas-error {
+  grid-column: 1 / -1;
+}
+
+.oa-scenario .oas-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.oa-scenario .oas-advance-status {
+  font-weight: 650;
+}
+
+.oa-scenario .oas-timeline {
+  display: grid;
+  gap: 1px;
+  padding: 8px 10px;
+  border: 1px solid var(--oas-rule);
+  border-radius: 5px;
+  background-color: var(--oas-wash);
+}
+
+.oa-scenario .oas-timeline-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.oa-scenario .oas-timeline input {
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  accent-color: var(--oas-green);
+}
+
+.oa-scenario .oas-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 15px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.oa-scenario .oas-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.oa-scenario .oas-origin-mark {
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--oas-ink);
+  border-radius: 50%;
+}
+
+.oa-scenario .oas-line-mark {
+  width: 20px;
+  border-block-start: 2px solid var(--oas-path-color);
+}
+
+.oa-scenario .oas-line-mark[data-path="a"] {
+  border-block-start-style: dashed;
+}
+
+.oa-scenario .oas-line-mark[data-path="b"] {
+  border-block-start-style: dotted;
+}
+
+.oa-scenario .oas-future-mark {
+  width: 13px;
+  height: 9px;
+  border: 1px solid var(--oas-rule);
+  background: var(--oas-wash);
+}
+
+.oa-scenario .oas-chart {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--oas-rule);
+  border-radius: 5px;
+  background: var(--oas-paper);
+}
+
+.oa-scenario .oas-chart-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0 6px;
+}
+
+.oa-scenario .oas-chart-heading h4 {
+  font-size: 0.93rem;
+}
+
+.oa-scenario .oas-plot {
+  display: block;
+  width: 100%;
+  max-height: 156px;
+  overflow: visible;
+}
+
+.oa-scenario .oas-plot text {
+  fill: var(--oas-muted);
+  font: 12px var(--oas-numeric);
+}
+
+.oa-scenario .oas-plot-future {
+  fill: var(--oas-wash);
+}
+
+.oa-scenario :where(.oas-grid-line, .oas-curve, .oas-chart-cursor, .oas-chart-dot, .oas-chart-origin) {
+  vector-effect: non-scaling-stroke;
+}
+
+.oa-scenario .oas-grid-line {
+  stroke: var(--oas-rule);
+  stroke-width: 1px;
+}
+
+.oa-scenario .oas-curve {
+  fill: none;
+  stroke: var(--oas-path-color);
+  stroke-width: 2px;
+  stroke-linejoin: round;
+}
+
+.oa-scenario .oas-curve[data-path="a"] {
+  stroke-dasharray: 6 3;
+}
+
+.oa-scenario .oas-curve[data-path="b"] {
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
+}
+
+.oa-scenario .oas-chart-cursor {
+  stroke: var(--oas-muted);
+  stroke-width: 1px;
+  stroke-dasharray: 3 3;
+}
+
+.oa-scenario .oas-chart-dot {
+  fill: var(--oas-path-color);
+  stroke: var(--oas-sheet);
+  stroke-width: 1px;
+}
+
+.oa-scenario .oas-chart-origin {
+  fill: var(--oas-paper);
+  stroke: var(--oas-ink);
+  stroke-width: 2px;
+}
+
+.oa-scenario .oas-compare-values {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid var(--oas-rule);
+  overflow-wrap: anywhere;
+}
+
+.oa-scenario .oas-compare-values > div {
+  padding-inline-start: 5px;
+  border-inline-start: 2px solid var(--oas-path-color);
+}
+
+.oa-scenario :where(.oas-compare-values dt, .oas-delta, .oas-chart-observed, .oas-chart-empty) {
+  color: var(--oas-muted);
+  font-size: 0.8125rem;
+}
+
+.oa-scenario .oas-delta {
+  display: block;
+  font: 400 0.8125rem/1.35 system-ui, sans-serif;
+}
+
+.oa-scenario .oas-chart-empty {
+  display: grid;
+  min-height: 112px;
+  place-items: center;
+  text-align: center;
+}
+
+.oa-scenario .oas-details summary {
+  min-height: 44px;
+  padding: 10px 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.oa-scenario .oas-details summary span {
+  margin-inline-start: 8px;
+  color: var(--oas-muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.oa-scenario .oas-details-body {
+  display: grid;
+  gap: 8px;
+  padding: 3px 12px 12px;
+}
+
+.oa-scenario .oas-phase-list {
+  display: grid;
+  gap: 6px;
+  padding-inline-start: 1.6em;
+}
+
+.oa-scenario .oas-phase-list li {
+  padding: 5px 0;
+  border-top: 1px solid var(--oas-rule);
+}
+
+.oa-scenario .oas-phase-list span {
+  display: inline-block;
+  margin-inline-start: 10px;
+  color: var(--oas-muted);
+}
+
+.oa-scenario .oas-formulas > div {
+  display: grid;
+  grid-template-columns: minmax(0, 10rem) minmax(0, 1fr);
+  gap: 4px 10px;
+  padding: 7px 0;
+  border-top: 1px solid var(--oas-rule);
+}
+
+.oa-scenario .oas-formulas dt {
+  font-weight: 650;
+}
+
+.oa-scenario :where(.oas-formulas code, .oas-equation) {
+  font: 0.8125rem/1.5 var(--oas-numeric);
+  overflow-wrap: anywhere;
+}
+
+.oa-scenario .oas-formulas code {
+  display: block;
+  color: var(--oas-muted);
+}
+
+.oa-scenario .oas-formulas dd p + p {
+  margin-block-start: 3px;
+}
+
+@container oa-scenario (max-width: 410px) {
+  .oa-scenario .oas-origin-controls {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+
+  .oa-scenario .oas-origin-controls button {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .oa-scenario :where(.oas-floor, .oas-formulas > div) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .oa-scenario .oas-floor label {
+    width: min(100%, 10rem);
+  }
+
+  .oa-scenario .oas-phase-list span {
+    display: block;
+    margin-inline-start: 0;
+  }
+}

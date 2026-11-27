@@ -1,0 +1,403 @@
+.oa-council {
+  --council-ink: #153e47;
+  --council-paper: #faf9f0;
+  --council-sheet: #fffef8;
+  --council-muted: #50645e;
+  --council-rule: #cbd7ce;
+  --council-wash: #edf1e8;
+  --council-green: #226558;
+  --council-copper: #90492e;
+  --council-number: ui-monospace, "SF Mono", Consolas, monospace;
+  container: council / inline-size;
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: clamp(8px, 2vw, 18px);
+  border-radius: 12px;
+  color: var(--council-ink);
+  background: var(--council-paper);
+  color-scheme: light;
+  font: 14px/1.55 system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.oa-council,
+.oa-council * {
+  box-sizing: border-box;
+}
+
+.oa-council :where(h2, h3, h4, p, dl, dd, ul, ol, pre) {
+  margin: 0;
+}
+
+.oa-council :where(h2, h3) {
+  font: 700 1.2rem/1.25 "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+}
+
+.oa-council h4 {
+  font-size: 14px;
+}
+
+.oa-council :where(button, input, select) {
+  min-height: 44px;
+  max-width: 100%;
+  border: 1px solid #839b90;
+  border-radius: 5px;
+  padding: 7px 10px;
+  color: inherit;
+  background: var(--council-sheet);
+  font: inherit;
+}
+
+.oa-council button {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.oa-council button:hover:not(:disabled) {
+  border-color: var(--council-ink);
+  background: var(--council-wash);
+}
+
+.oa-council button:disabled {
+  cursor: default;
+  opacity: .58;
+}
+
+.oa-council :where(button, input, select, summary, pre):focus-visible {
+  outline: 2px solid var(--council-copper);
+  outline-offset: 3px;
+}
+
+.oa-council .council-primary {
+  border-color: var(--council-ink);
+  background: var(--council-ink);
+  color: var(--council-sheet);
+}
+
+.oa-council .council-primary:hover:not(:disabled) {
+  background: var(--council-green);
+}
+
+.oa-council label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.oa-council label :where(input, select) {
+  width: 100%;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.oa-council .council-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px 20px;
+  padding: clamp(15px, 2.4vw, 24px);
+  border-radius: 8px;
+  background: var(--council-ink);
+  color: var(--council-paper);
+}
+
+.oa-council .council-header h2 {
+  margin-block-end: 5px;
+  font-size: clamp(24px, 4vw, 32px);
+}
+
+.oa-council .council-clock {
+  padding: 4px 9px;
+  border: 1px solid #a5b9b1;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.oa-council :where(.council-clock, .council-numeric, pre) {
+  font-family: var(--council-number);
+  font-variant-numeric: tabular-nums;
+}
+
+.oa-council .council-sheet {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  padding: clamp(12px, 1.8vw, 17px);
+  border: 1px solid var(--council-rule);
+  border-radius: 8px;
+  background: var(--council-sheet);
+}
+
+.oa-council :where(.council-note, .council-heading > p) {
+  color: var(--council-muted);
+  font-size: 13px;
+}
+
+.oa-council .council-origin {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+}
+
+.oa-council .council-origin-data {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 125px), 1fr));
+  gap: 8px;
+}
+
+.oa-council .council-origin-data > div {
+  padding: 8px 10px;
+  background: var(--council-wash);
+  overflow-wrap: anywhere;
+}
+
+.oa-council .council-origin-data dd {
+  font-weight: 650;
+}
+
+.oa-council .council-origin-data small {
+  display: block;
+  color: var(--council-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.oa-council .council-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.oa-council .council-branches,
+.oa-council .council-workbench {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.oa-council :where([data-branch="a"], [data-branch="b"]) {
+  --council-branch-color: var(--council-green);
+}
+
+.oa-council [data-branch="b"] {
+  --council-branch-color: var(--council-copper);
+}
+
+.oa-council .council-branch {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--council-rule);
+  border-inline-start: 3px solid var(--council-branch-color);
+  border-radius: 4px;
+}
+
+.oa-council .council-balance {
+  color: var(--council-branch-color);
+  font-weight: 700;
+}
+
+.oa-council .council-checks {
+  padding-inline-start: 17px;
+  font-size: 13px;
+}
+
+.oa-council .council-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.oa-council .council-status:empty,
+.oa-council [data-view="replay-status"]:empty {
+  display: none;
+}
+
+.oa-council .council-goals {
+  display: grid;
+}
+
+.oa-council .council-goal {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 14px;
+  align-items: center;
+  padding: 9px 0;
+  border-block-start: 1px solid var(--council-rule);
+}
+
+.oa-council .council-goal > div:first-child {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
+
+.oa-council .council-readout strong {
+  color: var(--council-branch-color);
+  font-size: 1.1em;
+}
+
+.oa-council meter {
+  display: block;
+  width: 100%;
+  height: 10px;
+  accent-color: var(--council-branch-color);
+}
+
+.oa-council meter::-webkit-meter-bar {
+  border: 0;
+  background: var(--council-wash);
+}
+
+.oa-council meter::-webkit-meter-optimum-value {
+  background: var(--council-branch-color);
+}
+
+.oa-council meter::-moz-meter-bar {
+  background: var(--council-branch-color);
+}
+
+.oa-council .council-lens-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.oa-council :where(.council-lens, .council-record, .council-details > div) {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.oa-council .council-beliefs > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 8px;
+  padding-block: 6px;
+  border-block-end: 1px solid var(--council-rule);
+}
+
+.oa-council .council-beliefs dd {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.oa-council :where(.council-links, .council-signals, .council-changes) {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.oa-council .council-route {
+  font-weight: 700;
+}
+
+.oa-council .council-route > span {
+  color: var(--council-green);
+  font-weight: 600;
+}
+
+.oa-council .council-entry {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 4px 12px;
+  padding: 8px 10px;
+  background: var(--council-wash);
+}
+
+.oa-council .council-entry dt {
+  color: var(--council-muted);
+}
+
+.oa-council .council-signals li {
+  display: grid;
+  gap: 3px;
+  padding: 7px 9px;
+  border-inline-start: 2px solid var(--council-rule);
+  background: var(--council-paper);
+  overflow-wrap: anywhere;
+}
+
+.oa-council .council-signal-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 3px 8px;
+}
+
+.oa-council .council-result {
+  width: max-content;
+  padding-inline: 5px;
+  border: 1px solid currentColor;
+  border-radius: 3px;
+  color: var(--council-muted);
+  font-size: 12px;
+}
+
+.oa-council [data-result="passed"] { color: var(--council-green); }
+.oa-council [data-result="blocked"] { color: var(--council-copper); }
+
+.oa-council .council-details {
+  display: block;
+}
+
+.oa-council summary {
+  align-content: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.oa-council pre {
+  max-height: 170px;
+  padding: 10px;
+  overflow: auto;
+  border: 1px solid var(--council-rule);
+  background: var(--council-paper);
+  font-size: 12px;
+}
+
+.oa-council .council-details button {
+  justify-self: start;
+}
+
+@container council (min-width: 520px) {
+  .oa-council .council-origin {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, .8fr) minmax(0, 1fr) auto;
+  }
+
+  .oa-council .council-branches {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .oa-council .council-goal {
+    grid-template-columns: minmax(0, .65fr) repeat(2, minmax(0, 1fr));
+  }
+
+  .oa-council .council-goal > div:first-child {
+    grid-column: auto;
+    display: block;
+  }
+}
+
+@container council (min-width: 790px) {
+  .oa-council .council-workbench {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  }
+}

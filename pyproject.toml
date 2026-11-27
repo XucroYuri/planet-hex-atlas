@@ -1,0 +1,15 @@
+[project]
+name = "planet-hex-atlas"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "h3>=4,<5",
+    "h3ronpy>=0.22,<1",
+    "h5py>=3,<4",
+    "numpy>=2,<3",
+    "pillow>=11,<13",
+    "pyproj>=3,<4",
+    "pyshp>=2,<3",
+    "rasterio>=1.4,<2",
+    "shapely>=2,<3",
+]

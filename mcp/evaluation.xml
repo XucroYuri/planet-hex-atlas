@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<evaluation>
+  <qa_pair><question>在当前发布快照中，2020 年日本与巴西哪个地域的预期寿命较高？请返回其三字地图代码。</question><answer>JPN</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2023 年印度与中国哪个地域的人口较高？请返回其三字地图代码。</question><answer>IND</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2022 年挪威与葡萄牙哪个地域的人均 GDP较高？请返回其三字地图代码。</question><answer>NOR</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2021 年日本与墨西哥哪个地域的老龄人口较高？请返回其三字地图代码。</question><answer>JPN</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2020 年肯尼亚与法国哪个地域的总和生育率较高？请返回其三字地图代码。</question><answer>KEN</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2021 年澳大利亚与巴西哪个地域的森林面积较高？请返回其三字地图代码。</question><answer>BRA</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2010 年日本与印度哪个地域的城市人口较高？请返回其三字地图代码。</question><answer>JPN</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2021 年加拿大与日本哪个地域的谷物产量较高？请返回其三字地图代码。</question><answer>CAN</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2018 年巴西与德国哪个地域的可再生能源消费较高？请返回其三字地图代码。</question><answer>BRA</answer></qa_pair>
+  <qa_pair><question>在当前发布快照中，2019 年泰国与瑞典哪个地域的农业增加值较高？请返回其三字地图代码。</question><answer>THA</answer></qa_pair>
+</evaluation>

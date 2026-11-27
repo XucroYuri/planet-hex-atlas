@@ -1,0 +1,25 @@
+地球六角志 / Orbis Atlas • 2026-11-27 data snapshot
+
+The web/data/source-lock.json file records every input URL, byte size and SHA-256. The public sources below retain their own terms. A source snapshot date is separate from its observation year.
+
+Boundaries, ice sheets, rivers, lakes, ports and selected place-name translations: Natural Earth, public domain. https://www.naturalearthdata.com/about/terms-of-use/
+
+Population grids: Schiavina et al., GHS-POP R2023A, European Commission, Joint Research Centre, Global Human Settlement Layer. 2020 epoch, global Mollweide, 1 km. European Commission reuse policy, acknowledge the source. The atlas reallocates positive raster values by pixel centre to H3 cells and sums these values hierarchically. https://human-settlement.emergency.copernicus.eu/ghs_pop2023.php
+
+Relief: SRTM15+ v2.7 (Tozer et al., 2019), distributed by Generic Mapping Tools as its 6 arc-minute grid registered earth_relief_06m_g.grd, Gaussian filtering width 31.5 km. The atlas derives terrain colours, shading and cell elevation samples. https://doi.org/10.1029/2019EA000658 and https://www.generic-mapping-tools.org/remote-datasets/earth-relief.html
+
+Biome classification: RESOLVE Ecoregions 2017 (Dinerstein et al., 2017). CC BY 4.0. The atlas rasterizes polygons and codes the dominant ecological category for visualization. https://ecoregions.appspot.com/ and https://creativecommons.org/licenses/by/4.0/
+
+Annual indicators: World Bank, World Development Indicators. Individual sources (including ILO, FAO, UNESCO Institute for Statistics, WHO and others) and terms appear on each indicator metadata page referenced by the atlas. CC BY 4.0 unless otherwise specified in metadata. https://data.worldbank.org/ and https://www.worldbank.org/en/about/legal/terms-of-use-for-datasets
+
+Cities and named settlements: GeoNames, CC BY 4.0. Selected records, alternate names and coordinates from the cities500 extract. Population reference dates vary by place. https://www.geonames.org/export/ and https://creativecommons.org/licenses/by/4.0/
+
+Airports: OurAirports, public domain. The atlas filters to medium and large airports with scheduled service. https://ourairports.com/data/
+
+Power plants: World Resources Institute et al., Global Power Plant Database v1.3.0, 2021, CC BY 4.0. Derived point records contain source facility id, primary fuel and nameplate capacity in MW. https://datasets.wri.org/dataset/globalpowerplantdatabase and https://creativecommons.org/licenses/by/4.0/
+
+World Heritage: UNESCO World Heritage Centre / UNESCO Data, WHC001. The standalone adapted data file heritage-points.json is released under CC BY-SA 4.0. Adaptations select multilingual names, extract, round and deduplicate component coordinates, encode dates and categories, and attach map region ids. UNESCO's photographs and descriptive essays are excluded. https://data.unesco.org/explore/dataset/whc001/ and https://creativecommons.org/licenses/by-sa/4.0/
+
+H3: Uber Technologies, Inc. and contributors, Apache 2.0. See ../vendor/LICENSE-h3.txt and ../vendor/NOTICE-h3.txt. https://h3geo.org/
+
+Civilization-style art: portions of usaciv, Copyright (c) 2026 Andrej Karpathy, MIT. See ../vendor/usaciv/LICENSE.txt. City buildings are illustrative population-class symbols. See https://karpathy.ai/usaciv/ and https://karpathy.ai/usaciv/usaciv-source.zip (source archive SHA-256 52b3b2c3cf189b8ceff2376c48188db7ec88634d6a0f73ae254077ed50306314). The atlas adapts the capital flag and exposes selected glyph painters for global use.
