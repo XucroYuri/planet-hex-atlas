@@ -10,10 +10,15 @@ const EVENTS = [
   [1976,'海盗 1 号在火星表面开始探测','Viking 1 began its surface mission on Mars','https://science.nasa.gov/mission/viking-1/'],
   [1977,'两艘旅行者探测器启程','Both Voyager spacecraft launched','https://science.nasa.gov/mission/voyager/'],
   [2000,'国际空间站开始持续载人驻留','Continuous human occupation of the ISS began','https://www.nasa.gov/international-space-station/'],
+  [2003,'神舟五号把首位中国航天员送入太空','Shenzhou 5 carried China’s first astronaut into space','http://www.cmse.gov.cn/'],
+  [2008,'神舟七号完成中国首次出舱活动','Shenzhou 7 performed China’s first spacewalk','http://www.cmse.gov.cn/'],
   [2005,'惠更斯号着陆土卫六','Huygens landed on Titan','https://science.nasa.gov/mission/cassini-huygens/'],
   [2012,'旅行者 1 号越过日球层顶','Voyager 1 crossed the heliopause','https://science.nasa.gov/mission/voyager/voyager-1/'],
   [2015,'新视野号飞掠冥王星','New Horizons flew past Pluto','https://science.nasa.gov/mission/new-horizons/'],
+  [2019,'嫦娥四号实现人类首次月球背面软着陆','Chang’e 4 made the first soft landing on the Moon’s far side','https://www.cnsa.gov.cn/'],
+  [2021,'天问一号完成中国首次火星着陆与巡视','Tianwen-1 achieved China’s first Mars landing and rover','https://www.cnsa.gov.cn/'],
   [2023,'OSIRIS-REx 将小行星样本带回地球','OSIRIS-REx returned an asteroid sample to Earth','https://science.nasa.gov/mission/osiris-rex/'],
+  [2024,'嫦娥六号带回人类首批月球背面样品','Chang’e 6 returned the first samples from the Moon’s far side','https://www.cnsa.gov.cn/'],
   [2026,'阿尔忒弥斯 II 创下载人离地距离纪录','Artemis II set the crewed distance record from Earth',CREW],
 ];
 const SVG = 'http://www.w3.org/2000/svg';
