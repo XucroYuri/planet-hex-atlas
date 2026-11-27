@@ -335,6 +335,8 @@ function insertStandards(host, official) {
       [msg('中国主张岛礁的权威图幅核对'), msg('未完成：需对照标准地图逐幅核实')],
       [msg('历史与统计缺失显示'), msg('缺失保持为空，不填补')],
     ].map(([label, value]) => `<div><span class="row-label">${esc(label)}</span><span class="row-value">${esc(value)}</span></div>`).join('')}</div>
+    <h3>${htmlText('无障碍与键盘操作')}</h3>
+    <p class="method">${htmlText('地图、地区档案、标准弹窗与研究页通过 axe-core 的 WCAG A/AA 自动审计。可用 Tab 导航，按 / 打开搜索，按 Esc 关闭弹窗；地图画布可聚焦后用方向键、+/- 缩放与 Enter 选择。界面尊重系统的“减少动态效果”偏好。')}</p>
     <p class="atlas-memo">${htmlText('在取得审图号和权威几何之前，本站不会声称符合中国标准地图；相关检查可重复运行于 pipeline/china_source_audit.py。')}</p>
     <div class="panel-buttons"><button class="panel-action" data-action="feedback">${htmlText('提交数据来源或纠错建议')}</button><a class="panel-action" href="${REPOSITORY}/blob/main/docs/china-standards.md" target="_blank" rel="noopener">${htmlText('查看标准核查记录')} ↗</a><a class="panel-action" href="${REPOSITORY}/tree/main/docs/china-map-submission" target="_blank" rel="noopener">${htmlText('送审路径与材料清单')} ↗</a></div>`;
 }
