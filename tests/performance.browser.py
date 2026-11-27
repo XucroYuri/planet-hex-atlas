@@ -37,6 +37,7 @@ SCRIPT = """() => new Promise(resolve => {
     out.data = sum(entry => entry.name.includes('/data/'));
     out.atlasStart = byName('/data/atlas.json')?.startTime ?? -1;
     out.appStart = byName('/js/app.js')?.startTime ?? -1;
+    out.relief = resources.find(entry => /\/data\/relief[^/]*\.webp$/.test(entry.name))?.name.split('/').at(-1) ?? '';
     resolve(out);
   }, 1200);
 })"""
@@ -83,8 +84,13 @@ def main(url):
                     failures.append(f'{profile}: {key}={metrics[key]:.1f} over budget {limit}')
             if metrics['atlasStart'] < 0 or metrics['appStart'] < 0 or metrics['atlasStart'] > metrics['appStart']:
                 failures.append(f'{profile}: atlas.json preload did not start before app.js ({metrics["atlasStart"]:.0f} vs {metrics["appStart"]:.0f})')
+            expected = 'relief-compact.webp' if profile == 'mobile' else 'relief.webp'
+            if metrics['relief'] != expected:
+                failures.append(f'{profile}: expected {expected}, loaded {metrics["relief"] or "nothing"}')
         browser.close()
-    print(json.dumps({profile: {key: round(value, 1) for key, value in metrics.items()}
+    def shown(value):
+        return round(value, 1) if isinstance(value, (int, float)) else value
+    print(json.dumps({profile: {key: shown(value) for key, value in metrics.items()}
                       for profile, metrics in report.items()}, ensure_ascii=False))
     if failures:
         raise SystemExit('\n'.join(failures))

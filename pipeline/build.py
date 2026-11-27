@@ -243,6 +243,8 @@ def make_relief(cache, output, geometries):
     color[contour] *= 1.045
     image = Image.fromarray(np.clip(color, 0, 255).astype(np.uint8))
     image.save(output / 'relief.webp', quality=82, method=6)
+    resize = getattr(Image, 'Resampling', Image).LANCZOS
+    image.resize((1800, 900), resize).save(output / 'relief-compact.webp', quality=78, method=6)
     return z, land, eco
 
 

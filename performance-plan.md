@@ -54,7 +54,9 @@ Cloudflare 官方说明 Pages 静态资源请求不消耗 Functions 请求配额
 - 初始化拆分为两段：先用较小的年度数据完成档案与地图主题首绘，再加载 143 KB 的 `overview.json` 补齐城市、海岸线与水体；ready 状态仍等待完整地图；
 - 新增 `tests/performance.browser.py` 固定 LCP、CLS、请求数、传输量与 JS 体积预算，并断言 `atlas.json` 的预加载早于 `app.js` 开始（本地服务器不压缩，因此本地只校验预加载顺序）。
 
-后续若继续优化，优先项是 388 KB 的 `relief.webp` 纹理（可生成移动端小尺寸版本）和 `overview.json` 的数据拆分；任何改动都应先跑该性能测试防止回退。
+窄屏纹理：地形底图原图 3600×1800（378 KB），现按视口提供 1800×900 的 `relief-compact.webp`（约 95 KB，移动端减少约 75% 的纹理字节）；`index.html` 用媒体查询分别预加载，性能测试断言桌面加载 `relief.webp`、移动端加载 `relief-compact.webp`。构建脚本会同时生成两个版本。
+
+后续若继续优化，优先项是 `overview.json` 的数据拆分；任何改动都应先跑该性能测试防止回退。
 
 
 ## 启动与加载韧性（2026-11-27）

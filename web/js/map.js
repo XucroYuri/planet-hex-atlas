@@ -62,7 +62,9 @@ export class AtlasMap {
     this.relief = new Image();
     this.relief.onload = () => { this.globe.invalidate(); this.repaint(); };
     this.relief.onerror = () => onProblem(msg('底图加载失败'));
-    this.relief.src = new URL('relief.webp', DATA).href;
+    // A 1800×900 texture is enough for a 390 px phone at 3× DPR and cuts about 75% of the bytes.
+    const compact = typeof matchMedia === 'function' && matchMedia('(max-width: 760px)').matches;
+    this.relief.src = new URL(compact || navigator.connection?.saveData ? 'relief-compact.webp' : 'relief.webp', DATA).href;
     this.cities = [];
     this.sites = [];
     this.rivers = [];
