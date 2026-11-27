@@ -11,7 +11,7 @@ from playwright.sync_api import expect, sync_playwright
 def main(url):
     with sync_playwright() as p:
         browser = p.chromium.launch(channel='chrome', headless=True)
-        page = browser.new_page(locale='zh-CN', viewport={'width': 1400, 'height': 1000})
+        page = browser.new_page(locale='zh-CN', viewport={'width': 1400, 'height': 1000}, accept_downloads=True)
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
         page.goto(url, wait_until='networkidle', timeout=60000)
@@ -48,6 +48,20 @@ def main(url):
         assert text[0] == 'section,metric,unit,code,updated,count,total,coverage', text[0]
         assert len(text) == 1 + 29 + 11, len(text)
         assert text[1].startswith('annual,')
+        with page.expect_download(timeout=30000) as pending:
+            summary.locator('[data-export-launches]').click()
+        launches = pending.value
+        assert launches.suggested_filename == 'orbis-space-launches.csv'
+        launch_rows = open(launches.path(), encoding='utf-8-sig').read().strip().splitlines()
+        assert launch_rows[0] == 'year,objects,reporting_parties'
+        assert len(launch_rows) == 70, len(launch_rows)
+        with page.expect_download(timeout=30000) as pending:
+            summary.locator('[data-export-market]').click()
+        catalog = pending.value
+        assert catalog.suggested_filename == 'orbis-market-catalog.csv'
+        catalog_rows = open(catalog.path(), encoding='utf-8-sig').read().strip().splitlines()
+        assert catalog_rows[0] == 'code,name,currency,first,last,count'
+        assert len(catalog_rows) == 1 + 1404, len(catalog_rows)
         assert not errors, errors[:3]
         annual_count, history_count = annual_rows.count(), history_rows.count()
         browser.close()

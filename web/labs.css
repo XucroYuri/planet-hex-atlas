@@ -87,3 +87,4 @@
 .space-crewed thead th { position: sticky; top: 0; background: #eef1e7; }
 .space-crewed tbody th { font-weight: 600; }
 .space-crewed td:last-child { text-align: center; }
+.coverage-other .coverage-csv { border: 0; padding: 0 2px; background: transparent; color: #24695f; font: 650 11px var(--mono); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }

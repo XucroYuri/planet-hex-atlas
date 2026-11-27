@@ -66,7 +66,7 @@ export function renderWishlist(host,ctx) {
       box.innerHTML=`<h3>${esc(t('覆盖概览','Coverage overview'))}</h3>
         <p>${esc(t('按所选年份统计；空格与缺值不补齐。分母为当年观测文件中的已映射地区数，“有值地区”只计有已发布数值的地区。','Counted for the selected year. Gaps stay unfilled; “regions with data” counts published values only.'))}</p>
         <h4>${esc(t('年度指标 · {year}','Annual indicators · {year}').replace('{year}',String(yearPicker)))}</h4>
-        <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th><th scope="col">${esc(t('更新','Updated'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td><td>${esc(row.updated||'—')}</td><td>${row.code?`<a href="https://data.worldbank.org/indicator/${encodeURIComponent(row.code)}" target="_blank" rel="noopener" title="${esc(row.updated)}">${esc(row.code)} ↗</a>`:'—'}</td></tr>`).join('')}</tbody></table></div>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}"><table><caption>${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th><th scope="col">${esc(t('更新','Updated'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td><td>${esc(row.updated||'—')}</td><td>${row.code?`<a href="https://data.worldbank.org/indicator/${encodeURIComponent(row.code)}" target="_blank" rel="noopener" title="${esc(row.updated)}">${esc(row.code)} ↗</a>`:'—'}</td></tr>`).join('')}</tbody></table></div>
         <h4>${esc(t('历史序列','Historical series'))}</h4>
         <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${historyRows.map(row=>{let host='';try{host=new URL(row.url).hostname.replace(/^www\./,'')}catch{}return `<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td><td>${host?`<a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(host)} ↗</a>`:'—'}</td></tr>`}).join('')}</tbody></table></div>
         <p><button type="button" class="panel-action" data-export-coverage>${esc(t('下载覆盖数据 CSV','Download coverage CSV'))}</button></p>
@@ -74,11 +74,11 @@ export function renderWishlist(host,ctx) {
           years: launches.years.length, parties: Object.keys(launches.countries).length,
           objects: launches.totals.objects.toLocaleString(ctx.locale || undefined),
           year: launches.totals.latest.year, count: launches.totals.latest.count.toLocaleString(ctx.locale || undefined),
-        }))} <a href="${esc(launches.source.chart)}" target="_blank" rel="noopener">OWID ↗</a></li>` : ''}${market ? `<li>${esc(t('市场快照：{symbols} 只证券、{sessions} 个交易日、{rows} 条逐日记录（{first}–{last}）', {
+        }))} <a href="${esc(launches.source.chart)}" target="_blank" rel="noopener">OWID ↗</a> <button type="button" class="coverage-csv" data-export-launches aria-label="${esc(t('下载发射序列 CSV','Download launch series CSV'))}">CSV</button></li>` : ''}${market ? `<li>${esc(t('市场快照：{symbols} 只证券、{sessions} 个交易日、{rows} 条逐日记录（{first}–{last}）', {
           symbols: market.symbols.length.toLocaleString(ctx.locale || undefined),
           sessions: market.sessions.toLocaleString(ctx.locale || undefined),
           rows: market.rows.toLocaleString(ctx.locale || undefined), first: market.first, last: market.last,
-        }))} <a href="./data/markets/index.json" download>JSON</a></li>` : ''}<li>${esc(t('本地 A 股：仅在你的浏览器中读取本地文件，本站不保存或再分发。','Local A-shares: files are read in your browser only; nothing is uploaded or redistributed.'))}</li></ul>` : ''}
+        }))} <a href="./data/markets/index.json" download>JSON</a> <button type="button" class="coverage-csv" data-export-market aria-label="${esc(t('下载市场目录 CSV','Download market catalog CSV'))}">CSV</button></li>` : ''}<li>${esc(t('本地 A 股：仅在你的浏览器中读取本地文件，本站不保存或再分发。','Local A-shares: files are read in your browser only; nothing is uploaded or redistributed.'))}</li></ul>` : ''}
         <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
       const exporter = box.querySelector('[data-export-coverage]');
       exporter.addEventListener('click', () => exportCoverage(rows, historyRows));
@@ -87,6 +87,8 @@ export function renderWishlist(host,ctx) {
         annualButton.disabled = false;
         annualButton.addEventListener('click', () => exportAnnual(annual, ctx));
       }
+      box.querySelector('[data-export-launches]')?.addEventListener('click', () => exportLaunches(launches));
+      box.querySelector('[data-export-market]')?.addEventListener('click', () => exportMarketCatalog(market));
     } catch {
       box.innerHTML=`<p class="coverage-note">${esc(t('覆盖概览暂时无法载入。','Coverage overview is temporarily unavailable.'))}</p>`;
     }
@@ -126,4 +128,33 @@ function exportAnnual(annual, ctx) {
   link.download = `orbis-annual-${annual.year}.csv`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function downloadCsv(lines, filename) {
+  const blob = new Blob(['\ufeff' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportLaunches(launches) {
+  if (!launches) return;
+  const reporting = new Map();
+  for (const party of Object.values(launches.countries)) {
+    for (const [year] of party.series) reporting.set(year, (reporting.get(year) || 0) + 1);
+  }
+  downloadCsv(['year,objects,reporting_parties',
+    ...launches.world.map(([year, count]) => [year, count, reporting.get(year) || 0].join(','))],
+  'orbis-space-launches.csv');
+}
+
+function exportMarketCatalog(market) {
+  if (!market) return;
+  const quote = (value) => /[",\n]/.test(String(value ?? '')) ? `"${String(value).replace(/"/g, '""')}"` : String(value ?? '');
+  downloadCsv(['code,name,currency,first,last,count',
+    ...market.symbols.map((symbol) => [symbol.code, symbol.name, symbol.currency, symbol.first, symbol.last, symbol.count].map(quote).join(','))],
+  'orbis-market-catalog.csv');
 }

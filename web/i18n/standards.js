@@ -207,4 +207,6 @@ export default [
   ['居民人均可支配收入', 'Per capita disposable income', '居民人均可支配收入', 'Renta disponible per cápita', 'Revenu disponible par habitant', '一人当たり可処分所得', '1인당 가처분소득', 'الدخل المتاح للفرد'],
   ['常住人口城镇化率', 'Urbanization rate', '常住人口城鎮化率', 'Tasa de urbanización', 'Taux d’urbanisation', '常住人口の都市化率', '상주인구 도시화율', 'معدل التحضر'],
   ['下载官方序列 CSV', 'Download official series CSV', '下載官方序列 CSV', 'Descargar serie oficial en CSV', 'Télécharger la série officielle en CSV', '公式系列を CSV でダウンロード', '공식 시계열 CSV 다운로드', 'تنزيل السلسلة الرسمية بصيغة CSV'],
+  ['下载发射序列 CSV', 'Download launch series CSV', '下載發射序列 CSV', 'Descargar serie de lanzamientos en CSV', 'Télécharger la série des lancements en CSV', '打上げ系列を CSV でダウンロード', '발사 시계열 CSV 다운로드', 'تنزيل سلسلة الإطلاقات بصيغة CSV'],
+  ['下载市场目录 CSV', 'Download market catalog CSV', '下載市場目錄 CSV', 'Descargar catálogo de mercado en CSV', 'Télécharger le catalogue de marché en CSV', '市場カタログを CSV でダウンロード', '시장 목록 CSV 다운로드', 'تنزيل فهرس السوق بصيغة CSV'],
 ];
