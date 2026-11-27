@@ -43,6 +43,7 @@ ANNOUNCEMENTS = {
                perCapitaGdp=99665, gni=1393700, laborProductivity=184413,
                grainOutput=71488, merchandiseTrade=454685, retailSales=501202,
                urbanDisposableIncome=56502, ruralDisposableIncome=24456,
+               birthRate=5.63, deathRate=8.04, naturalGrowthRate=-2.41, surveyedUnemployment=5.2,
                eastGdp=730876, eastGrowth=5.0, centralGdp=299108, centralGrowth=5.2,
                westGdp=298750, westGrowth=5.1, northeastGdp=65035, northeastGrowth=4.1,
                rdExpenditure=39262, rdIntensity=2.8, disposableIncome=43377, urbanizationRate=67.89,

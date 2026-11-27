@@ -15,8 +15,8 @@
     },
     {
       "date": "2026-11-27",
-      "zh": "中国官方 GDP 1978–2025 年人民币序列、2024–2025 年统计公报年末人口，以及 2025 年人均 GDP、国民总收入、劳动生产率、粮食、贸易、消费、研发、居民收入（含城乡）、城镇化率与四大区域 GDP（国家统计局）。",
-      "en": "Official NBS GDP in CNY for 1978–2025, year-end population for 2024–2025, and 2025 GDP per capita, GNI, labor productivity, grain, trade, retail sales, R&D, urban/rural income, urbanization and the four regional GDP totals.",
+      "zh": "中国官方 GDP 1978–2025 年人民币序列、2024–2025 年统计公报年末人口，以及 2025 年人均 GDP、国民总收入、劳动生产率、粮食、贸易、消费、研发、居民收入（含城乡）、城镇化率、出生/死亡率与四大区域 GDP（国家统计局）。",
+      "en": "Official NBS GDP in CNY for 1978–2025, year-end population for 2024–2025, and 2025 GDP per capita, GNI, labor productivity, grain, trade, retail sales, R&D, urban/rural income, urbanization, birth/death rates and the four regional GDP totals.",
       "url": "https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/china-standards.md"
     },
     {
