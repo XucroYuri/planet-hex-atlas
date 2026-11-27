@@ -234,3 +234,17 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .about-build h3 { margin: 0 0 6px; }
 .about-build p { margin: 0 0 8px; color: var(--muted); font-size: 13px; line-height: 1.6; }
 .about-build [data-build] { color: var(--ink); font-family: var(--mono); font-size: 12px; }
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+  body { background: #fff; color: #111; }
+  .topbar, .map-actions, .map-tools, .timebar, #map-toast, #map-tooltip, .overlay, .skip-link { display: none !important; }
+  .workspace { display: block; height: auto; min-height: 0; }
+  .map-pane { height: 150mm; background: #294f60; break-inside: avoid; }
+  #atlas-map { height: 150mm; }
+  .map-foot { bottom: 4mm; }
+  .legend, .location { background: #f4f4ea; color: #111; border-color: #999; }
+  .legend-method, .legend-sub, .legend-keys span { color: #333; }
+  .inspector { display: block; break-before: page; padding: 0; color: #111; background: #fff; }
+  .inspector a { color: #111; }
+  .panel-buttons, .quick-list { display: none !important; }
+}
