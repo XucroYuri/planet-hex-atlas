@@ -11,6 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
+# Bump when packaging rules change so that identical assets still get a new snapshot.
+PACKAGING_VERSION = 2
 
 
 def link_or_copy(source, target):
@@ -25,7 +27,7 @@ def package(destination):
     destination.mkdir(exist_ok=True, parents=True)
     files = sorted(path for path in PUBLIC.rglob('*') if path.is_file())
     entries = {path.relative_to(PUBLIC).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
-    digest = hashlib.sha256(json.dumps(entries,sort_keys=True).encode()).hexdigest()[:16]
+    digest = hashlib.sha256(json.dumps({'version':PACKAGING_VERSION,'assets':entries},sort_keys=True).encode()).hexdigest()[:16]
     final = destination / digest
     if (final/'release.json').exists():
         return final
