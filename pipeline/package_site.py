@@ -60,6 +60,8 @@ def package(destination):
     (work/'_headers').write_text('/\n  Cache-Control: public, max-age=0, must-revalidate\n/release.json\n  Cache-Control: public, max-age=0, must-revalidate\n/r/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n')
     aliases=[]
     for child in sorted(PUBLIC.iterdir()):
+        # Service-worker scripts must be served directly, never through a redirect.
+        if child.name == 'sw.js': continue
         if child.is_dir(): aliases.append(f'/{child.name}/* {subpath}{child.name}/:splat 302')
         elif child.name != 'index.html': aliases.append(f'/{child.name} {subpath}{child.name} 302')
     (work/'_redirects').write_text('\n'.join(aliases)+'\n')

@@ -14,6 +14,7 @@ def test():
         public=root/'source';public.mkdir()
         (public/'index.html').write_text('<head></head><a href="./" class="brand">home</a>')
         (public/'app.js').write_text('export const VERSION = 1;')
+        (public/'sw.js').write_text('// service worker')
         (public/'data').mkdir()
         (public/'data'/'value.json').write_text('{"v":1}')
         with patch.object(package_site,'PUBLIC',public):
@@ -33,6 +34,8 @@ def test():
             assert retained.read_bytes()==(a/'index.html').read_bytes()
             assert f'<base href="/r/{a.name}/">' in retained.read_text()
             assert '/data/* /r/' in (b/'_redirects').read_text()
+            assert '/sw.js' not in (b/'_redirects').read_text()
+            assert (b/'sw.js').is_file()
             assert 'immutable' in (b/'_headers').read_text()
             print('Release isolation, previous-version retention, URL aliases and cache policy passed.')
 
