@@ -1,6 +1,6 @@
 # 寰宇图志 · Orbis Atlas
 
-在真实地球上浏览《文明》式六角地块、城市、港口、电厂和世界遗产，比较历史指标，再从同一观测起点试验不同政策。桌面和移动端均可使用，界面提供 41 种语言。[正式站点](https://earth.xuyu.net) · [Cloudflare Pages](https://planet-hex-atlas.pages.dev)
+在真实地球上浏览《文明》式六角地块、城市、港口、电厂和世界遗产，比较历史指标，并可把当前地图导出为带署名的 PNG 图像，再从同一观测起点试验不同政策。桌面和移动端均可使用，界面提供 41 种语言。[正式站点](https://earth.xuyu.net) · [Cloudflare Pages](https://planet-hex-atlas.pages.dev)
 
 ## 从哪里开始
 

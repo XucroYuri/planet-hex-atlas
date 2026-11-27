@@ -605,6 +605,36 @@ function bind() {
   $('world-view').onclick = () => { map.setProjection('globe'); setSelection(null); };
   $('projection').onclick = () => map.setProjection(map.projection === 'globe' ? 'flat' : 'globe');
   $('share').onclick = () => void share();
+  $('export-map').onclick = () => exportMap();
+  function exportMap() {
+    if (!canvas.width || !canvas.height) { notify(msg('地图尚未就绪，请稍后再试。')); return; }
+    const output = document.createElement('canvas');
+    output.width = canvas.width;
+    output.height = canvas.height;
+    const ctx = output.getContext('2d');
+    if (!ctx) { notify(msg('导出失败，请重试。')); return; }
+    ctx.drawImage(canvas, 0, 0);
+    const scale = canvas.width / (canvas.clientWidth || canvas.width);
+    const bar = Math.max(28, Math.round(36 * scale));
+    ctx.fillStyle = 'rgba(16, 40, 48, .85)';
+    ctx.fillRect(0, output.height - bar, output.width, bar);
+    ctx.fillStyle = '#f5f4eb';
+    ctx.textBaseline = 'middle';
+    ctx.font = `600 ${Math.round(13 * scale)}px "PingFang SC", "Noto Sans SC", sans-serif`;
+    const caption = `${state.lens.name} · ${formatYear(state.year)} · 寰宇图志 · earth.xuyu.net`;
+    ctx.fillText(caption, Math.round(14 * scale), output.height - bar / 2);
+    output.toBlob((blob) => {
+      if (!blob) { notify(msg('导出失败，请重试。')); return; }
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `orbis-map-${state.year}-${state.lens.id}.png`;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      notify(msg('已导出当前地图图像。'));
+    }, 'image/png');
+  }
+
   $('close-overlay').onclick = () => dialog.close();
   dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   dialog.addEventListener('close', () => {
