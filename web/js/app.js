@@ -473,6 +473,12 @@ function matchSearch(query) {
     if (best !== -1) candidates.push({ name, type, id, hint, score: best + weight });
   }
   for (const place of searchPlaces) add(place);
+  for (const lens of lenses) {
+    add({
+      names: [lens.name, lens.id].map(searchKey).filter(Boolean), name: lens.name, type: 'lens', id: lens.id,
+      hint: `${msg(lens.code ? '指标' : '图层')} · ${lens.group}`, weight: 2,
+    });
+  }
   const found = new Set();
   for (const site of state.heritage || []) {
     if (found.has(site[9])) continue;
@@ -486,7 +492,7 @@ function matchSearch(query) {
 }
 
 function insertSearch(host) {
-  host.innerHTML = `<label class="search-field"><span class="magnifier" aria-hidden="true"></span><input dir="auto" autocomplete="off" placeholder="${htmlText('输入城市、地区、遗产或地区代码')}" aria-label="${htmlText('搜索城市或地区')}"></label><div class="search-results" aria-live="polite"></div>`;
+  host.innerHTML = `<label class="search-field"><span class="magnifier" aria-hidden="true"></span><input dir="auto" autocomplete="off" placeholder="${htmlText('输入城市、地区、遗产、指标或代码')}" aria-label="${htmlText('搜索城市或地区')}"></label><div class="search-results" aria-live="polite"></div>`;
   const input = host.querySelector('input');
   const results = host.querySelector('.search-results');
   function refresh() {
@@ -660,6 +666,10 @@ function bind() {
     }
     else if (name === 'city' || name === 'search-city') chooseCity(value);
     else if (name === 'country' || name === 'search-country') chooseCountry(value);
+    else if (name === 'lens' || name === 'search-lens') {
+      const lens = lenses.find((entry) => entry.id === value);
+      if (lens) { changeLens(lens); dialog.close(); }
+    }
     else if (name === 'fine-cell') void chooseCell(...value.split(',').map(Number));
     else if (name === 'show-sites') { state.options.sites = new Set([0,1,2,3]); syncOptions(); }
     else if (name === 'lens') { changeLens(lenses.find((entry) => entry.id === value)); dialog.close(); }
