@@ -54,6 +54,8 @@ def package(destination):
     page = page.replace('<head>',f'<head>\n  <base href="{html.escape(subpath)}">',1)
     page = page.replace('href="./" class="brand"','href="/" class="brand"')
     (work/'index.html').write_text(page)
+    if (PUBLIC/'sw.js').is_file():
+        shutil.copyfile(PUBLIC/'sw.js',work/'sw.js')
     (work/'404.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Orbis Atlas · 404</title><p>Resource unavailable. <a href="/">Open the current atlas</a>.</p></html>')
     (work/'_headers').write_text('/\n  Cache-Control: public, max-age=0, must-revalidate\n/release.json\n  Cache-Control: public, max-age=0, must-revalidate\n/r/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n')
     aliases=[]

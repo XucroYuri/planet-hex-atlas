@@ -713,3 +713,10 @@ async function init() {
 }
 
 void init();
+
+// Registration must be absolute: the document lives under /r/<snapshot>/.
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === '127.0.0.1' || location.hostname === 'localhost')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
