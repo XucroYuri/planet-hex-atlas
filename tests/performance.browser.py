@@ -43,8 +43,9 @@ SCRIPT = """() => new Promise(resolve => {
 })"""
 
 BUDGETS = {
-    'desktop': {'lcp': 3500, 'cls': 0.1, 'requests': 60, 'transfer': 1_300_000, 'js': 350_000},
-    'mobile': {'lcp': 6500, 'cls': 0.1, 'requests': 60, 'transfer': 1_300_000, 'js': 350_000},
+    'desktop': {'lcp': 3500, 'cls': 0.1, 'requests': 60, 'transfer': 1_150_000, 'js': 350_000},
+    # The compact texture keeps the throttled mobile payload well under 900 KB.
+    'mobile': {'lcp': 6500, 'cls': 0.1, 'requests': 60, 'transfer': 900_000, 'js': 350_000},
 }
 
 
