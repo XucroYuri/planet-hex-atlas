@@ -15,6 +15,7 @@ const backlog = [
   ['space','无线电活动的传播边界','Radio-signal propagation limits','界面可计算假设发射时刻的真空光前沿；实际可探测范围取决于方向与灵敏度。','The interface computes an ideal vacuum light front. Detectability depends on direction and sensitivity.','获取有时间戳的发射与接收记录、天线方向和功率不确定性后，才建立特定科学发射事件的模型。','Model individual scientific transmissions after securing dated send/receive records, antenna orientation and power uncertainty.','NASA Deep Space Network','https://www.nasa.gov/directorates/somd/space-communications-navigation-program/deep-space-network/'],
   ['society','多时期社会调查','Repeated social surveys','地方议事的生活圈与态度参数为虚构。经济指标只提供物质起点。','Council circles and attitudes are hypothetical. Economic observations provide material starting conditions.','对齐 WVS / EVS / ESS 各轮题项、人口样本和权重，检验跨时可比性，只公开许可范围内的匿名聚合。','Harmonize survey waves, questions, samples and weights; test comparability over time and publish licensed anonymous aggregates.','World Values Survey','https://www.worldvaluessurvey.org/'],
   ['society','历史贸易与能源网络','Historical trade and energy networks','设施名录说明点位和名义装机。跨境货流需要贸易伙伴数据。','Facility inventories identify locations and nameplate capacity. Cross-border flows require partner data.','按伙伴、商品与年度接入 UN Comtrade 或 BACI 的允许发布数据，记录镜像贸易差和单位转换。','Ingest licensed partner-product-year Comtrade or BACI records with mirror-flow discrepancies and explicit unit conversions.','UN Comtrade','https://comtradeplus.un.org/'],
+  ['history','中国官方人口长序列','Official Chinese population series','国家统计局年鉴表 2-1 为图片，OCR 不完整，未纳入；现有跨地区人口使用世界银行 WDI。','The NBS yearbook table 2-1 is an image and OCR was incomplete, so it is not included. Cross-country population uses World Bank WDI.','从机器可读的官方表格或接口取得 1949 年以来年末总人口，并标注与 GDP 相同的统计范围。','Acquire year-end population since 1949 from a machine-readable official table or interface with the same scope as official GDP.','国家统计局 中国统计年鉴','https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm'],
 ];
 
 export function renderWishlist(host,ctx) {
@@ -36,26 +37,26 @@ export function renderWishlist(host,ctx) {
     const box=host.querySelector('[data-coverage-summary]');
     const labels=[['population','人口估计','Population'],['gdp','人均 GDP','GDP per capita'],['lifeExpectancy','预期寿命','Life expectancy'],['literacy','成人识字率','Adult literacy'],['cropland','耕地总面积','Cropland area'],['arable','可耕地占比','Arable share'],['census','人口普查实报','Census counts']];
     try {
-      const [annual,history]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json')]);
+      const [annual,history,provenance]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json'),load('history/sources.json')]);
       const regions=Object.values(annual.regions);
       const total=regions.length;
       const rows=ctx.metrics.map((metric)=>{
         const localized=localizeMetric(metric);
         const count=regions.reduce((sum,region)=>sum+(Number.isFinite(region[metric.id])?1:0),0);
-        return {name:localized.name,unit:localized.unit||'',count,total,missing:total-count};
+        return {name:localized.name,unit:localized.unit||'',code:metric.code||'',updated:metric.updated||'',count,total,missing:total-count};
       });
       const historyRows=labels.filter(([key])=>history.totals[key]).map(([key,zh,en])=>{
         const world=history.areas.WORLD?.coverage?.[key];
-        return {name:t(zh,en),rows:history.totals[key].rows,areas:history.totals[key].areas,first:world?.[0],last:world?.[1]};
+        const source=provenance.sources?.[key];const url=source?.chart||source?.url||'';return {name:t(zh,en),rows:history.totals[key].rows,areas:history.totals[key].areas,first:world?.[0],last:world?.[1],url};
       });
       const percentage=(count,total)=>`${Math.round(count/total*100)}%`;
       const yearPicker=Number.isFinite(ctx.year)?ctx.year:'';
       box.innerHTML=`<h3>${esc(t('覆盖概览','Coverage overview'))}</h3>
         <p>${esc(t('按所选年份统计；空格与缺值不补齐。分母为当年观测文件中的已映射地区数，“有值地区”只计有已发布数值的地区。','Counted for the selected year. Gaps stay unfilled; “regions with data” counts published values only.'))}</p>
         <h4>${esc(t('年度指标 · {year}','Annual indicators · {year}').replace('{year}',String(yearPicker)))}</h4>
-        <div class="table-scroll"><table><caption>${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td></tr>`).join('')}</tbody></table></div>
+        <div class="table-scroll"><table><caption>${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td><td>${row.code?`<a href="https://data.worldbank.org/indicator/${encodeURIComponent(row.code)}" target="_blank" rel="noopener" title="${esc(row.updated)}">${esc(row.code)} ↗</a>`:'—'}</td></tr>`).join('')}</tbody></table></div>
         <h4>${esc(t('历史序列','Historical series'))}</h4>
-        <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th></tr></thead><tbody>${historyRows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td></tr>`).join('')}</tbody></table></div>
+        <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${historyRows.map(row=>{let host='';try{host=new URL(row.url).hostname.replace(/^www\./,'')}catch{}return `<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td><td>${host?`<a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(host)} ↗</a>`:'—'}</td></tr>`}).join('')}</tbody></table></div>
         <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
     } catch {
       box.innerHTML=`<p class="coverage-note">${esc(t('覆盖概览暂时无法载入。','Coverage overview is temporarily unavailable.'))}</p>`;
