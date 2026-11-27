@@ -22,6 +22,11 @@ def test():
             a=package_site.package(releases)
             before=(a/'r'/a.name/'app.js').read_text()
             assert package_site.package(releases)==a
+            headers=(a/'_headers').read_text()
+            assert "Content-Security-Policy: default-src 'self'" in headers
+            assert "frame-ancestors 'none'" in headers
+            assert 'Referrer-Policy: strict-origin-when-cross-origin' in headers
+            assert 'Permissions-Policy:' in headers
             (public/'app.js').write_text('export const VERSION = 2;')
             assert (a/'r'/a.name/'app.js').read_text()==before, 'release was hard-linked to mutable sources'
             b=package_site.package(releases)

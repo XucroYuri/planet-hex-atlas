@@ -75,6 +75,10 @@ PYTHONPATH=. uv run python tests/china_source_audit_test.py
 - **数据**：不适用 MIT，按各来源条款使用；完整署名、输入地址与校验值见 [web/data/ATTRIBUTION.txt](web/data/ATTRIBUTION.txt) 与 [web/data/source-lock.json](web/data/source-lock.json)。
 - **引用**：仓库内提供 [CITATION.cff](CITATION.cff)；站内“关于与版本”可一键复制带发布快照的引用文本。
 
+## 安全响应头
+
+生产环境由 Cloudflare Pages `_headers` 下发：`Content-Security-Policy`（`default-src 'self'`、内联启动脚本 SHA-256 哈希、无 `unsafe-eval`）、`X-Frame-Options: DENY`、`Referrer-Policy`、`Permissions-Policy` 与 `X-Content-Type-Options`。严格 CSP 会阻止 Playwright 的字符串 `eval` 与脚本注入，因此 `tests/csp.browser.py` 用定位器与控制台事件做生产审计；依赖 eval 的交互套件请对本地服务器运行。
+
 ## 自动验证
 
 每次推送 `main` 会在 GitHub Actions 运行两组校验：

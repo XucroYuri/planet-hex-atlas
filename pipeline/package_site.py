@@ -1,8 +1,10 @@
 """Package one immutable static release, retaining the immediately preceding release for open tabs."""
 
 import argparse
+import base64
 import hashlib
 import html
+import re
 import json
 import os
 import shutil
@@ -13,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
 # Bump when packaging rules change so that identical assets still get a new snapshot.
-PACKAGING_VERSION = 3
+PACKAGING_VERSION = 4
 
 
 def link_or_copy(source, target):
@@ -60,7 +62,21 @@ def package(destination):
     if (PUBLIC/'sw.js').is_file():
         shutil.copyfile(PUBLIC/'sw.js',work/'sw.js')
     (work/'404.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Orbis Atlas · 404</title><p>Resource unavailable. <a href="/">Open the current atlas</a>.</p></html>')
-    (work/'_headers').write_text('/\n  Cache-Control: public, max-age=0, must-revalidate\n/release.json\n  Cache-Control: public, max-age=0, must-revalidate\n/r/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n')
+    inline_scripts = re.findall(r'<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>(.*?)</script>', page, re.S)
+    script_hashes = ' '.join(f"'sha256-{base64.b64encode(hashlib.sha256(script.encode()).digest()).decode()}'" for script in inline_scripts)
+    csp = "default-src 'self'; script-src 'self'"
+    if script_hashes:
+        csp += f' {script_hashes}'
+    csp += ("; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; "
+            "connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; "
+            "base-uri 'self'; form-action 'self' https://github.com; frame-ancestors 'none'")
+    security = ('/*\n'
+                '  X-Content-Type-Options: nosniff\n'
+                '  X-Frame-Options: DENY\n'
+                '  Referrer-Policy: strict-origin-when-cross-origin\n'
+                '  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()\n'
+                f'  Content-Security-Policy: {csp}\n')
+    (work/'_headers').write_text('/\n  Cache-Control: public, max-age=0, must-revalidate\n/release.json\n  Cache-Control: public, max-age=0, must-revalidate\n/r/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n' + security)
     aliases=[]
     for child in sorted(PUBLIC.iterdir()):
         # Service-worker scripts must be served directly, never through a redirect.
