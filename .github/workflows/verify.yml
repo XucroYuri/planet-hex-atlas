@@ -28,6 +28,8 @@ jobs:
         run: uv run --frozen python pipeline/test_release.py
       - name: China source audit (external blockers may remain)
         run: uv run --frozen python pipeline/china_source_audit.py --json > /tmp/audit.json
+      - name: Standard-map status is current
+        run: uv run --frozen python pipeline/standard_map_status.py --check
       - name: Upload audit report
         uses: actions/upload-artifact@v4
         with:

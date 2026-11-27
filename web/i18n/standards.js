@@ -210,4 +210,7 @@ export default [
   ['下载发射序列 CSV', 'Download launch series CSV', '下載發射序列 CSV', 'Descargar serie de lanzamientos en CSV', 'Télécharger la série des lancements en CSV', '打上げ系列を CSV でダウンロード', '발사 시계열 CSV 다운로드', 'تنزيل سلسلة الإطلاقات بصيغة CSV'],
   ['下载市场目录 CSV', 'Download market catalog CSV', '下載市場目錄 CSV', 'Descargar catálogo de mercado en CSV', 'Télécharger le catalogue de marché en CSV', '市場カタログを CSV でダウンロード', '시장 목록 CSV 다운로드', 'تنزيل فهرس السوق بصيغة CSV'],
   ['反馈缺失或纠错', 'Report a gap or correction', '回報缺失或糾錯', 'Informar de una carencia o corrección', 'Signaler un manque ou une correction', '欠落や誤りの報告', '누락 또는 정정 신고', 'الإبلاغ عن نقص أو تصحيح'],
+  ['标准核查状态', 'Standard-map check status', '標準核查狀態', 'Estado de la verificación del mapa estándar', 'État de la vérification de la carte normalisée', '標準地図チェック状況', '표준 지도 점검 상태', 'حالة التحقق من الخريطة القياسية'],
+  ['自动核查：{passed} 项通过，{blocked} 项待解决', 'Automated check: {passed} passed, {blocked} unresolved', '自動核查：{passed} 項通過，{blocked} 項待解決', 'Verificación automática: {passed} aprobadas, {blocked} pendientes', 'Vérification automatique : {passed} validés, {blocked} en attente', '自動チェック：{passed} 件合格、{blocked} 件未解決', '자동 점검: {passed}개 통과, {blocked}개 미해결', 'تحقق آلي: {passed} ناجحة و{blocked} قيد الانتظار'],
+  ['待解决', 'Unresolved', '待解決', 'Pendiente', 'En attente', '未解決', '미해결', 'قيد الانتظار'],
 ];
