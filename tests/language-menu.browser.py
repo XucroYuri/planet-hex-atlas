@@ -13,6 +13,7 @@ def main(url):
         browser = p.chromium.launch(channel='chrome', headless=True)
         page = browser.new_page(locale='zh-CN', viewport={'width': 1280, 'height': 900})
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
+        page.wait_for_function('document.querySelectorAll("#language optgroup").length === 2', timeout=45000)
         menu = page.locator('#language')
         groups = menu.locator('optgroup')
         expect(groups).to_have_count(2)
