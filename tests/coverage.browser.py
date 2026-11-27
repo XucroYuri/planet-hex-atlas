@@ -62,8 +62,11 @@ def main(url):
         catalog_rows = open(catalog.path(), encoding='utf-8-sig').read().strip().splitlines()
         assert catalog_rows[0] == 'code,name,currency,first,last,count'
         assert len(catalog_rows) == 1 + 1404, len(catalog_rows)
-        assert not errors, errors[:3]
         annual_count, history_count = annual_rows.count(), history_rows.count()
+        summary.locator('button[data-action="feedback"]').click()
+        expect(page.locator('#overlay-title')).to_contain_text('反馈', timeout=20000)
+        page.keyboard.press('Escape')
+        assert not errors, errors[:3]
         browser.close()
         print(f'Coverage overview rendered {annual_count} annual rows and {history_count} history rows.')
 

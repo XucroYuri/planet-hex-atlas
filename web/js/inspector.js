@@ -76,7 +76,7 @@ export function renderInspector(host, ctx) {
     const note = ctx.missingNotes?.notes?.[c.id];
     if (note && ctx.value(c.id, 'gdp', year) === null) {
       const entry = note.gdp || note.all;
-      if (entry) content += `<p class="atlas-memo">${esc(t(entry.zh, entry.en))} <a href="${esc(entry.source)}" target="_blank" rel="noopener">${htmlText('来源')} ↗</a></p>`;
+      if (entry) content += `<p class="atlas-memo">${esc(t(entry.zh, entry.en))} <a href="${esc(entry.source)}" target="_blank" rel="noopener">${htmlText('来源')} ↗</a> <button type="button" class="link-button" data-action="feedback">${htmlText('反馈缺失或纠错')}</button></p>`;
     }
     content += `<div class="atlas-stats">${stat('人口', people(c.id), worldBank(year))}${stat('经济总量', economy(c.id), `${formatYear(year)} · ${msg('名义 GDP')} · World Bank`)}${stat('预期寿命', format(value(c.id, 'life', year), '岁'), worldBank(year))}${stat('电力可及率', format(value(c.id, 'electric', year), '%'), worldBank(year))}</div>`;
     if (lens.code) content += `<div class="detail-list">${row(lens.name, compactNumber(value(c.id, lens.id, year), lens.unit))}</div>`;

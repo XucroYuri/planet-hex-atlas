@@ -79,7 +79,8 @@ export function renderWishlist(host,ctx) {
           sessions: market.sessions.toLocaleString(ctx.locale || undefined),
           rows: market.rows.toLocaleString(ctx.locale || undefined), first: market.first, last: market.last,
         }))} <a href="./data/markets/index.json" download>JSON</a> <button type="button" class="coverage-csv" data-export-market aria-label="${esc(t('下载市场目录 CSV','Download market catalog CSV'))}">CSV</button></li>` : ''}<li>${esc(t('本地 A 股：仅在你的浏览器中读取本地文件，本站不保存或再分发。','Local A-shares: files are read in your browser only; nothing is uploaded or redistributed.'))}</li></ul>` : ''}
-        <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
+        <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>
+        <p><button type="button" class="panel-action" data-action="feedback">${esc(t('反馈缺失或纠错','Report a gap or correction'))}</button></p>`;
       const exporter = box.querySelector('[data-export-coverage]');
       exporter.addEventListener('click', () => exportCoverage(rows, historyRows));
       const annualButton = host.querySelector('[data-export-annual]');
