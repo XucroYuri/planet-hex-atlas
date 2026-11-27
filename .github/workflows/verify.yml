@@ -1,0 +1,35 @@
+name: verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Node unit and data-integrity tests
+        run: node --test tests/*.test.mjs
+  pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.12'
+      - name: Install pipeline dependencies
+        run: uv sync --frozen
+      - name: Release isolation and URL rules
+        run: uv run --frozen python pipeline/test_release.py
+      - name: China source audit (external blockers may remain)
+        run: uv run --frozen python pipeline/china_source_audit.py --json > /tmp/audit.json
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: china-source-audit
+          path: /tmp/audit.json

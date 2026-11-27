@@ -1,0 +1,12 @@
+{
+  "name": "planet-hex-atlas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "寰宇图志 · Orbis Atlas — static global atlas with history, space and local market data.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "verify:pipeline": "uv run --frozen python pipeline/test_release.py && uv run --frozen python pipeline/china_source_audit.py --json >/dev/null"
+  },
+  "engines": { "node": ">=22" }
+}

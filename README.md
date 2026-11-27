@@ -69,6 +69,22 @@ PYTHONPATH=. uv run python tests/china_source_audit_test.py
 
 [反馈通道说明](docs/feedback.md) · [中国标准核查](docs/china-standards.md) · [标准地图送审路径](docs/china-map-submission/README.md)
 
+## 自动验证
+
+每次推送 `main` 会在 GitHub Actions 运行两组校验：
+
+```bash
+npm test                # Node 单元测试、数据一致性、i18n 词表（116+ 项）
+npm run verify:pipeline # 发布隔离/URL 规则 + 中国数据来源核查
+```
+
+浏览器级检查（本地或已部署域名）需要 Playwright：
+
+```bash
+uv run --with playwright python tests/browser_smoke.py https://earth.xuyu.net/
+uv run --with playwright python tests/a11y.browser.py https://earth.xuyu.net/
+```
+
 ## 运行、重建和发布
 
 前端是静态 ES modules 和 Canvas 2D。所有运行时资源从本站读取，打开地图或运行推演均无需 API Key。球面总览与平面下钻共用底图和格网；城市、地形、机场和港口的画笔移植自 MIT 许可的 usaciv。[原作](https://karpathy.ai/usaciv/) · [原作许可](web/vendor/usaciv/LICENSE.txt)
