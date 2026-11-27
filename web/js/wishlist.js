@@ -1,4 +1,4 @@
-import { esc } from './data.js';
+import { esc, load, localizeMetric } from './data.js';
 
 // Every entry states a useful acquisition route and a testable condition for admitting the next dataset.
 const backlog = [
@@ -21,7 +21,7 @@ export function renderWishlist(host,ctx) {
   const {t}=ctx;
   const groups=[['all','全部','All'],['history','历史','History'],['markets','市场','Markets'],['space','太空','Space'],['society','社会','Society']];
   host.className='coverage-lab';
-  host.innerHTML=`<p>${esc(t('每个愿望项列出当前证据、取得渠道和下一项接入条件。历史时段、地理边界和授权会随数据集分别记录。','Each item records current evidence, an acquisition route and the next acceptance condition. Time intervals, geographic boundaries and rights are tracked per dataset.'))}</p><label>${esc(t('专题','Collection'))} <select name="wish-category">${groups.map(([key,zh,en])=>`<option value="${key}">${esc(t(zh,en))}</option>`).join('')}</select></label><div class="coverage-grid"></div>`;
+  host.innerHTML=`<p>${esc(t('每个愿望项列出当前证据、取得渠道和下一项接入条件。历史时段、地理边界和授权会随数据集分别记录。','Each item records current evidence, an acquisition route and the next acceptance condition. Time intervals, geographic boundaries and rights are tracked per dataset.'))}</p><section class="coverage-summary" data-coverage-summary aria-live="polite"></section><label>${esc(t('专题','Collection'))} <select name="wish-category">${groups.map(([key,zh,en])=>`<option value="${key}">${esc(t(zh,en))}</option>`).join('')}</select></label><div class="coverage-grid"></div>`;
   const draw=()=>{
     const selected=host.querySelector('select').value;
     host.querySelector('.coverage-grid').innerHTML=backlog.filter(([key])=>selected==='all'||key===selected).map(([key,zh,en,nowZh,nowEn,nextZh,nextEn,source,url])=>{
@@ -30,4 +30,35 @@ export function renderWishlist(host,ctx) {
     }).join('');
   };
   host.querySelector('select').onchange=draw; draw();
+  void loadCoverage();
+
+  async function loadCoverage() {
+    const box=host.querySelector('[data-coverage-summary]');
+    const labels=[['population','人口估计','Population'],['gdp','人均 GDP','GDP per capita'],['lifeExpectancy','预期寿命','Life expectancy'],['literacy','成人识字率','Adult literacy'],['cropland','耕地总面积','Cropland area'],['arable','可耕地占比','Arable share'],['census','人口普查实报','Census counts']];
+    try {
+      const [annual,history]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json')]);
+      const regions=Object.values(annual.regions);
+      const total=regions.length;
+      const rows=ctx.metrics.map((metric)=>{
+        const localized=localizeMetric(metric);
+        const count=regions.reduce((sum,region)=>sum+(Number.isFinite(region[metric.id])?1:0),0);
+        return {name:localized.name,unit:localized.unit||'',count,total,missing:total-count};
+      });
+      const historyRows=labels.filter(([key])=>history.totals[key]).map(([key,zh,en])=>{
+        const world=history.areas.WORLD?.coverage?.[key];
+        return {name:t(zh,en),rows:history.totals[key].rows,areas:history.totals[key].areas,first:world?.[0],last:world?.[1]};
+      });
+      const percentage=(count,total)=>`${Math.round(count/total*100)}%`;
+      const yearPicker=Number.isFinite(ctx.year)?ctx.year:'';
+      box.innerHTML=`<h3>${esc(t('覆盖概览','Coverage overview'))}</h3>
+        <p>${esc(t('按所选年份统计；空格与缺值不补齐。分母为当年观测文件中的已映射地区数，“有值地区”只计有已发布数值的地区。','Counted for the selected year. Gaps stay unfilled; “regions with data” counts published values only.'))}</p>
+        <h4>${esc(t('年度指标 · {year}','Annual indicators · {year}').replace('{year}',String(yearPicker)))}</h4>
+        <div class="table-scroll"><table><caption>${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td></tr>`).join('')}</tbody></table></div>
+        <h4>${esc(t('历史序列','Historical series'))}</h4>
+        <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th></tr></thead><tbody>${historyRows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td></tr>`).join('')}</tbody></table></div>
+        <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
+    } catch {
+      box.innerHTML=`<p class="coverage-note">${esc(t('覆盖概览暂时无法载入。','Coverage overview is temporarily unavailable.'))}</p>`;
+    }
+  }
 }
