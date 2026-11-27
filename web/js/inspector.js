@@ -179,6 +179,7 @@ export function renderSources(host, atlas) {
     <div class="panel-buttons"><a class="panel-action" href="./data/atlas.json" download="orbis-atlas-sources.json">${htmlText('下载指标与来源清单')}</a><a class="panel-action" href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')}</a><a class="panel-action" href="./data/source-lock.json" download>${htmlText('下载源文件校验值')}</a>${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>
     <section class="about-build"><h3>${htmlText('关于与版本')}</h3>
       <div data-changelog><h4>${htmlText('数据更新')}</h4><p>${htmlText('更新日志载入中…')}</p></div>
+      <div data-citation hidden><h4>${htmlText('引用本站')}</h4><p data-citation-text></p><div class="panel-buttons"><button type="button" class="panel-action" data-copy-citation>${htmlText('复制引用')}</button><span class="citation-status" data-citation-status role="status"></span></div></div>
       <p data-build>${htmlText('版本信息载入中…')}</p>
       <p>${htmlText('数据规模：{regions} 个地域、{metrics} 项指标、{years} 年、{cells} 个 H3 R4 格网', {
         regions: formatCount(atlas.countries.length), metrics: formatCount(atlas.metrics.length),
@@ -208,5 +209,20 @@ export function renderSources(host, atlas) {
       : '';
     build.innerHTML = htmlText('当前快照 {snapshot} · 构建于 {date}', { snapshot: info.snapshot, date: shown || '—' })
       + (info.previous ? `<br>${htmlText('上一版快照 {previous}', { previous: info.previous })}` : '');
+    const citation = host.querySelector('[data-citation]');
+    const citationText = host.querySelector('[data-citation-text]');
+    const status = host.querySelector('[data-citation-status]');
+    const copy = host.querySelector('[data-copy-citation]');
+    if (citation && citationText && copy) {
+      const text = htmlText('寰宇图志（Orbis Atlas），快照 {snapshot}，构建于 {date}。{url}', {
+        snapshot: info.snapshot, date: shown || '—', url: 'https://earth.xuyu.net/',
+      });
+      citationText.textContent = text;
+      citation.hidden = false;
+      copy.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(text); status.textContent = msg('引用已复制'); }
+        catch { status.textContent = msg('复制失败，请手动选择引用文本。'); }
+      });
+    }
   }).catch(() => { if (build.isConnected) build.textContent = msg('版本信息暂不可用。'); });
 }

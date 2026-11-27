@@ -195,4 +195,9 @@ export default [
   ['人均国内生产总值', 'GDP per capita', '人均國內生產總值', 'PIB per cápita', 'PIB par habitant', '一人当たりGDP', '1인당 GDP', 'الناتج المحلي الإجمالي للفرد'],
   ['国民总收入', 'Gross national income', '國民總收入', 'Renta nacional bruta', 'Revenu national brut', '国民総所得', '국민총소득', 'الدخل القومي الإجمالي'],
   ['全员劳动生产率', 'Labor productivity', '全員勞動生產率', 'Productividad laboral', 'Productivité du travail', '労働生産性', '노동생산성', 'إنتاجية العمل'],
+  ['引用本站', 'Cite this site', '引用本站', 'Citar este sitio', 'Citer ce site', 'このサイトを引用', '이 사이트 인용', 'الاستشهاد بهذا الموقع'],
+  ['复制引用', 'Copy citation', '複製引用', 'Copiar cita', 'Copier la citation', '引用をコピー', '인용 복사', 'نسخ الاستشهاد'],
+  ['寰宇图志（Orbis Atlas），快照 {snapshot}，构建于 {date}。{url}', 'Orbis Atlas, snapshot {snapshot}, built {date}. {url}', '寰宇圖志（Orbis Atlas），快照 {snapshot}，建置於 {date}。{url}', 'Orbis Atlas, instantánea {snapshot}, creada el {date}. {url}', 'Orbis Atlas, instantané {snapshot}, construit le {date}. {url}', '寰宇図志（Orbis Atlas）、スナップショット {snapshot}、ビルド {date}。{url}', '환위도지(Orbis Atlas), 스냅샷 {snapshot}, 빌드 {date}. {url}', 'أوربيس أطلس، اللقطة {snapshot}، بُنيت في {date}. {url}'],
+  ['引用已复制', 'Citation copied', '引用已複製', 'Cita copiada', 'Citation copiée', '引用をコピーしました', '인용을 복사했습니다', 'نُسخ الاستشهاد'],
+  ['复制失败，请手动选择引用文本。', 'Copy failed; select the citation text manually.', '複製失敗，請手動選取引用文字。', 'Error al copiar; seleccione el texto de la cita manualmente.', 'Échec de la copie ; sélectionnez le texte de la citation manuellement.', 'コピーに失敗しました。引用文を手動で選択してください。', '복사하지 못했습니다. 인용문을 직접 선택하세요.', 'فشل النسخ؛ حدد نص الاستشهاد يدويًا.'],
 ];
