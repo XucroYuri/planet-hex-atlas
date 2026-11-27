@@ -59,7 +59,7 @@ def measure(browser, url, profile):
         })
         cdp.send('Emulation.setCPUThrottlingRate', {'rate': 4})
     page.goto(url, wait_until='load', timeout=120_000)
-    page.wait_for_function('document.querySelector("#workspace").dataset.ready === "true"', timeout=120_000)
+    page.wait_for_function('document.querySelector("#workspace")?.dataset.ready === "true"', timeout=120_000)
     page.wait_for_timeout(1_200)
     result = page.evaluate(SCRIPT)
     context.close()

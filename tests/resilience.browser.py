@@ -26,7 +26,7 @@ def main(url):
         page.route('**/js/app.js', fail_once)
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
         # The inline guard reloads after 9 s; give the second boot enough time.
-        page.wait_for_function('document.querySelector("#workspace").dataset.ready === "true"', timeout=45000)
+        page.wait_for_function('document.querySelector("#workspace")?.dataset.ready === "true"', timeout=45000)
         assert failed, 'app.js was never failed'
         assert page.evaluate('document.readyState') == 'complete'
         context.close()
