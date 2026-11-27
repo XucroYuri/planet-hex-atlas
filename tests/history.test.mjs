@@ -73,6 +73,9 @@ test('原始年点、分期、真实零值和官方普查记录均可定位', ()
   assert.deepEqual(totals.literacy, { rows: 1164, areas: 174 });
   assert.deepEqual(totals.pasture, { rows: 126, areas: 1 });
   assert.deepEqual(totals.density, { rows: 54475, areas: 230 });
+  assert.deepEqual(totals.worldGdp, { rows: 51, areas: 1 });
+  assert.deepEqual(areas.WORLD.coverage.worldGdp, [1, 2025, 51]);
+  assert.equal(new Map(read('series/WORLD.json').worldGdp).get(2025), 180028791385506);
   assert.deepEqual(areas.WORLD.coverage.density, [-10000, 2023, 261]);
   assert.equal(new Map(read('series/WORLD.json').density).get(2023), 62.174232);
   assert.deepEqual(areas.WORLD.coverage.pasture, [-10000, 2023, 126]);

@@ -78,11 +78,13 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   cropland: { zh: '耕地总面积', en: 'Cropland area' },
   pasture: { zh: '牧场面积', en: 'Pasture area' },
   density: { zh: '历史人口密度', en: 'Historical population density' },
+  worldGdp: { zh: '全球 GDP 总量', en: 'World GDP' },
   arable: { zh: '可耕地占陆地比例', en: 'Arable land share' },
   census: { zh: '人口普查实报', en: 'Census population counts' },
   people: { zh: '人', en: 'people' },
   years: { zh: '岁', en: 'years' },
   densityUnit: { zh: '人/km²', en: 'people/km²' },
+  constantIntlDollar: { zh: '不变价国际元', en: 'constant international-$' },
   percent: { zh: '%', en: '%' },
   dollars: { zh: '{year} 年价格国际元', en: 'international dollars at {year} prices' },
   squareKm: { zh: '平方公里', en: 'km²' },
@@ -94,6 +96,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   croplandNote: { zh: 'HYDE 全球耕地面积模型估计，包含永久作物。发布的零值保留。', en: 'HYDE models global cropland area including permanent crops. Published zero values are retained.' },
   pastureNote: { zh: 'HYDE 全球牧场面积模型估计，与耕地同源；早期年份为模型反推，零值保留。', en: 'HYDE models global pasture area from the same source as cropland. Early years are model reconstructions; published zeros are retained.' },
   densityNote: { zh: '由 HYDE、Gapminder、联合国人口展望与 FAO 的数据按当代边界汇总；2023 年后的投影年份不纳入历史序列。', en: 'Aggregated to present-day boundaries from HYDE, Gapminder, UN WPP and FAO. Projected years after 2023 are excluded from the historical series.' },
+  worldGdpNote: { zh: '全球 GDP 总量按不变价国际元计算，来自 Maddison 数据库、Maddison 项目数据库、世界银行及 OECD/Eurostat/IMF；早期只有稀疏基准年，空隙不插值。', en: 'World GDP in constant international-$, from the Maddison Database, Maddison Project Database, World Bank and Eurostat/OECD/IMF. Early years are sparse benchmarks; gaps are not interpolated.' },
   croplandRegionalNote: { zh: 'HYDE 3.2 论文表 2 的区域耕地基准点，已换算为平方公里。分区与现代地图边界可能不同。', en: 'Regional cropland benchmarks from HYDE 3.2 Table 2, converted to square kilometres. Study regions may differ from present-day map boundaries.' },
   arableNote: { zh: 'FAO 经世界银行发布的可耕地占比。下载表未提供逐条观测标志，记为汇编统计。此指标采用可耕地口径和比例单位。', en: 'FAO arable land share via the World Bank. The download lacks point-level observation flags, so entries are labelled as compiled statistics. The definition is arable land and the unit is a share.' },
   censusNote: { zh: '美国人口普查局发布的居民普查人数，覆盖美国及波多黎各。历史统计覆盖范围可能变化。', en: 'Published resident counts from the U.S. Census Bureau for the United States and Puerto Rico. Historical enumeration coverage can vary.' },
@@ -120,6 +123,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   owidLife: { zh: 'OWID · 预期寿命长序列', en: 'OWID · long-run life expectancy' },
   owidLiteracy: { zh: 'UNESCO UIS · OWID', en: 'UNESCO UIS · OWID' },
   owidDensity: { zh: 'OWID · 人口密度', en: 'OWID · population density' },
+  owidWorldGdp: { zh: 'Maddison / World Bank · OWID', en: 'Maddison / World Bank · OWID' },
   wdi: { zh: 'FAO · 世界银行 WDI', en: 'FAO · World Bank WDI' },
   censusBureau: { zh: '美国人口普查局', en: 'U.S. Census Bureau' },
   backtest: { zh: '时间回归与留后回测', en: 'Time regression and holdout test' },
@@ -179,6 +183,7 @@ const METRICS = {
   cropland: { unit: 'squareKm', status: 'estimated', source: 'hyde' },
   pasture: { unit: 'squareKm', status: 'estimated', source: 'hyde' },
   density: { unit: 'densityUnit', status: 'estimated', source: 'owidDensity' },
+  worldGdp: { unit: 'constantIntlDollar', status: 'estimated', source: 'owidWorldGdp' },
   arable: { unit: 'share', status: 'compiled', source: 'wdi' },
   census: { unit: 'people', status: 'observed', source: 'censusBureau' },
 };
@@ -351,6 +356,10 @@ function elements(doc) {
 
 function publishedValue(locale, metric, value, withUnit = false) {
   if (metric === 'arable' || METRICS[metric].unit === 'percent') return locale.percent.format(value / 100);
+  if (metric === 'worldGdp') {
+    const shown = locale.compact.format(value);
+    return withUnit ? `${shown} ${locale.tr(METRICS[metric].unit)}` : shown;
+  }
   return withUnit
     ? `${locale.number(value)} ${locale.tr(METRICS[metric].unit, { year: locale.dates.format(2011) })}`
     : locale.number(value);

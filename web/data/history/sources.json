@@ -44,6 +44,14 @@
   "population-density.metadata.json": {
    "url": "https://ourworldindata.org/grapher/population-density.metadata.json",
    "sha256": "01e55aac1135c088ad92fa6bb61be327ffbf85006324d77b8c452a6d1a2e883e"
+  },
+  "global-gdp-over-the-long-run.csv": {
+   "url": "https://ourworldindata.org/grapher/global-gdp-over-the-long-run.csv",
+   "sha256": "a38247a94b9b5164191d8bfcab18681b0f8baffb3d5e3142749b623bc31dc875"
+  },
+  "global-gdp-over-the-long-run.metadata.json": {
+   "url": "https://ourworldindata.org/grapher/global-gdp-over-the-long-run.metadata.json",
+   "sha256": "0b20d907eb9cc076f2ab0e9d0853b703b4b68f4493456de1237623791ec6ec38"
   }
  },
  "sources": {
@@ -170,6 +178,18 @@
    "licenses": [
     [
      "HYDE / Gapminder / UN / OWID · CC BY 4.0",
+     "https://creativecommons.org/licenses/by/4.0/"
+    ]
+   ]
+  },
+  "worldGdp": {
+   "url": "https://ourworldindata.org/grapher/global-gdp-over-the-long-run",
+   "chart": "https://ourworldindata.org/grapher/global-gdp-over-the-long-run",
+   "citation": "World GDP in constant international-$. Eurostat, OECD, IMF and World Bank (2026); Bolt and van Zanden – Maddison Project Database 2023; Maddison Database 2010, via Our World in Data.",
+   "note": "Sparse historical benchmarks with annual modern observations; gaps are not interpolated.",
+   "licenses": [
+    [
+     "Maddison / World Bank / OWID · CC BY 4.0",
      "https://creativecommons.org/licenses/by/4.0/"
     ]
    ]
