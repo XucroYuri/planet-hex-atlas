@@ -41,6 +41,8 @@ ANNOUNCEMENTS = {
                realGrowthPercent=5.0, revision='初步核算', published='2026-02-28',
                population=140489, urban=95380, rural=45109,
                perCapitaGdp=99665, gni=1393700, laborProductivity=184413,
+               grainOutput=71488, merchandiseTrade=454685, retailSales=501202,
+               rdExpenditure=39262, disposableIncome=43377, urbanizationRate=67.89,
                url='https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html'),
 }
 
@@ -166,7 +168,7 @@ def build(cache):
             '1978–2022 来自《中国统计年鉴 2024》表 3-1（当年价）。',
             '2023 采用第五次全国经济普查后修订数；2024 采用最终核实；2025 采用初步核算。后续修订可能改变当年值。',
             '2024、2025 年附年度统计公报的年末全国人口（万人）及城镇/乡村常住人口；更早年份的官方人口长序列待可机器读取来源。',
-            '2025 年公报另列全年人均国内生产总值 99,665 元、国民总收入 1,393,700 亿元、全员劳动生产率 184,413 元/人。',
+            '2025 年公报另列全年人均国内生产总值 99,665 元、国民总收入 1,393,700 亿元、全员劳动生产率 184,413 元/人，以及粮食产量、货物进出口、社会消费品零售、研发经费、居民人均可支配收入与常住人口城镇化率。',
             '三次产业不等于 GDP 的部分为统计修约误差；本文件未作机械调整。',
         ],
         'series': yearly,

@@ -200,4 +200,10 @@ export default [
   ['寰宇图志（Orbis Atlas），快照 {snapshot}，构建于 {date}。{url}', 'Orbis Atlas, snapshot {snapshot}, built {date}. {url}', '寰宇圖志（Orbis Atlas），快照 {snapshot}，建置於 {date}。{url}', 'Orbis Atlas, instantánea {snapshot}, creada el {date}. {url}', 'Orbis Atlas, instantané {snapshot}, construit le {date}. {url}', '寰宇図志（Orbis Atlas）、スナップショット {snapshot}、ビルド {date}。{url}', '환위도지(Orbis Atlas), 스냅샷 {snapshot}, 빌드 {date}. {url}', 'أوربيس أطلس، اللقطة {snapshot}، بُنيت في {date}. {url}'],
   ['引用已复制', 'Citation copied', '引用已複製', 'Cita copiada', 'Citation copiée', '引用をコピーしました', '인용을 복사했습니다', 'نُسخ الاستشهاد'],
   ['复制失败，请手动选择引用文本。', 'Copy failed; select the citation text manually.', '複製失敗，請手動選取引用文字。', 'Error al copiar; seleccione el texto de la cita manualmente.', 'Échec de la copie ; sélectionnez le texte de la citation manuellement.', 'コピーに失敗しました。引用文を手動で選択してください。', '복사하지 못했습니다. 인용문을 직접 선택하세요.', 'فشل النسخ؛ حدد نص الاستشهاد يدويًا.'],
+  ['粮食产量', 'Grain output', '糧食產量', 'Producción de cereales', 'Production céréalière', '食料生産量', '식량 생산량', 'إنتاج الحبوب'],
+  ['货物进出口总额', 'Total goods trade', '貨物進出口總額', 'Comercio total de mercancías', 'Commerce total de marchandises', '貨物貿易総額', '상품 무역 총액', 'إجمالي تجارة السلع'],
+  ['社会消费品零售总额', 'Retail sales of consumer goods', '社會消費品零售總額', 'Ventas minoristas de bienes de consumo', 'Ventes au détail de biens de consommation', '社会消費品小売総額', '사회 소비재 소매 총액', 'مبيعات التجزئة للسلع الاستهلاكية'],
+  ['研发经费支出', 'R&D expenditure', '研發經費支出', 'Gasto en I+D', 'Dépenses de R&D', '研究開発費', '연구개발비 지출', 'نفقات البحث والتطوير'],
+  ['居民人均可支配收入', 'Per capita disposable income', '居民人均可支配收入', 'Renta disponible per cápita', 'Revenu disponible par habitant', '一人当たり可処分所得', '1인당 가처분소득', 'الدخل المتاح للفرد'],
+  ['常住人口城镇化率', 'Urbanization rate', '常住人口城鎮化率', 'Tasa de urbanización', 'Taux d’urbanisation', '常住人口の都市化率', '상주인구 도시화율', 'معدل التحضر'],
 ];

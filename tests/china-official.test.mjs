@@ -48,6 +48,12 @@ test('later revisions supersede the yearbook for their year', () => {
   assert.equal(record.series['2025'].perCapitaGdp, 99665);
   assert.equal(record.series['2025'].gni, 1393700);
   assert.equal(record.series['2025'].laborProductivity, 184413);
+  assert.equal(record.series['2025'].grainOutput, 71488);
+  assert.equal(record.series['2025'].merchandiseTrade, 454685);
+  assert.equal(record.series['2025'].retailSales, 501202);
+  assert.equal(record.series['2025'].rdExpenditure, 39262);
+  assert.equal(record.series['2025'].disposableIncome, 43377);
+  assert.equal(record.series['2025'].urbanizationRate, 67.89);
   assert.equal(record.series['2023'].population, undefined);
   assert.match(record.populationNote, /2024、2025/);
 });
