@@ -30,6 +30,8 @@ jobs:
         run: uv run --frozen python pipeline/china_source_audit.py --json > /tmp/audit.json
       - name: Standard-map status is current
         run: uv run --frozen python pipeline/standard_map_status.py --check
+      - name: Open data bundle
+        run: uv run --frozen python tests/open_data_bundle_test.py
       - name: Official population benchmarks
         run: uv run --frozen python tests/china_population_test.py
       - name: Standard-map handoff package

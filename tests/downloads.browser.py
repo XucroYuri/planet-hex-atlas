@@ -25,13 +25,17 @@ def main(url):
         expect(section).to_be_visible(timeout=30000)
         expect(section).to_contain_text('原始数据下载')
         links = section.locator('a')
-        assert links.count() == 6, links.count()
+        assert links.count() == 7, links.count()
         assert links.evaluate_all('els => els.every(el => el.hasAttribute("download"))')
         hrefs = links.evaluate_all('els => els.map(el => el.href)')
         for href in hrefs:
             response = page.request.get(href)
             assert response.ok, f'{href}: {response.status}'
-            assert 'json' in response.headers.get('content-type', ''), href
+            content_type = response.headers.get('content-type', '')
+            if href.endswith('.zip'):
+                assert 'zip' in content_type, href
+            else:
+                assert 'json' in content_type, href
         assert any('/data/annual/' in href for href in hrefs), hrefs
         assert any('/data/history/catalog.json' in href for href in hrefs), hrefs
         assert any('/data/space/launches.json' in href for href in hrefs), hrefs
@@ -47,7 +51,7 @@ def main(url):
         assert any(any(cell == '' for cell in row[1:]) for row in rows[1:]), 'missing values should stay blank'
         assert not errors, errors[:3]
         browser.close()
-        print(f'All {len(hrefs)} raw-data download links and the annual CSV export are valid.')
+        print(f'All {len(hrefs)} download links (JSON + open-data ZIP) and the annual CSV export are valid.')
 
 
 if __name__ == '__main__':

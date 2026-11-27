@@ -12,10 +12,15 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+try:
+    from open_data_bundle import build as build_open_data
+except ImportError:  # imported as a module from another working directory
+    build_open_data = None
+
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
 # Bump when packaging rules change so that identical assets still get a new snapshot.
-PACKAGING_VERSION = 5
+PACKAGING_VERSION = 6
 
 
 def link_or_copy(source, target):
@@ -59,6 +64,8 @@ def package(destination):
     page = page.replace('<head>',f'<head>\n  <base href="{html.escape(subpath)}">',1)
     page = page.replace('href="./" class="brand"','href="/" class="brand"')
     (work/'index.html').write_text(page)
+    if build_open_data and (PUBLIC/'data'/'atlas.json').is_file():
+        build_open_data(work/'data'/'downloads'/'orbis-open-data.zip')
     if (PUBLIC/'sw.js').is_file():
         shutil.copyfile(PUBLIC/'sw.js',work/'sw.js')
     (work/'404.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Orbis Atlas · 404</title><p>Resource unavailable. <a href="/">Open the current atlas</a>.</p></html>')

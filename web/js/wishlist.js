@@ -32,6 +32,7 @@ export function renderWishlist(host,ctx) {
         <li><a href="data/space/launches.json" download>${esc(t('太空发射序列','Space launch series'))}</a><small>data/space/launches.json</small></li>
         <li><a href="data/markets/index.json" download>${esc(t('市场数据目录','Market data index'))}</a><small>data/markets/index.json</small></li>
         <li><a href="data/atlas.json" download>${esc(t('指标与来源清单','Indicator and source catalog'))}</a><small>data/atlas.json · data/source-lock.json</small></li>
+        <li><a href="data/downloads/orbis-open-data.zip" download>${esc(t('开放数据整包（ZIP）','Open data bundle (ZIP)'))}</a><small>orbis-open-data.zip · manifest.json · SHA-256 清单</small></li>
       </ul>
       <p><button type="button" class="panel-action" data-export-annual disabled>${esc(t('下载年度观测 CSV','Download annual observations CSV'))}</button><small>orbis-annual-${Number(ctx.year)}.csv · 地区 × 指标，缺失留空</small></p>
     </section>`;
