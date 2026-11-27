@@ -162,6 +162,6 @@ export function renderSources(host, atlas) {
   ];
   host.innerHTML = `<p class="method">${htmlText('地图边界沿用 Natural Earth。国家或地区层以面状着色表示同一统计单位的观测。格网人口来自单独的 {year} 年估算，与世界银行年度合计的口径有差异。R2/R3 人口按 H3 父子关系聚合。', { year: formatYear(atlas.gridYear) })}</p>
     <div class="source-grid">${items.map(([name, text, url]) => `<article><h3>${htmlText(name)}</h3><p>${htmlText(text)}</p><a href="${url}" target="_blank" rel="noopener">${htmlText('查看数据与条款')} ↗</a></article>`).join('')}</div>
-    <p class="method">${htmlText('年度指标和事件推演分别使用观测数据与公开模型假设。推演计算运行在你的浏览器中。')}</p>
+    <p class="method">${htmlText('年度指标和事件推演分别使用观测数据与公开模型假设。推演计算运行在你的浏览器中。')}<br>${htmlText('可视化方法：按指标分布自动选择等距、分位数、自然断点、对数与发散分级，并在图例公开断点。')} <a href="https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/visualization.md" target="_blank" rel="noopener">${htmlText('查看分级方法')} ↗</a></p>
     <div class="panel-buttons"><a class="panel-action" href="./data/atlas.json" download="orbis-atlas-sources.json">${htmlText('下载指标与来源清单')}</a><a class="panel-action" href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')}</a><a class="panel-action" href="./data/source-lock.json" download>${htmlText('下载源文件校验值')}</a>${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>`;
 }

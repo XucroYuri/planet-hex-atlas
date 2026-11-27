@@ -1,4 +1,5 @@
-import { DATA, TILE_KM, cellValue, clamp, colorFor, coordinates, format, formatDistance, load, near, tileKey, unpack, wrap } from './data.js';
+import { DATA, TILE_KM, cellValue, clamp, coordinates, format, formatDistance, load, near, tileKey, unpack, wrap } from './data.js';
+import { buildScale } from './scales.js';
 import { msg } from './i18n.js';
 import { cityName, countryName, siteName } from './i18n-places.js';
 import { Globe } from './globe.js';
@@ -74,6 +75,9 @@ export class AtlasMap {
     this.pointers = new Map();
     this.hits = [];
     this.level = 2;
+    this.classifier = null;
+    this.onScale = null;
+    this.scaleTimer = null;
     this.options = { grid: true, labels: true, art: true, sites: new Set() };
     this.selected = null;
     this.resize = new ResizeObserver(() => this.measure());
@@ -92,6 +96,7 @@ export class AtlasMap {
       this.failed.delete(key);
       this.data.set(key, tile);
       if (level === 2) this.globe.invalidate();
+      this.scheduleGridScale();
       this.repaint();
       return tile;
     }).catch(() => {
@@ -117,7 +122,55 @@ export class AtlasMap {
 
   setCities(cities) { this.cities = cities; this.repaint(); }
   setSites(sites) { this.sites = sites; this.repaint(); }
-  setLens(lens, range, countryValues) { this.lens = lens; this.range = range; this.countryValues = countryValues; this.globe.invalidate(); this.repaint(); }
+  setLens(lens, countryValues = new Map()) {
+    this.lens = lens;
+    this.countryValues = countryValues;
+    if (lens?.code) {
+      const values = [...countryValues.values()];
+      this.classifier = buildScale(values, lens, { preferJenks: true, sampleLimit: 500 });
+    } else if (['gridPop', 'density', 'height'].includes(lens?.id)) {
+      this.classifier = this.buildGridScale();
+    } else {
+      this.classifier = null;
+    }
+    this.globe.invalidate();
+    this.repaint();
+    return this.classifier;
+  }
+
+  // Classify from a deterministic sample of the cells currently on screen.
+  buildGridScale() {
+    const cells = [];
+    for (const [key, tile] of this.data) {
+      if (!key.startsWith(`${this.level}/`)) continue;
+      cells.push(...tile.cells);
+      if (cells.length > 60000) break;
+    }
+    if (!cells.length) {
+      for (const tile of this.data.values()) cells.push(...tile.cells);
+    }
+    const stride = Math.max(1, Math.floor(cells.length / 12000));
+    const values = [];
+    for (let i = 0; i < cells.length; i += stride) {
+      const cell = cells[i];
+      if (this.lens.id === 'density' && cell.density === undefined) cell.density = cellValue(cell, this.lens);
+      const value = this.lens.id === 'density' ? cell.density : cellValue(cell, this.lens);
+      if (Number.isFinite(value)) values.push(value);
+    }
+    return buildScale(values, this.lens, { preferQuantile: true, sampleLimit: 900, zeroClass: ['gridPop', 'density'].includes(this.lens.id) });
+  }
+
+  scheduleGridScale() {
+    if (!this.lens || this.lens.code || !['gridPop', 'density', 'height'].includes(this.lens.id)) return;
+    clearTimeout(this.scaleTimer);
+    this.scaleTimer = setTimeout(() => {
+      const classifier = this.buildGridScale();
+      if (!classifier || classifier.method === 'empty') return;
+      this.classifier = classifier;
+      this.onScale?.(classifier);
+      this.repaint();
+    }, 280);
+  }
   setSelection(selected) { this.selected = selected; this.repaint(); }
   setOptions(options) { this.options = options; this.globe.invalidate(); this.repaint(); }
 
@@ -228,6 +281,7 @@ export class AtlasMap {
     const level = ready ? requested : 2;
     if (this.level !== level) {
       this.level = level;
+      if (this.lens && !this.lens.code) { this.classifier = this.buildGridScale(); this.onScale?.(this.classifier); }
       this.onChange(this.camera, level);
     }
     return (ready ? names : ['world']).map((name) => this.data.get(`${level}/${name}`)).filter(Boolean);
@@ -314,7 +368,7 @@ export class AtlasMap {
       if (national) {
         const value = this.countryValues.get(row.id);
         ctx.globalAlpha = Number.isFinite(value) ? .84 : .60;
-        ctx.fillStyle = colorFor(this.lens, value, ...this.range);
+        ctx.fillStyle = this.classifier ? this.classifier.colorOf(value) : '#687b7b';
         ctx.fill(path, 'evenodd');
       }
       ctx.globalAlpha = 1;
@@ -343,7 +397,7 @@ export class AtlasMap {
         else {
           if (lens.id === 'density' && cell.density === undefined) cell.density = cellValue(cell, lens);
           const value = lens.id === 'density' ? cell.density : cellValue(cell, lens);
-          if (Number.isFinite(value)) color = colorFor(lens, value, ...this.range);
+          if (Number.isFinite(value) && this.classifier) color = this.classifier.colorOf(value);
         }
         if (color) {
           if (!paths.has(color)) paths.set(color, new Path2D());

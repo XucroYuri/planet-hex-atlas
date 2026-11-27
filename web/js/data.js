@@ -87,42 +87,6 @@ export function cellValue(cell, lens) {
   return null;
 }
 
-const ramps = {
-  local: ['#355666', '#47897f', '#9fb475', '#e4bd75', '#fae7ac'],
-  national: ['#3a6169', '#4d8c82', '#9cb57d', '#efc978', '#f8edb9'],
-  diverging: ['#a15257', '#be775f', '#cfb99a', '#76a89f', '#337e78'],
-  height: ['#1e4460', '#487f9a', '#8da698', '#bd9b6c', '#f3e0bc'],
-};
-
-export function ramp(lens) {
-  return ramps[lens.scale] || (lens.code ? ramps.national : ramps.local);
-}
-
-export function colorFor(lens, value, min, max) {
-  if (!Number.isFinite(value)) return '#687b7b';
-  let position = (value - min) / (max - min || 1);
-  if (lens.scale === 'total') position = Math.log1p(Math.max(0, value) / Math.max(0.01, min)) / Math.log1p(max / Math.max(0.01, min));
-  if (lens.scale === 'height') position = value < 0 ? 0.45 * (1 - clamp(-value / 9500, 0, 1)) : 0.45 + 0.55 * clamp(value / 6000, 0, 1);
-  const colors = ramp(lens);
-  const idx = Math.round(clamp(position, 0, 1) * (colors.length - 1));
-  return colors[idx];
-}
-
-export function lensRange(lens, rows, read, year) {
-  if (lens.min != null) return [lens.min, lens.max];
-  const values = rows.map((c) => read(c.id, lens.id, year)).filter(Number.isFinite).sort((a, b) => a - b);
-  if (!values.length) return [0, 1];
-  const low = values[Math.floor((values.length - 1) * 0.08)];
-  const high = values[Math.floor((values.length - 1) * 0.92)];
-  if (lens.scale === 'diverging') {
-    const abs = Math.max(1, Math.abs(low), Math.abs(high));
-    return [-abs, abs];
-  }
-  if (lens.scale === 'total') return [Math.max(1, low), Math.max(2, high)];
-  if (lens.scale === 'percent') return [0, 100];
-  return low === high ? [Math.min(0, low), high + 1] : [low, high];
-}
-
 export function distanceKm(lat1, lon1, lat2, lon2) {
   const rad = Math.PI / 180;
   const a = Math.sin((lat2-lat1)*rad/2)**2 + Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin((lon2-lon1)*rad/2)**2;

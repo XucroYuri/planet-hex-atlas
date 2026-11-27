@@ -1,6 +1,6 @@
 import { AtlasMap } from './map.js';
-import { LANDING_CITIES, LOCAL_LENSES, SITES, TERRAIN, TILE_KM, clamp, coordinates, esc, format, formatDistance, lensRange, load, localizeMetric, ramp } from './data.js';
-import { formatCount, formatYear, getLocale, htmlText, localizePage, msg, saveLocalePreference, yearLabel, t, loadLocalePack } from './i18n.js';
+import { LANDING_CITIES, LOCAL_LENSES, SITES, TERRAIN, TILE_KM, clamp, coordinates, esc, format, formatDistance, load, localizeMetric } from './data.js';
+import { formatCount, formatPercent, formatYear, getLocale, htmlText, localizePage, msg, saveLocalePreference, yearLabel, t, loadLocalePack } from './i18n.js';
 import { createObservationStore } from './observation-store.js';
 import { researchModes } from './research.js';
 import { cityName, citySearchNames, continentName, countryName, countrySearchNames, regionName, searchKey, siteName } from './i18n-places.js';
@@ -55,20 +55,34 @@ function render() {
 function changeLens(lens) {
   state.lens = lens;
   $('lens-label').textContent = lens.name;
-  const range = lensRange(lens, atlas.countries, value, state.year);
   const values = new Map();
   if (lens.code && observations.ready(state.year)) for (const country of atlas.countries) values.set(country.id, value(country.id, lens.id, state.year));
-  map.setLens(lens, range, values);
+  const classifier = map.setLens(lens, values);
   if (lens.code && !map.detailsReady) void loadDetails().catch(() => {});
-  renderLegend(range, values);
+  renderLegend(classifier, lens, values);
   for (const button of $('lens-panel').querySelectorAll('[data-lens]')) button.setAttribute('aria-pressed', String(button.dataset.lens === lens.id));
   $('time-note').textContent = lens.code ? msg('着色按同一观测年份')
     : msg('格网人口固定为 {year} 年估算', { year: formatYear(atlas.gridYear) });
   render();
 }
 
-function renderLegend(range, countryValues) {
-  const { lens, year, options } = state;
+const METHOD_LABELS = {
+  equal: ['等距分级', 'Equal interval'],
+  jenks: ['自然断点', 'Natural breaks'],
+  quantile: ['分位数分级', 'Quantile'],
+  logEqual: ['对数等距分级', 'Log interval'],
+  logJenks: ['自然断点（对数）', 'Natural breaks (log)'],
+  logQuantile: ['分位数（对数）', 'Quantile (log)'],
+  percentEqual: ['百分比等距', 'Equal percent'],
+  percentQuantile: ['百分比分位数', 'Quantile percent'],
+  diverging: ['对称发散', 'Diverging'],
+  fixed: ['固定分级', 'Fixed classes'],
+  empty: ['无数据', 'No data'],
+};
+const methodLabel = (method) => { const [zh, en] = METHOD_LABELS[method] || METHOD_LABELS.equal; return t(zh, en); };
+
+function renderLegend(classifier, lens, countryValues) {
+  const { year, options } = state;
   const legend = $('legend');
   if (lens.id === 'terrain' || lens.id === 'biome') {
     const colors = lens.id === 'terrain'
@@ -79,17 +93,40 @@ function renderLegend(range, countryValues) {
     legend.innerHTML = `<div class="legend-title">${htmlText(lens.id === 'terrain' ? '地形与居民点' : '主要生态带')}</div><div class="legend-keys">${colors.map(([color, label]) => `<span><i style="--key:${color}"></i>${htmlText(label)}</span>`).join('')}</div>`;
     return;
   }
-  const [min, max] = range;
-  const low = lens.scale === 'total' ? 0 : min;
   const suffix = lens.code ? ` · ${formatYear(year)}` : ['gridPop', 'density'].includes(lens.id) ? ` · ${formatYear(atlas.gridYear)}` : '';
-  const measured = lens.code ? [...countryValues.values()].filter(Number.isFinite).length : null;
-  const label = (n) => format(n, lens.unit, true);
+  if (!classifier || classifier.method === 'empty') {
+    legend.innerHTML = `<div class="legend-title">${esc(lens.name + suffix)}</div><div class="legend-sub"><span>${htmlText('当前视图无可用数据')}</span></div>`;
+    return;
+  }
+  const unit = lens.unit;
+  const legendNumber = new Intl.NumberFormat(getLocale(), { maximumSignificantDigits: 3 });
+  const legendCompact = new Intl.NumberFormat(getLocale(), { notation: 'compact', maximumSignificantDigits: 2 });
+  const number = (n) => (Math.abs(n) >= 1e4 ? legendCompact.format(n) : legendNumber.format(n));
+  const label = (n) => (unit === '%' ? `${number(n)}%` : `${number(n)} ${msg(unit || '')}`.trim());
+  const signed = classifier.domain[0] < 0;
+  const joinRange = (a, b) => (signed
+    ? htmlText('{a} 至 {b}', { a: label(a), b: label(b) })
+    : `${esc(label(a))}–${esc(label(b))}`);
+  const measured = lens.code ? [...countryValues.values()].filter(Number.isFinite).length : classifier.total;
+  const visible = classifier.entries;
+  const zeroClass = classifier.entries[0]?.zero === true;
+  const maxShare = Math.max(...visible.map((entry) => entry.count), 1);
+  const classes = visible.map((entry, index) => {
+    let text;
+    if (entry.zero) text = esc(label(0));
+    else if (index === (zeroClass ? 1 : 0)) text = `≤ ${esc(label(entry.to))}`;
+    else if (index === visible.length - 1) text = `≥ ${esc(label(entry.from))}`;
+    else text = joinRange(entry.from, entry.to);
+    const share = classifier.total ? entry.count / classifier.total : 0;
+    return `<li class="legend-class${entry.count ? '' : ' legend-empty'}" title="${text} · ${formatPercent(share * 100)} · ${htmlText('{n} 个', { n: formatCount(entry.count) })}"><i style="--key:${entry.color}"></i><span class="legend-range">${text}</span><span class="legend-share" aria-hidden="true"><b style="--share:${(entry.count / maxShare * 100).toFixed(1)}%;--key:${entry.color}"></b></span></li>`;
+  }).join('');
+  const missing = classifier.missing;
   legend.innerHTML = `<div class="legend-title">${esc(lens.name + suffix)}</div>
-    <div class="legend-bar" style="background:linear-gradient(var(--legend-angle),${ramp(lens).join(',')})"></div>
-    <div class="legend-sub"><span>${esc(label(low))}</span><span>${esc(label(max))}${lens.code && lens.scale !== 'percent' ? ' +' : ''}</span></div>
+    <div class="legend-method">${htmlText('{method} · {n} 级', { method: methodLabel(classifier.method), n: formatCount(classifier.entries.length) })}${classifier.transform === 'log' ? ' · ' + htmlText('对数轴') : ''}</div>
+    <ul class="legend-classes">${classes}${missing ? `<li class="legend-class legend-missing"><i></i><span class="legend-range">${htmlText('缺失 {n}', { n: formatCount(missing) })}</span><span class="legend-share" aria-hidden="true"></span></li>` : ''}</ul>
     ${lens.code ? `<div class="legend-sub"><span>${htmlText('{count}/{total} 地域有数据', {
       count: formatCount(measured), total: formatCount(atlas.countries.length),
-    })}</span><span>${htmlText('灰色为缺失')}</span></div>` : ''}`;
+    })}</span><span>${htmlText('2–98% 截尾分级')}</span></div>` : `<div class="legend-sub"><span>${htmlText('按当前视图抽样标定')}</span><span>${htmlText('2–98% 截尾分级')}</span></div>`}`;
 }
 
 async function changeYear(year) {
@@ -616,6 +653,7 @@ async function init() {
     observations = createObservationStore(load, atlas.years[0], atlas.years.at(-1));
     map = new AtlasMap(canvas, atlas, summarizeMap, (result) => { focusRequest++; setSelection(result, true); }, showHover, notify);
     map.onDetailNeeded = loadDetails;
+    map.onScale = (classifier) => renderLegend(classifier, state.lens, new Map());
     renderLenses();
     bind();
     const [overview, official] = await Promise.all([load('overview.json'), load('china-official.json'), observations.ensureYear(atlas.year), map.getTile(2, 'world')]);
