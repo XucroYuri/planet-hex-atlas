@@ -29,6 +29,14 @@ def main(url):
         hrefs = events.locator('a').evaluate_all('els => els.map(el => el.href)')
         assert any('cnsa.gov.cn' in href for href in hrefs), hrefs
         assert any('cmse.gov.cn' in href for href in hrefs), hrefs
+        crewed = page.locator('.space-crewed')
+        expect(crewed).to_contain_text('载人深空任务', timeout=20000)
+        rows = crewed.locator('tbody tr')
+        assert rows.count() == 10, rows.count()
+        expect(crewed).to_contain_text('Apollo 11')
+        expect(crewed).to_contain_text('1969-07-16')
+        assert crewed.locator('tbody tr', has_text='✓').count() == 6
+        assert crewed.locator('a[href*="nasa.gov"]').count() >= 2
         assert not errors, errors[:3]
         browser.close()
         print('Space timeline includes Chinese crewed and lunar milestones.')

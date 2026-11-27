@@ -78,3 +78,12 @@
 .coverage-other { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; font-size: 12px; color: var(--muted); }
 .coverage-other li { line-height: 1.5; }
 .coverage-other a { color: #24695f; font-weight: 650; text-underline-offset: 3px; }
+.space-crewed { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 14px; }
+.space-crewed h3 { margin: 0 0 6px; }
+.space-crew-note, .space-crew-source { margin: 0 0 8px; color: var(--muted); font-size: 12px; }
+.space-crewed .table-scroll { max-height: 320px; overflow: auto; border: 1px solid var(--line); background: #fbfcf5; }
+.space-crewed table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.space-crewed th, .space-crewed td { padding: 5px 9px; border-top: 1px solid var(--line); text-align: start; white-space: nowrap; }
+.space-crewed thead th { position: sticky; top: 0; background: #eef1e7; }
+.space-crewed tbody th { font-weight: 600; }
+.space-crewed td:last-child { text-align: center; }

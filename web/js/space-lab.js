@@ -60,6 +60,17 @@ export async function renderSpace(host, ctx) {
     <div class="space-layout"><figure class="space-plot"><svg viewBox="0 0 560 400" role="img" aria-label="${esc(t('日心黄道面位置图','Heliocentric ecliptic chart'))}"></svg><figcaption>${esc(t('日心黄道面俯视图。地面投影半径采用对数刻度，虚线连接探测器的年度样本。','Ecliptic-plane view. Projected radius uses a logarithmic scale. Dashed tracks connect annual spacecraft samples.'))}</figcaption></figure><div data-details></div></div>
     <div class="space-boundaries"><article><h3>${esc(t('载人离地纪录','Crewed distance record'))}</h3><strong>${integer.format(EARTH_RECORD_KM)} km</strong><p>${esc(t('2026 年 4 月，阿尔忒弥斯 II。NASA 公布的最远离地距离为 252,756 英里。','Artemis II, April 2026. NASA reported a maximum distance of 252,756 miles from Earth.'))}</p><a href="${CREW}" target="_blank" rel="noopener">NASA ↗</a></article>
     <article><h3>${esc(t('理想光信号前沿','Ideal light-signal front'))}</h3><strong data-light></strong><label>${esc(t('假设发射年份','Assumed emission year'))}<input name="signal-year" type="number" min="1800" max="${lastYear}" value="${signalYear}"></label><p>${esc(t('思考实验：到所选星历年，真空中每经过一年光前进一光年。实际天线方向、衰减和电离层影响可探测范围。','Thought experiment: light travels one light-year per year in vacuum until the selected epoch. Direction, attenuation and the ionosphere affect detectability.'))}</p></article></div>
+    <section class="space-crewed"><h3>${esc(t('载人深空任务','Crewed deep-space missions'))}</h3>
+      <p class="space-crew-note">${esc(t('阿波罗计划 1968–1972 年的载人月球任务与 2026 年阿尔忒弥斯 II；乘员数为 NASA 公布数字，日期为发射日期。','Apollo lunar missions from 1968–1972 and Artemis II in 2026. Crew counts are NASA figures; dates are launch dates.'))}</p>
+      <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('载人深空任务','Crewed deep-space missions'))}"><table><thead><tr><th scope="col">${esc(t('任务','Mission'))}</th><th scope="col">${esc(t('发射日期','Launch date'))}</th><th scope="col">${esc(t('乘员','Crew'))}</th><th scope="col">${esc(t('月面着陆','Lunar landing'))}</th></tr></thead><tbody>${[
+        ['Apollo 8', '1968-12-21', 3, false], ['Apollo 10', '1969-05-18', 3, false],
+        ['Apollo 11', '1969-07-16', 3, true], ['Apollo 12', '1969-11-14', 3, true],
+        ['Apollo 13', '1970-04-11', 3, false], ['Apollo 14', '1971-01-31', 3, true],
+        ['Apollo 15', '1971-07-26', 3, true], ['Apollo 16', '1972-04-16', 3, true],
+        ['Apollo 17', '1972-12-07', 3, true], ['Artemis II', '2026-04', 4, false],
+      ].map(([name, date, crew, landed]) => `<tr><th scope="row">${esc(name)}</th><td>${esc(date)}</td><td>${crew}</td><td>${landed ? '✓' : '—'}</td></tr>`).join('')}</tbody></table></div>
+      <p class="space-crew-source"><a href="https://www.nasa.gov/history/the-apollo-program/" target="_blank" rel="noopener">NASA · Apollo Program ↗</a> · <a href="${CREW}" target="_blank" rel="noopener">NASA · Artemis II ↗</a></p>
+    </section>
     <section class="space-launches"><h3>${esc(t('轨道发射活动','Orbital launch activity'))}</h3>
       <p class="space-launch-summary" data-launch-summary></p>
       <div class="space-launch-chart" data-launch-chart></div>
