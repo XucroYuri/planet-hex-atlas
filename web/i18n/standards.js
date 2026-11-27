@@ -190,4 +190,6 @@ export default [
   ['发射日期', 'Launch date', '發射日期', 'Fecha de lanzamiento', 'Date de lancement', '打上げ日', '발사일', 'تاريخ الإطلاق'],
   ['乘员', 'Crew', '乘員', 'Tripulación', 'Équipage', '乗員', '승무원', 'الطاقم'],
   ['月面着陆', 'Lunar landing', '月面著陸', 'Alunizaje', 'Atterrissage lunaire', '月面着陸', '달 착륙', 'الهبوط على القمر'],
+  ['数据更新', 'Data updates', '資料更新', 'Actualizaciones de datos', 'Mises à jour des données', 'データ更新', '데이터 업데이트', 'تحديثات البيانات'],
+  ['更新日志载入中…', 'Loading update log…', '更新日誌載入中…', 'Cargando registro de actualizaciones…', 'Chargement du journal des mises à jour…', '更新履歴を読み込み中…', '업데이트 기록을 불러오는 중…', 'جارٍ تحميل سجل التحديثات…'],
 ];

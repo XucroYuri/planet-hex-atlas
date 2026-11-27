@@ -24,6 +24,10 @@ def main(url):
         assert re.search(r'[0-9a-f]{16}', text), text
         expect(build).to_contain_text('构建于')
         expect(page.locator('.about-build')).to_contain_text('数据规模')
+        changelog = page.locator('[data-changelog]')
+        expect(changelog).to_contain_text('数据更新', timeout=20000)
+        expect(changelog).to_contain_text('2026-11-28')
+        expect(changelog.locator('li')).to_have_count(6)
         expect(page.locator('.about-build')).to_contain_text('无第三方分析')
         repo = page.locator('.about-build a[href="https://github.com/XucroYuri/planet-hex-atlas"]')
         expect(repo).to_have_count(1)

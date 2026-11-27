@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "entries": [
+    { "date": "2026-11-28", "zh": "新增阿波罗载人深空任务表与中国航天里程碑（NASA / 中国载人航天工程办公室 / 中国国家航天局）。", "en": "Added the crewed Apollo mission table and Chinese spaceflight milestones (NASA / CMSE / CNSA).", "url": "https://earth.xuyu.net/#mode=space" },
+    { "date": "2026-11-27", "zh": "新增城镇人口占比、历史人口密度、全球 GDP 总量、识字率、预期寿命、牧场面积等长时段序列（UN DESA / OWID / HYDE / Maddison）。", "en": "Added long-run urban share, population density, world GDP, literacy, life expectancy and pasture series (UN DESA / OWID / HYDE / Maddison).", "url": "https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/visualization.md" },
+    { "date": "2026-11-27", "zh": "中国官方 GDP 1978–2025 年人民币序列，以及 2024–2025 年统计公报年末人口（国家统计局）。", "en": "Official NBS GDP in CNY for 1978–2025 and year-end population for 2024–2025 from statistical communiqués.", "url": "https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/china-standards.md" },
+    { "date": "2026-11-27", "zh": "界面扩展到 41 种语言，其中 8 种人工词条、33 种离线机器词条，并支持阿拉伯语、希伯来语等 RTL 布局。", "en": "Expanded the interface to 41 languages: 8 curated and 33 offline machine packs, with RTL layouts for Arabic, Hebrew and others.", "url": "https://earth.xuyu.net/" },
+    { "date": "2026-11-27", "zh": "新增地图 PNG 导出、打印样式、年份跳转、指标搜索、离线 PWA 与标准地图本机对照。", "en": "Added PNG export, print styles, year jump, indicator search, offline PWA and local standard-map comparison.", "url": "https://earth.xuyu.net/" },
+    { "date": "2026-11-25", "zh": "新增 1957–2025 年全球入轨物体序列（联合国 UNOOSA，经 OWID 汇编）。", "en": "Added the 1957–2025 global orbital launch series (UNOOSA via Our World in Data).", "url": "https://ourworldindata.org/grapher/yearly-number-of-objects-launched-into-outer-space" }
+  ]
+}

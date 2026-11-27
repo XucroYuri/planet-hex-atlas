@@ -178,6 +178,7 @@ export function renderSources(host, atlas) {
     <p class="method">${htmlText('年度指标和事件推演分别使用观测数据与公开模型假设。推演计算运行在你的浏览器中。')}<br>${htmlText('可视化方法：按指标分布自动选择等距、分位数、自然断点、对数与发散分级，并在图例公开断点。')} <a href="https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/visualization.md" target="_blank" rel="noopener">${htmlText('查看分级方法')} ↗</a></p>
     <div class="panel-buttons"><a class="panel-action" href="./data/atlas.json" download="orbis-atlas-sources.json">${htmlText('下载指标与来源清单')}</a><a class="panel-action" href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')}</a><a class="panel-action" href="./data/source-lock.json" download>${htmlText('下载源文件校验值')}</a>${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>
     <section class="about-build"><h3>${htmlText('关于与版本')}</h3>
+      <div data-changelog><h4>${htmlText('数据更新')}</h4><p>${htmlText('更新日志载入中…')}</p></div>
       <p data-build>${htmlText('版本信息载入中…')}</p>
       <p>${htmlText('数据规模：{regions} 个地域、{metrics} 项指标、{years} 年、{cells} 个 H3 R4 格网', {
         regions: formatCount(atlas.countries.length), metrics: formatCount(atlas.metrics.length),
@@ -187,6 +188,17 @@ export function renderSources(host, atlas) {
       <div class="panel-buttons"><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas" target="_blank" rel="noopener">${htmlText('开源仓库')} ↗</a><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas/issues" target="_blank" rel="noopener">${htmlText('反馈与数据建议')} ↗</a></div>
     </section>`;
   const build = host.querySelector('[data-build]');
+  const changelog = host.querySelector('[data-changelog]');
+  fetch('data/changelog.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : null).then((log) => {
+    if (!changelog?.isConnected) return;
+    if (!Array.isArray(log?.entries) || !log.entries.length) { changelog.hidden = true; return; }
+    const zhInterface = /^zh/i.test(document.documentElement.lang || '');
+    changelog.innerHTML = `<h4>${htmlText('数据更新')}</h4><ol>${log.entries.map((entry) => {
+      const text = zhInterface ? entry.zh : entry.en;
+      const link = entry.url ? ` <a href="${esc(entry.url)}" target="_blank" rel="noopener">↗</a>` : '';
+      return `<li><time datetime="${esc(entry.date)}">${esc(entry.date)}</time> ${esc(text)}${link}</li>`;
+    }).join('')}</ol>`;
+  }).catch(() => { if (changelog) changelog.hidden = true; });
   fetch('/release.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : null).then((info) => {
     if (!build.isConnected) return;
     if (!info?.snapshot) { build.textContent = msg('版本信息暂不可用。'); return; }
