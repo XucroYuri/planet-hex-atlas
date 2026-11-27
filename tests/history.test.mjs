@@ -69,6 +69,11 @@ test('用中国实际人口序列核对近代截止年的留后误差', () => {
 test('原始年点、分期、真实零值和官方普查记录均可定位', () => {
   const { areas, totals } = read('catalog.json');
   assert.equal(totals.population.areas, 233);
+  assert.deepEqual(totals.lifeExpectancy, { rows: 19105, areas: 231 });
+  assert.deepEqual(areas.WORLD.coverage.lifeExpectancy, [1770, 2023, 81]);
+  assert.deepEqual(areas.GBR.coverage.lifeExpectancy, [1543, 2023, 242]);
+  assert.equal(new Map(read('series/WORLD.json').lifeExpectancy).get(2023), 73.1694);
+  assert.equal(new Map(read('series/CHN.json').lifeExpectancy).get(2023), 77.9529);
   assert.equal(totals.gdp.areas, 165);
   assert.deepEqual(totals.cropland, { rows: 296, areas: 11 });
   assert.deepEqual(totals.census, { rows: 24, areas: 2 });
