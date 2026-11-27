@@ -46,7 +46,7 @@ export function renderWishlist(host,ctx) {
 
   async function loadCoverage() {
     const box=host.querySelector('[data-coverage-summary]');
-    const labels=[['population','人口估计','Population'],['gdp','人均 GDP','GDP per capita'],['lifeExpectancy','预期寿命','Life expectancy'],['literacy','成人识字率','Adult literacy'],['cropland','耕地总面积','Cropland area'],['pasture','牧场面积','Pasture area'],['arable','可耕地占比','Arable share'],['census','人口普查实报','Census counts']];
+    const labels=[['population','人口估计','Population'],['gdp','人均 GDP','GDP per capita'],['lifeExpectancy','预期寿命','Life expectancy'],['literacy','成人识字率','Adult literacy'],['cropland','耕地总面积','Cropland area'],['pasture','牧场面积','Pasture area'],['density','历史人口密度','Historical population density'],['arable','可耕地占比','Arable share'],['census','人口普查实报','Census counts']];
     try {
       const [annual,history,provenance]=await Promise.all([load(`annual/${ctx.year}.json`),load('history/catalog.json'),load('history/sources.json')]);
       const regions=Object.values(annual.regions);

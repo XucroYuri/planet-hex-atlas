@@ -72,6 +72,9 @@ test('原始年点、分期、真实零值和官方普查记录均可定位', ()
   assert.deepEqual(totals.lifeExpectancy, { rows: 19105, areas: 231 });
   assert.deepEqual(totals.literacy, { rows: 1164, areas: 174 });
   assert.deepEqual(totals.pasture, { rows: 126, areas: 1 });
+  assert.deepEqual(totals.density, { rows: 54475, areas: 230 });
+  assert.deepEqual(areas.WORLD.coverage.density, [-10000, 2023, 261]);
+  assert.equal(new Map(read('series/WORLD.json').density).get(2023), 62.174232);
   assert.deepEqual(areas.WORLD.coverage.pasture, [-10000, 2023, 126]);
   assert.equal(new Map(read('series/WORLD.json').pasture).get(2023), 7433910.11);
   assert.deepEqual(areas.WORLD.coverage.lifeExpectancy, [1770, 2023, 81]);
