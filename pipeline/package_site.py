@@ -15,7 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
 # Bump when packaging rules change so that identical assets still get a new snapshot.
-PACKAGING_VERSION = 4
+PACKAGING_VERSION = 5
 
 
 def link_or_copy(source, target):
@@ -73,6 +73,10 @@ def package(destination):
     security = ('/*\n'
                 '  X-Content-Type-Options: nosniff\n'
                 '  X-Frame-Options: DENY\n'
+                '  Strict-Transport-Security: max-age=31536000; includeSubDomains\n'
+                '  Cross-Origin-Opener-Policy: same-origin\n'
+                '  Cross-Origin-Resource-Policy: same-origin\n'
+                '  X-XSS-Protection: 0\n'
                 '  Referrer-Policy: strict-origin-when-cross-origin\n'
                 '  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()\n'
                 f'  Content-Security-Policy: {csp}\n')

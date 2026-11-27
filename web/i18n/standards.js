@@ -228,4 +228,6 @@ export default [
   ['自然增长率', 'Natural growth rate', '自然增長率', 'Tasa de crecimiento natural', 'Taux d’accroissement naturel', '自然増加率', '자연증가율', 'معدل النمو الطبيعي'],
   ['城镇调查失业率', 'Urban surveyed unemployment rate', '城鎮調查失業率', 'Tasa de desempleo urbana encuestada', 'Taux de chômage urbain enquêté', '都市調査失業率', '도시 조사 실업률', 'معدل البطالة الحضري المبحوث'],
   ['乡村常住人口', 'Rural resident population', '鄉村常住人口', 'Población rural residente', 'Population rurale résidente', '農村常住人口', '농촌 상주 인구', 'السكان الريفيون المقيمون'],
+  ['1949–2025 年官方年末人口（万人，线性刻度）', 'Official year-end population 1949–2025 (10,000 people, linear scale)', '1949–2025 年官方年末人口（萬人，線性刻度）', 'Población oficial al final del año 1949–2025 (diez mil personas, escala lineal)', 'Population officielle en fin d’année 1949–2025 (dizaines de milliers, échelle linéaire)', '1949–2025年公式年末人口（万人、線形目盛）', '1949–2025년 공식 연말 인구(만 명, 선형 스케일)', 'السكان الرسميون في نهاية العام 1949–2025 (عشرة آلاف نسمة، مقياس خطي)'],
+  ['官方年末人口 · 1949–2025 · 万人', 'Official year-end population · 1949–2025 · 10,000 people', '官方年末人口 · 1949–2025 · 萬人', 'Población oficial al final del año · 1949–2025 · diez mil personas', 'Population officielle en fin d’année · 1949–2025 · dizaines de milliers', '公式年末人口 · 1949–2025 · 万人', '공식 연말 인구 · 1949–2025 · 만 명', 'السكان الرسميون في نهاية العام · 1949–2025 · عشرة آلاف نسمة'],
 ];

@@ -31,6 +31,9 @@ def main(url):
         assert headers.get('referrer-policy') == 'strict-origin-when-cross-origin'
         assert 'geolocation=()' in headers.get('permissions-policy', '')
         assert headers.get('x-content-type-options') == 'nosniff'
+        assert 'max-age=31536000' in headers.get('strict-transport-security', '')
+        assert headers.get('cross-origin-opener-policy') == 'same-origin'
+        assert headers.get('cross-origin-resource-policy') == 'same-origin'
 
         violations = []
         page.on('console', lambda message: violations.append(message.text)

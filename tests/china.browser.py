@@ -58,6 +58,11 @@ def main(url):
         line = spark.locator('path.spark-line').get_attribute('d')
         assert line and line.count('L') >= 46, line[:80]
         expect(page.locator('[data-china-series] figcaption')).to_contain_text('对数刻度')
+        population_spark = page.locator('[data-china-population] svg')
+        expect(population_spark).to_be_visible()
+        population_line = population_spark.locator('path.spark-line').get_attribute('d')
+        assert population_line and population_line.count('L') >= 60, population_line[:80]
+        expect(page.locator('[data-china-population] figcaption')).to_contain_text('万人')
         with page.expect_download(timeout=30000) as pending:
             page.locator('[data-export-china]').click()
         download = pending.value

@@ -27,6 +27,7 @@ def test():
             assert "frame-ancestors 'none'" in headers
             assert 'Referrer-Policy: strict-origin-when-cross-origin' in headers
             assert 'Permissions-Policy:' in headers
+            assert 'Strict-Transport-Security: max-age=' in headers
             (public/'app.js').write_text('export const VERSION = 2;')
             assert (a/'r'/a.name/'app.js').read_text()==before, 'release was hard-linked to mutable sources'
             b=package_site.package(releases)

@@ -77,7 +77,7 @@ PYTHONPATH=. uv run python tests/china_source_audit_test.py
 
 ## 安全响应头
 
-生产环境由 Cloudflare Pages `_headers` 下发：`Content-Security-Policy`（`default-src 'self'`、内联启动脚本 SHA-256 哈希、无 `unsafe-eval`）、`X-Frame-Options: DENY`、`Referrer-Policy`、`Permissions-Policy` 与 `X-Content-Type-Options`。严格 CSP 会阻止 Playwright 的字符串 `eval` 与脚本注入，因此 `tests/csp.browser.py` 用定位器与控制台事件做生产审计；依赖 eval 的交互套件请对本地服务器运行。
+生产环境由 Cloudflare Pages `_headers` 下发：`Content-Security-Policy`（`default-src 'self'`、内联启动脚本 SHA-256 哈希、无 `unsafe-eval`）、`X-Frame-Options: DENY`、`Referrer-Policy`、`Permissions-Policy` 与 `X-Content-Type-Options`；另下发 HSTS、COOP、CORP 与 `X-XSS-Protection: 0`。严格 CSP 会阻止 Playwright 的字符串 `eval` 与脚本注入，因此 `tests/csp.browser.py` 用定位器与控制台事件做生产审计；依赖 eval 的交互套件请对本地服务器运行。
 
 ## 自动验证
 
