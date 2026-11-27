@@ -149,6 +149,8 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .time-copy { min-width: 55px; display: grid; }
 .time-copy label, .time-note { font-size: 11px; color: var(--muted); }
 .time-copy output { font: 700 21px/1.2 var(--mono); letter-spacing: -.065em; }
+.year-entry { display: flex; align-items: center; gap: 6px; }
+.year-entry input { width: 4.8em; height: 28px; border: 1px solid #b9c9be; border-radius: 4px; background: #fbfcf5; color: var(--ink); padding: 0 5px; font: 650 13px var(--mono); }
 .timeline { padding-top: 2px; min-width: 0; }
 .timeline input { margin: 0; width: 100%; accent-color: #367d72; display: block; height: 24px; cursor: pointer; }
 .timeline-marks { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); }

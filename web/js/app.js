@@ -634,6 +634,12 @@ function bind() {
     if (event.key === '/' && !dialog.open && !event.target.closest('input,select,textarea,[contenteditable]')) { event.preventDefault(); void openDialog('search'); }
   });
   $('year').addEventListener('input', (event) => { setPlaying(false); changeYear(+event.target.value); });
+  $('year-jump').addEventListener('change', (event) => {
+    const value = Number(event.target.value);
+    setPlaying(false);
+    void changeYear(Number.isFinite(value) ? Math.round(value) : state.year);
+    event.target.value = '';
+  });
   $('play-years').onclick = () => setPlaying(!interval);
   $('launch-search').onclick = () => void openDialog('search');
   $('show-sources').onclick = () => void openDialog('sources');

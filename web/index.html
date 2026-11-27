@@ -106,7 +106,7 @@
     <aside class="inspector" id="inspector" aria-label="地图档案" aria-live="polite" data-i18n-attrs="aria-label"></aside>
     <section class="timebar" aria-label="历史观测年份" data-i18n-attrs="aria-label">
       <button class="play-button" id="play-years" aria-label="播放历史年份" title="播放历史年份" data-i18n-attrs="aria-label title"><span aria-hidden="true">▶</span></button>
-      <div class="time-copy"><label for="year" data-i18n>观测年份</label><output id="year-label" for="year">2023</output></div>
+      <div class="time-copy"><label for="year" data-i18n>观测年份</label><div class="year-entry"><input id="year-jump" type="number" inputmode="numeric" min="1960" max="2025" step="1" placeholder="YYYY" aria-label="跳转年份" data-i18n-attrs="aria-label"><output id="year-label" for="year">2023</output></div></div>
       <div class="timeline" dir="ltr"><input type="range" id="year" min="1960" max="2025" value="2023" aria-label="观测年份" data-i18n-attrs="aria-label"><div class="timeline-marks" id="timeline-marks" aria-hidden="true"><span>1960</span><span>1980</span><span>2000</span><span>2025</span></div></div>
       <span class="time-note" id="time-note"></span>
     </section>
