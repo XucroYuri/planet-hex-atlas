@@ -1,0 +1,19 @@
+{
+  "asOf": "2026-11-27",
+  "notes": {
+    "TWN": {
+      "gdp": {
+        "zh": "世界银行 WDI 没有可与本应用匹配的台湾省地区生产总值独立序列，因此该指标保持缺失，不用其他来源替代或拆分全国数据。",
+        "en": "The World Bank WDI has no separate GDP series for Taiwan Province that this atlas can match, so the value is left missing rather than substituted or split from a national total.",
+        "source": "https://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+      }
+    },
+    "ATA": {
+      "all": {
+        "zh": "南极洲没有常住人口与经济核算序列；相关图层仅显示地形、冰盖与科研站点等可获得数据。",
+        "en": "Antarctica has no resident population or national-accounts series; its layers only show available terrain, ice and research-station data.",
+        "source": "https://data.worldbank.org/"
+      }
+    }
+  }
+}

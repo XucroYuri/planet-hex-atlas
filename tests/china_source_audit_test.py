@@ -139,9 +139,13 @@ class ChinaSourceAuditTest(unittest.TestCase):
         write_json(self.root, "annual/2023.json", {
             "year": 2023, "regions": {"CHN": {"gdp": 100}, "HKG": {"gdp": 31}, "MAC": {"gdp": 0}},
         })
+        series = {str(year): {"gdp": 100, "primary": 10, "secondary": 40, "tertiary": 50}
+                  for year in range(1978, 2026)}
+        series["2024"] = {"gdp": 1348000, "primary": 91636, "secondary": 490305, "tertiary": 766125}
         write_json(self.root, "china-official.json", {
-            "referenceYear": 2024, "published": "2025-12-26", "revision": "最终核实",
-            "currency": "USD", "unit": "亿元", "values": {"gdp": 1348066},
+            "schema": 3, "authority": "国家统计局", "unit": "亿元", "priceBasis": "当年价格",
+            "scope": "全国年度 GDP，未包括香港、澳门特别行政区和台湾省的地区生产总值。",
+            "source": {}, "series": series,
         })
         report = audit.audit(self.root, year=2024)
         self.assertEqual(report["auditedYear"], 2024)

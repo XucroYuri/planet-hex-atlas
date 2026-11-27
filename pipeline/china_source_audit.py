@@ -197,16 +197,32 @@ def audit_economy(root, atlas, years, selected, missing):
     official_path = root / "china-official.json"
     official = read_json(official_path) if official_path.is_file() else None
     if official is not None:
+        series = official.get("series") or {}
+        years_official = sorted(int(year) for year in series if str(year).isdigit())
         official = {
-            **{key: official.get(key) for key in ("referenceYear", "published", "revision", "currency", "unit", "scope", "url")},
-            "gdp": official.get("values", {}).get("gdp"),
+            "schema": official.get("schema"),
+            "authority": official.get("authority"),
+            "unit": official.get("unit"),
+            "priceBasis": official.get("priceBasis"),
+            "scope": official.get("scope"),
+            "source": official.get("source"),
+            "coverage": {
+                "first": min(years_official) if years_official else None,
+                "last": max(years_official) if years_official else None,
+                "count": len(years_official),
+            },
+            "selected": {str(selected): series.get(str(selected))} if selected in years_official else {},
+            "anchors": {str(year): series.get(str(year), {}).get("gdp") for year in NBS_GDP if str(year) in series},
         }
+    notes_path = root / "missing-notes.json"
+    missing_notes = read_json(notes_path) if notes_path.is_file() else {"notes": {}}
     return {
         "metrics": metrics,
         "coverage": coverage,
         "annual": annual,
         "annualDifferences": differences,
         "localReference": official,
+        "missingNotes": missing_notes,
         "nbsReference": {
             "unit": "亿元人民币",
             "priceBasis": "当年价格",
@@ -258,19 +274,26 @@ def audit(root, year=None):
     if ("SCR" in probes["黄岩岛"]["detail"] and geography["regions"].get("SCR", {}).get("sovereignId") != "CHN"
             or any(not probes[name]["detail"] for name in ("东沙岛", "太平岛"))):
         blockers["ISLAND_GEOMETRY"] = "岛礁轮廓样点有独立区域命中或无命中，须对照权威图幅和符号图层。"
-    if economy["metrics"].get("gdp", {}).get("code") == "NY.GDP.MKTP.CD":
-        blockers["WDI_GDP_BASIS"] = "现有年度 GDP 使用 WDI 当年美元口径，需落实中国官方经济基准。"
+    official = economy["localReference"]
+    official_coverage = official["coverage"] if official else {"first": None, "last": None, "count": 0}
+    if economy["metrics"].get("gdp", {}).get("code") == "NY.GDP.MKTP.CD" and (
+        official is None or official["unit"] != "亿元" or official["priceBasis"] != "当年价格"
+        or official_coverage["count"] < 40 or official_coverage["first"] > 1978
+    ):
+        blockers["WDI_GDP_BASIS"] = "现有年度 GDP 仍以 WDI 美元口径为主，中国官方人民币 GDP 序列不完整。"
+    if official is not None:
+        if not official["scope"] or "香港" not in official["scope"] or "台湾" not in official["scope"]:
+            blockers["OFFICIAL_GDP_SCOPE"] = "中国官方 GDP 未声明不含港澳台地区生产总值。"
+        for year, expected in NBS_GDP.items():
+            value = official["anchors"].get(str(year))
+            if value is not None and abs(value - expected[0]) > 0.5:
+                blockers["NBS_REFERENCE_DRIFT"] = f"{year} 年官方序列值与公告锚点不同。"
+    note = economy["missingNotes"].get("notes", {}).get("TWN", {}).get("gdp", {})
     if economy["annual"][selected]["values"]["TWN"]["gdp"] is None:
-        blockers["TAIWAN_GDP_MISSING"] = f"{selected} 年台湾省 GDP 缺值，须采用可追溯数据或经核定的缺失注记。"
+        if not (len(note.get("zh", "")) > 20 and note.get("source", "").startswith("http")):
+            blockers["TAIWAN_GDP_MISSING"] = f"{selected} 年台湾省 GDP 缺值，须采用可追溯数据或经核定的缺失注记。"
     if economy["annualDifferences"]:
         blockers["ANNUAL_DRIFT"] = "年度分片与观测序列存在差异。"
-    reference = economy["localReference"]
-    if reference is not None and reference["referenceYear"] in NBS_GDP:
-        gdp, revision, published, _ = NBS_GDP[reference["referenceYear"]]
-        if (reference["gdp"], reference["revision"], reference["published"], reference["currency"], reference["unit"]) != (
-            gdp, revision, published, "CNY", "亿元",
-        ):
-            blockers["NBS_REFERENCE_DRIFT"] = "本地中国官方资料卡与公告锚点的版本、单位或总量不同。"
     if missing:
         blockers["ARTIFACT_MISSING"] = "有发布产物、格网样点或清单瓦片条目缺失。"
 

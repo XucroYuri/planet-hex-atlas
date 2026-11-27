@@ -49,7 +49,7 @@ function notify(message) {
 }
 
 function render() {
-  renderInspector($('inspector'), { ...state, atlas, byId, value });
+  renderInspector($('inspector'), { ...state, atlas, byId, value, missingNotes: state.missingNotes });
 }
 
 function changeLens(lens) {
@@ -656,8 +656,9 @@ async function init() {
     map.onScale = (classifier) => renderLegend(classifier, state.lens, new Map());
     renderLenses();
     bind();
-    const [overview, official] = await Promise.all([load('overview.json'), load('china-official.json'), observations.ensureYear(atlas.year), map.getTile(2, 'world')]);
+    const [overview, official, missingNotes] = await Promise.all([load('overview.json'), load('china-official.json'), load('missing-notes.json'), observations.ensureYear(atlas.year), map.getTile(2, 'world')]);
     state.chinaOfficial = official;
+    state.missingNotes = missingNotes;
     map.setGeography(overview.outlines, overview.water);
     state.cities = overview.cities;
     map.setCities(overview.cities);

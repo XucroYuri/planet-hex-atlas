@@ -1,5 +1,5 @@
 import { LANDING_CITIES, SITES, coordinates, distanceKm, esc, format } from './data.js';
-import { formatCount, formatYear, htmlText, msg, registerMessages } from './i18n.js';
+import { formatCount, formatYear, htmlText, msg, registerMessages, t } from './i18n.js';
 import { cityName, continentName, countryName, regionName, siteName } from './i18n-places.js';
 import profiles from '../i18n/profiles.js';
 
@@ -58,12 +58,25 @@ export function renderInspector(host, ctx) {
     const name = countryName(c);
     content = header('地区档案', name, [...new Set([c.name !== name ? c.name : '', continentName(c.continent)])].filter(Boolean).join(' · '), c.id);
     const official = ctx.chinaOfficial?.series?.[String(year)];
-    if (c.id === 'CHN' && official) {
-      content += `<section class="inspector-section"><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('{year} 年国内生产总值（{revision}）：{value} 亿元人民币', {
-        year: formatYear(year), revision: msg(official.revision), value: format(official.gdp),
-      })}</p><p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p><a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText('国家统计局公告（{date}）', { date: official.published })} ↗</a></section>`;
-    } else if (c.sovereignId === 'CHN' || c.id === 'CHN') {
+    if (c.id === 'CHN') {
+      if (official) {
+        const industries = [['第一产业', official.primary], ['第二产业', official.secondary], ['第三产业', official.tertiary]];
+        content += `<section class="inspector-section"><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('{year} 年国内生产总值（{revision}）：{value} 亿元人民币', {
+          year: formatYear(year), revision: msg(official.revision), value: format(official.gdp),
+        })}</p><dl class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}</dl>
+          <p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p>
+          <a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText(official.revision.includes('年鉴') ? '《中国统计年鉴 2024》表 3-1（当年价）' : '国家统计局公告（{date}）', { date: official.published })} ↗</a>
+          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p></section>`;
+      } else {
+        content += `<p class="atlas-memo">${htmlText('中国官方序列自 {first} 年起；{year} 年暂无官方口径，下方显示世界银行序列。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial?.series || { 1978: 1 })[0])), year: formatYear(year) })}</p>`;
+      }
+    } else if (c.sovereignId === 'CHN') {
       content += `<p class="atlas-memo">${htmlText('该地区按中国官方行政层级归属中华人民共和国。统计数字保留各自来源，不合并为全国总量。')}</p>`;
+    }
+    const note = ctx.missingNotes?.notes?.[c.id];
+    if (note && ctx.value(c.id, 'gdp', year) === null) {
+      const entry = note.gdp || note.all;
+      if (entry) content += `<p class="atlas-memo">${esc(t(entry.zh, entry.en))} <a href="${esc(entry.source)}" target="_blank" rel="noopener">${htmlText('来源')} ↗</a></p>`;
     }
     content += `<dl class="atlas-stats">${stat('人口', people(c.id), worldBank(year))}${stat('经济总量', economy(c.id), `${formatYear(year)} · ${msg('名义 GDP')} · World Bank`)}${stat('预期寿命', format(value(c.id, 'life', year), '岁'), worldBank(year))}${stat('电力可及率', format(value(c.id, 'electric', year), '%'), worldBank(year))}</dl>`;
     if (lens.code) content += `<dl class="detail-list">${row(lens.name, compactNumber(value(c.id, lens.id, year), lens.unit))}</dl>`;
