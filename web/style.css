@@ -228,3 +228,7 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .standard-compare figure { margin: 0; padding: 8px; border: 1px solid var(--line); background: #f7f7ef; }
 .standard-compare img { display: block; max-width: 100%; max-height: min(420px, 50vh); object-fit: contain; }
 .standard-compare figcaption { margin-top: 6px; color: var(--muted); font-size: 12px; }
+.about-build { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.about-build h3 { margin: 0 0 6px; }
+.about-build p { margin: 0 0 8px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.about-build [data-build] { color: var(--ink); font-family: var(--mono); font-size: 12px; }

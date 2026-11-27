@@ -176,5 +176,25 @@ export function renderSources(host, atlas) {
   host.innerHTML = `<p class="method">${htmlText('地图边界沿用 Natural Earth。国家或地区层以面状着色表示同一统计单位的观测。格网人口来自单独的 {year} 年估算，与世界银行年度合计的口径有差异。R2/R3 人口按 H3 父子关系聚合。', { year: formatYear(atlas.gridYear) })}</p>
     <div class="source-grid">${items.map(([name, text, url]) => `<article><h3>${htmlText(name)}</h3><p>${htmlText(text)}</p><a href="${url}" target="_blank" rel="noopener">${htmlText('查看数据与条款')} ↗</a></article>`).join('')}</div>
     <p class="method">${htmlText('年度指标和事件推演分别使用观测数据与公开模型假设。推演计算运行在你的浏览器中。')}<br>${htmlText('可视化方法：按指标分布自动选择等距、分位数、自然断点、对数与发散分级，并在图例公开断点。')} <a href="https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/visualization.md" target="_blank" rel="noopener">${htmlText('查看分级方法')} ↗</a></p>
-    <div class="panel-buttons"><a class="panel-action" href="./data/atlas.json" download="orbis-atlas-sources.json">${htmlText('下载指标与来源清单')}</a><a class="panel-action" href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')}</a><a class="panel-action" href="./data/source-lock.json" download>${htmlText('下载源文件校验值')}</a>${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>`;
+    <div class="panel-buttons"><a class="panel-action" href="./data/atlas.json" download="orbis-atlas-sources.json">${htmlText('下载指标与来源清单')}</a><a class="panel-action" href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')}</a><a class="panel-action" href="./data/source-lock.json" download>${htmlText('下载源文件校验值')}</a>${button(msg('标准与声明'), 'standards')}${button(msg('反馈与数据建议'), 'feedback')}</div>
+    <section class="about-build"><h3>${htmlText('关于与版本')}</h3>
+      <p data-build>${htmlText('版本信息载入中…')}</p>
+      <p>${htmlText('数据规模：{regions} 个地域、{metrics} 项指标、{years} 年、{cells} 个 H3 R4 格网', {
+        regions: formatCount(atlas.countries.length), metrics: formatCount(atlas.metrics.length),
+        years: formatCount(atlas.years.length), cells: formatCount(atlas.counts.cells),
+      })}</p>
+      <p>${htmlText('无第三方分析或广告脚本；所有交互在你的浏览器中运行。')}</p>
+      <div class="panel-buttons"><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas" target="_blank" rel="noopener">${htmlText('开源仓库')} ↗</a><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas/issues" target="_blank" rel="noopener">${htmlText('反馈与数据建议')} ↗</a></div>
+    </section>`;
+  const build = host.querySelector('[data-build]');
+  fetch('/release.json', { cache: 'no-store' }).then((response) => response.ok ? response.json() : null).then((info) => {
+    if (!build.isConnected) return;
+    if (!info?.snapshot) { build.textContent = msg('版本信息暂不可用。'); return; }
+    const date = info.builtAt ? new Date(info.builtAt) : null;
+    const shown = date && Number.isFinite(date.valueOf())
+      ? new Intl.DateTimeFormat(document.documentElement.lang || 'zh-CN', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+      : '';
+    build.innerHTML = htmlText('当前快照 {snapshot} · 构建于 {date}', { snapshot: info.snapshot, date: shown || '—' })
+      + (info.previous ? `<br>${htmlText('上一版快照 {previous}', { previous: info.previous })}` : '');
+  }).catch(() => { if (build.isConnected) build.textContent = msg('版本信息暂不可用。'); });
 }

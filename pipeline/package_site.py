@@ -7,12 +7,13 @@ import json
 import os
 import shutil
 import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
 # Bump when packaging rules change so that identical assets still get a new snapshot.
-PACKAGING_VERSION = 2
+PACKAGING_VERSION = 3
 
 
 def link_or_copy(source, target):
@@ -71,7 +72,8 @@ def package(destination):
     largest=max((p.stat().st_size,p.name) for p in work.rglob('*') if p.is_file())
     if asset_count>20000 or largest[0]>25*1024**2:
         raise ValueError(f'Pages Free packaging limit exceeded: {asset_count} files, largest {largest}')
-    manifest={'snapshot':digest,'previous':previous_id,'assets':len(entries),'deployFiles':asset_count,
+    manifest={'snapshot':digest,'previous':previous_id,'builtAt':datetime.now(timezone.utc).isoformat(timespec='seconds'),
+              'assets':len(entries),'deployFiles':asset_count,
               'publicBytes':sum(p.stat().st_size for p in files),'maxFileBytes':largest[0],
               'entry':'/','assetBase':subpath,'sha256':entries}
     manifest['sha256']['index.html']=hashlib.sha256((work/'index.html').read_bytes()).hexdigest()
