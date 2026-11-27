@@ -163,6 +163,10 @@ export function localizePage(document) {
     }
   }
   const menu = document.getElementById('language');
+  const curated = document.createElement('optgroup');
+  curated.label = msg('人工整理');
+  const machine = document.createElement('optgroup');
+  machine.label = msg('机器翻译 · MT');
   for (const entry of LOCALES) {
     const option = document.createElement('option');
     option.value = entry.tag;
@@ -170,7 +174,8 @@ export function localizePage(document) {
     option.dir = entry.dir;
     option.textContent = entry.label;
     if (entry.machine) option.title = 'Machine translation';
-    menu.append(option);
+    (entry.machine ? machine : curated).append(option);
   }
+  menu.replaceChildren(curated, machine);
   menu.value = tag;
 }

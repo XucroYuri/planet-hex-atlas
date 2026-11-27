@@ -168,4 +168,6 @@ export default [
   ['版本信息暂不可用。', 'Version information is temporarily unavailable.', '版本資訊暫時無法使用。', 'La información de versión no está disponible temporalmente.', 'Les informations de version sont temporairement indisponibles.', 'バージョン情報は一時的に利用できません。', '버전 정보를 일시적으로 사용할 수 없습니다.', 'معلومات الإصدار غير متاحة مؤقتًا.'],
   ['更新', 'Updated', '更新', 'Actualizado', 'Mis à jour', '更新日', '업데이트', 'آخر تحديث'],
   ['下载覆盖数据 CSV', 'Download coverage CSV', '下載覆蓋資料 CSV', 'Descargar cobertura en CSV', 'Télécharger la couverture en CSV', 'カバレッジを CSV でダウンロード', '커버리지 CSV 다운로드', 'تنزيل بيانات التغطية بصيغة CSV'],
+  ['人工整理', 'Curated', '人工整理', 'Revisado manualmente', 'Traduit manuellement', '人手で整備', '수작업 검수', 'مُراجَع يدويًا'],
+  ['机器翻译 · MT', 'Machine translation · MT', '機器翻譯 · MT', 'Traducción automática · MT', 'Traduction automatique · MT', '機械翻訳 · MT', '기계 번역 · MT', 'ترجمة آلية · MT'],
 ];
