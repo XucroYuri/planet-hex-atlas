@@ -27,13 +27,13 @@ def main(url):
         annual_rows = summary.locator('table').nth(0).locator('tbody tr')
         history_rows = summary.locator('table').nth(1).locator('tbody tr')
         assert annual_rows.count() == 29, annual_rows.count()
-        assert history_rows.count() >= 10, history_rows.count()
+        assert history_rows.count() >= 11, history_rows.count()
         expect(summary).to_contain_text('年龄')
         expect(summary).to_contain_text('覆盖')
         annual_links = summary.locator('table').nth(0).locator('tbody a')
         history_links = summary.locator('table').nth(1).locator('tbody a')
         assert annual_links.count() == 29, annual_links.count()
-        assert history_links.count() >= 10, history_links.count()
+        assert history_links.count() >= 11, history_links.count()
         expect(annual_links.first).to_contain_text('SP.')
         expect(summary).to_contain_text('2026-11-11')
         with page.expect_download(timeout=30000) as pending:
@@ -42,7 +42,7 @@ def main(url):
         assert download.suggested_filename == 'orbis-coverage.csv'
         text = open(download.path(), encoding='utf-8-sig').read().strip().splitlines()
         assert text[0] == 'section,metric,unit,code,updated,count,total,coverage', text[0]
-        assert len(text) == 1 + 29 + 10, len(text)
+        assert len(text) == 1 + 29 + 11, len(text)
         assert text[1].startswith('annual,')
         assert not errors, errors[:3]
         annual_count, history_count = annual_rows.count(), history_rows.count()

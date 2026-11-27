@@ -52,6 +52,14 @@
   "global-gdp-over-the-long-run.metadata.json": {
    "url": "https://ourworldindata.org/grapher/global-gdp-over-the-long-run.metadata.json",
    "sha256": "0b20d907eb9cc076f2ab0e9d0853b703b4b68f4493456de1237623791ec6ec38"
+  },
+  "share-of-population-urban.csv": {
+   "url": "https://ourworldindata.org/grapher/share-of-population-urban.csv",
+   "sha256": "0c0291a1bfd369d4d920129b3e2f4ba96aed29ac69cef26456404fb5d8d2a6dc"
+  },
+  "share-of-population-urban.metadata.json": {
+   "url": "https://ourworldindata.org/grapher/share-of-population-urban.metadata.json",
+   "sha256": "50374673c3893126d0141de8092ae9c2ae24efa80d511102efb5fb984bc8c02c"
   }
  },
  "sources": {
@@ -191,6 +199,18 @@
     [
      "Maddison / World Bank / OWID · CC BY 4.0",
      "https://creativecommons.org/licenses/by/4.0/"
+    ]
+   ]
+  },
+  "urbanShare": {
+   "url": "https://ourworldindata.org/grapher/share-of-population-urban",
+   "chart": "https://ourworldindata.org/grapher/share-of-population-urban",
+   "citation": "Share of population living in urban areas. United Nations Department of Economic and Social Affairs, Population Division (2025), via Our World in Data.",
+   "note": "Urban share by present-day boundaries; years after 2023 are excluded from the historical series.",
+   "licenses": [
+    [
+     "UN DESA / OWID · CC BY 3.0 IGO",
+     "https://creativecommons.org/licenses/by/3.0/igo/"
     ]
    ]
   }

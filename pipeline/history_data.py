@@ -103,7 +103,7 @@ def add_grapher(shards, raw, column, areas, metric):
         if not area or not row[column]:
             continue
         year = int(row["Year"])
-        if metric == "density" and year > 2023:
+        if metric in ("density", "urbanShare") and year > 2023:
             continue
         if metric == "population":
             if year > 2023:
@@ -119,6 +119,8 @@ def add_grapher(shards, raw, column, areas, metric):
             raise ValueError(f"Density outside 0–1,000,000 for {area} at {year}")
         if metric == "worldGdp" and not 0 < value < 1e17:
             raise ValueError(f"World GDP outside plausible range for {area} at {year}")
+        if metric == "urbanShare" and not 0 <= value <= 100:
+            raise ValueError(f"Urban share outside 0–100% for {area} at {year}")
         add_point(shards, area, metric, year, value)
 
 
@@ -169,6 +171,7 @@ def build(input_dir, output_dir, fetch):
     add_grapher(shards, inputs["literacy-rate.csv"], "Literacy rate among adults", grapher_codes, "literacy")
     add_grapher(shards, inputs["population-density.csv"], "Population density", grapher_codes, "density")
     add_grapher(shards, inputs["global-gdp-over-the-long-run.csv"], "GDP", grapher_codes, "worldGdp")
+    add_grapher(shards, inputs["share-of-population-urban.csv"], "Urban", grapher_codes, "urbanShare")
     wdi_codes = {key: key for key in countries} | {"WLD": "WORLD"}
     add_wdi(shards, inputs["wdi-cropland.zip"], wdi_codes)
 
