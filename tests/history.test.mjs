@@ -1,7 +1,7 @@
 import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { backtestHistory, HISTORY_TRANSLATIONS, renderHistory } from '../web/js/history-lab.js';
+import { backtestHistory, backtestVerdict, HISTORY_TRANSLATIONS, renderHistory } from '../web/js/history-lab.js';
 
 const read = path => JSON.parse(readFileSync(new URL(`../web/data/history/${path}`, import.meta.url), 'utf8'));
 const closeTo = (actual, expected, tolerance = 1e-10) => {
@@ -39,6 +39,14 @@ test('在不均匀、跨纪元的历年上拟合，留后值无法泄漏到参�
   closeTo(rechecked.slope, result.slope);
   closeTo(rechecked.intercept, result.intercept);
   closeTo(rechecked.modelError.mape, 0.5);
+});
+
+test('回测结论比较拟合与基线并处理相似与不充分情形', () => {
+  const base = { status: 'ok', modelError: { mape: 0.1 }, baselineError: { mape: 0.2 } };
+  assert.equal(backtestVerdict(base), 'modelBetter');
+  assert.equal(backtestVerdict({ ...base, modelError: { mape: 0.2 }, baselineError: { mape: 0.1 } }), 'baselineBetter');
+  assert.equal(backtestVerdict({ ...base, modelError: { mape: 0.2 }, baselineError: { mape: 0.201 } }), 'similar');
+  assert.equal(backtestVerdict({ status: 'insufficient' }), 'insufficient');
 });
 
 test('零值排除、两个方向的样本不足以及常量基线', () => {

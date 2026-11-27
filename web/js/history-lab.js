@@ -127,6 +127,9 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   wdi: { zh: 'FAO · 世界银行 WDI', en: 'FAO · World Bank WDI' },
   censusBureau: { zh: '美国人口普查局', en: 'U.S. Census Bureau' },
   backtest: { zh: '时间回归与留后回测', en: 'Time regression and holdout test' },
+  modelBetterNote: { zh: '留后区间内，对数线性拟合的 MAPE 为 {model}，低于末值持平基线的 {baseline}。', en: 'In the holdout window the log-linear fit has MAPE {model}, better than the last-value baseline at {baseline}.' },
+  baselineBetterNote: { zh: '留后区间内，末值持平基线的 MAPE 为 {baseline}，低于对数线性拟合的 {model}；这一序列更适合把基线作为默认外推。', en: 'In the holdout window the last-value baseline has MAPE {baseline}, better than the log-linear fit at {model}; for this series the baseline is the safer default.' },
+  similarNote: { zh: '两种方法的留后 MAPE 接近（拟合 {model}，基线 {baseline}），差异不足以支持模型偏好。', en: 'The two methods have similar holdout MAPE ({model} for the fit, {baseline} for the baseline); the difference does not justify a model preference.' },
   cutoff: { zh: '训练截止年', en: 'Training cutoff year' },
   training: { zh: '训练样本', en: 'Training sample' },
   holdout: { zh: '留后样本', en: 'Holdout sample' },
@@ -252,6 +255,15 @@ export function backtestHistory(points, cutoff) {
     training: { count: train.length, first: origin, last: lastYear },
     holdout: { count: test.length, first: test[0][0], last: test.at(-1)[0] },
   };
+}
+
+export function backtestVerdict(fit) {
+  if (!fit || fit.status !== 'ok') return 'insufficient';
+  const model = fit.modelError.mape;
+  const baseline = fit.baselineError.mape;
+  if (model * 1.02 < baseline) return 'modelBetter';
+  if (baseline * 1.02 < model) return 'baselineBetter';
+  return 'similar';
 }
 
 function pointSource(metric, area, year) {
@@ -546,6 +558,10 @@ function backtestPanel(ui, locale, fit, metric) {
     row.insertCell().textContent = percent.format(errors.mape);
   }
   result.append(comparison.wrapper);
+  const verdict = backtestVerdict(fit);
+  result.append(node('p', `hl-verdict hl-verdict-${verdict}`, tr(`${verdict}Note`, {
+    model: percent.format(fit.modelError.mape), baseline: percent.format(fit.baselineError.mape),
+  })));
   const audit = node('details');
   const heldout = table(tr('heldoutValues'), [tr('year'), tr('value'), tr('prediction'), tr('baseline')]);
   for (const prediction of fit.predictions) {
