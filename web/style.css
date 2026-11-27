@@ -221,3 +221,10 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .districts { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
 .districts span { border:1px solid var(--line); border-inline-start:3px solid #659481; padding:7px 9px; font-size:13px; font-weight:650; }
 .districts small { display:block; color:var(--muted); margin-top:3px; font-size:11px; font-weight:500; }
+.standard-compare { display: grid; gap: 10px; margin: 10px 0 16px; }
+.standard-compare .file-label { cursor: pointer; justify-self: start; position: relative; }
+.standard-compare .approval-field { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; font-weight: 650; }
+.standard-compare .approval-field input { flex: 1; min-width: 160px; max-width: 320px; height: 40px; border: 1px solid #aabdb0; border-radius: 4px; padding: 0 8px; background: #fbfcf5; }
+.standard-compare figure { margin: 0; padding: 8px; border: 1px solid var(--line); background: #f7f7ef; }
+.standard-compare img { display: block; max-width: 100%; max-height: min(420px, 50vh); object-fit: contain; }
+.standard-compare figcaption { margin-top: 6px; color: var(--muted); font-size: 12px; }
