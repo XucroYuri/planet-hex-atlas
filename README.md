@@ -60,7 +60,7 @@ PYTHONPATH=. uv run python pipeline/china_source_audit.py --json
 PYTHONPATH=. uv run python tests/china_source_audit_test.py
 ```
 
-应用内「标准与声明」页公开当前合规状态；「反馈与数据建议」页在浏览器本地整理内容，点击后打开预填的 GitHub issue，由提交者确认发布，不经过本站服务器、不收集个人信息。反馈 issue 使用 `feedback` 标签；审查脚本只读获取 issue、把正文视为未信任文本，并在 `feedback/review-drafts/` 生成本地建议草案，供开发者审核。另有每日定时任务检查新反馈，无变化时安静结束。
+应用内「标准与声明」页公开当前合规状态；「反馈与数据建议」页在浏览器本地整理内容，点击后打开预填的 GitHub issue，由提交者确认发布，不经过本站服务器、不收集个人信息。反馈 issue 使用 `feedback` 标签；审查脚本只读获取 issue、把正文视为未信任文本，并在 `feedback/review-drafts/` 生成本地建议草案，供开发者审核。经核验的结论用 `feedback/promote.mjs` 写入 [`docs/feedback-recommendations/`](docs/feedback-recommendations/README.md)（每条包含 issue 链接、决策、证据、影响与后续动作，不复制 issue 正文），并用 `index.json` 去重。另有每日定时任务检查新反馈，无变化时安静结束。
 
 [反馈通道说明](docs/feedback.md) · [中国标准核查](docs/china-standards.md)
 

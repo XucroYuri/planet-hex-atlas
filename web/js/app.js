@@ -349,7 +349,7 @@ function insertFeedback(host) {
       <label>${htmlText('意见或建议')}<textarea name="message" rows="6" maxlength="1500" required placeholder="${esc(msg('例如：某地人口与官方公报不一致，或某处地名应按规范写法调整。'))}"></textarea></label>
       <label>${htmlText('来源链接（可选）')}<input name="source" type="url" inputmode="url" maxlength="500" placeholder="https://"></label>
       <p class="method" data-role="feedback-status" role="status"></p>
-      <div class="panel-buttons"><button type="submit" class="panel-action is-primary">${htmlText('在 GitHub 打开并提交')}</button><a class="panel-action" href="${REPOSITORY}/issues" target="_blank" rel="noopener">${htmlText('查看已有反馈')} ↗</a></div>
+      <div class="panel-buttons"><button type="submit" class="panel-action is-primary">${htmlText('在 GitHub 打开并提交')}</button><a class="panel-action" href="${REPOSITORY}/issues" target="_blank" rel="noopener">${htmlText('查看已有反馈')} ↗</a><a class="panel-action" href="${REPOSITORY}/tree/main/docs/feedback-recommendations" target="_blank" rel="noopener">${htmlText('开发者建议记录')} ↗</a></div>
     </form>`;
   const form = host.querySelector('form');
   const status = form.querySelector('[data-role=feedback-status]');

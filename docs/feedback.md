@@ -47,3 +47,13 @@ node --test tests/feedback*.test.mjs
 ```
 
 测试使用合成表单、模拟上游和本地 SQLite，覆盖请求门禁、限流与重放、GitHub 写入范围，以及草案的只读获取和幂等发布。
+
+## 开发者建议目录
+
+核验后的反馈结论写入 [`docs/feedback-recommendations/`](feedback-recommendations/README.md)，每条对应一个 issue 链接与审查者结论，不复制 issue 正文。写入命令：
+
+```sh
+node feedback/promote.mjs --input /tmp/decision.json
+```
+
+草案仍保存在本地 `feedback/review-drafts/`，不提交。
