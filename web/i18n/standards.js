@@ -231,4 +231,7 @@ export default [
   ['1949–2025 年官方年末人口（万人，线性刻度）', 'Official year-end population 1949–2025 (10,000 people, linear scale)', '1949–2025 年官方年末人口（萬人，線性刻度）', 'Población oficial al final del año 1949–2025 (diez mil personas, escala lineal)', 'Population officielle en fin d’année 1949–2025 (dizaines de milliers, échelle linéaire)', '1949–2025年公式年末人口（万人、線形目盛）', '1949–2025년 공식 연말 인구(만 명, 선형 스케일)', 'السكان الرسميون في نهاية العام 1949–2025 (عشرة آلاف نسمة، مقياس خطي)'],
   ['官方年末人口 · 1949–2025 · 万人', 'Official year-end population · 1949–2025 · 10,000 people', '官方年末人口 · 1949–2025 · 萬人', 'Población oficial al final del año · 1949–2025 · diez mil personas', 'Population officielle en fin d’année · 1949–2025 · dizaines de milliers', '公式年末人口 · 1949–2025 · 万人', '공식 연말 인구 · 1949–2025 · 만 명', 'السكان الرسميون في نهاية العام · 1949–2025 · عشرة آلاف نسمة'],
   ['开放数据整包（ZIP）', 'Open data bundle (ZIP)', '開放資料整包（ZIP）', 'Paquete de datos abiertos (ZIP)', 'Archive de données ouvertes (ZIP)', 'オープンデータ一式（ZIP）', '오픈 데이터 번들(ZIP)', 'حزمة البيانات المفتوحة (ZIP)'],
+  ['能源消费总量', 'Total energy consumption', '能源消費總量', 'Consumo total de energía', 'Consommation énergétique totale', 'エネルギー消費総量', '에너지 소비 총량', 'إجمالي استهلاك الطاقة'],
+  ['煤炭消费占比', 'Coal share of energy consumption', '煤炭消費占比', 'Proporción de carbón', 'Part du charbon', '石炭消費の割合', '석탄 소비 비중', 'حصة الفحم من استهلاك الطاقة'],
+  ['清洁能源消费占比', 'Clean energy share', '清潔能源消費占比', 'Proporción de energía limpia', 'Part des énergies propres', 'クリーンエネルギー比率', '청정에너지 비중', 'حصة الطاقة النظيفة'],
 ];

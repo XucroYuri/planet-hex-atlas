@@ -66,6 +66,9 @@ test('later revisions supersede the yearbook for their year', () => {
   assert.equal(record.series['2025'].deathRate, 8.04);
   assert.equal(record.series['2025'].naturalGrowthRate, -2.41);
   assert.equal(record.series['2025'].surveyedUnemployment, 5.2);
+  assert.equal(record.series['2025'].energyConsumption, 61.7);
+  assert.equal(record.series['2025'].coalShare, 51.4);
+  assert.equal(record.series['2025'].cleanEnergyShare, 30.4);
   assert.equal(record.series['2023'].population, undefined);
   assert.match(record.populationNote, /2024–2025/);
   const benchmarks = record.populationBenchmarks.years;
