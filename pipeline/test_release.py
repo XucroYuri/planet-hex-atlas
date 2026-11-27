@@ -28,6 +28,10 @@ def test():
             manifest=json.loads((b/'release.json').read_text())
             assert manifest['previous']==a.name
             assert f'<base href="/r/{b.name}/">' in (b/'index.html').read_text()
+            retained=(b/'r'/a.name/'index.html')
+            assert retained.is_file()
+            assert retained.read_bytes()==(a/'index.html').read_bytes()
+            assert f'<base href="/r/{a.name}/">' in retained.read_text()
             assert '/data/* /r/' in (b/'_redirects').read_text()
             assert 'immutable' in (b/'_headers').read_text()
             print('Release isolation, previous-version retention, URL aliases and cache policy passed.')

@@ -18,6 +18,21 @@
   <link rel="preload" href="data/annual/2023.json" as="fetch" crossorigin="anonymous">
   <link rel="preload" href="data/h2/world.bin" as="fetch" crossorigin="anonymous">
   <link rel="preload" href="data/relief.webp" as="image" type="image/webp">
+  <script>
+    // One automatic reload if the first boot never becomes ready (for example a
+    // reset module request on a flaky network). The marker prevents reload loops.
+    (() => {
+      const key = 'orbis.boot-retry';
+      setTimeout(() => {
+        const ready = document.querySelector('#workspace')?.dataset.ready === 'true';
+        if (ready) { sessionStorage.removeItem(key); return; }
+        if (!sessionStorage.getItem(key)) {
+          sessionStorage.setItem(key, '1');
+          location.reload();
+        }
+      }, 9000);
+    })();
+  </script>
   <script defer src="vendor/h3.js"></script>
   <script type="module" src="js/app.js"></script>
 </head>

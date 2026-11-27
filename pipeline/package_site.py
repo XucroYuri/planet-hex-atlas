@@ -46,6 +46,10 @@ def package(destination):
         previous_id = json.loads((prior/'release.json').read_text())['snapshot']
         if previous_id != digest and (prior/'r'/previous_id).is_dir():
             shutil.copytree(prior/'r'/previous_id,work/'r'/previous_id,copy_function=link_or_copy)
+            # The snapshot root was served from the release root, not from r/<id>/,
+            # so copy it in explicitly to keep /r/<previous>/ reachable for rollback.
+            if (prior/'index.html').is_file():
+                shutil.copyfile(prior/'index.html',work/'r'/previous_id/'index.html')
     page = (PUBLIC/'index.html').read_text()
     page = page.replace('<head>',f'<head>\n  <base href="{html.escape(subpath)}">',1)
     page = page.replace('href="./" class="brand"','href="/" class="brand"')

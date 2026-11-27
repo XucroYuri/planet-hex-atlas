@@ -49,7 +49,7 @@
 - **色板按语义分组**：经济总量用琥珀、人口与密度用紫色、民生服务用青蓝、人力投入用粉紫、产业结构用靛蓝、生态用苔绿、能源用金黄、排放用橙红、增长率用红-米-青发散、高程用深海-雪线。顺序色板在 OKLab 中插值并保持明度单调，灰度与常见色觉障碍下仍可读。
 - **分级按分布自动选择**：高程用固定地貌断点；百分比指标保留 0–100 语义并在数据集中时改用分位数；正负增长用零中心对称发散；人口、GDP、密度等重尾数据在对数空间分级；偏斜成簇时用 Fisher–Jenks 自然断点，近似均匀时用等距。
 - **图例公开算法**：显示分级方法、级数、每一级区间、缺失数量；默认 2–98% 截尾，首末级为开放区间，极端值饱和显示而不隐藏。零值占比高的图层（如无人陆地的人口密度）把 0 单列一级。
-- **可验证**：`node --test tests/scales.test.mjs` 覆盖断点、单调明度、色板区分度与 10 万值分类性能；`uv run --with playwright python tests/visualization.browser.py <url>` 在真实浏览器中核对图例与色板差异。
+- **可验证**：`node --test tests/scales.test.mjs` 覆盖断点、单调明度、色板区分度与 10 万值分类性能；`uv run --with playwright python tests/visualization.browser.py <url>` 在真实浏览器中核对图例与色板差异；`uv run --with playwright python tests/performance.browser.py <url>` 检查桌面与限速移动端的 LCP、CLS、传输量和预加载顺序。
 
 ## 地图标准、中国经济基准与反馈
 

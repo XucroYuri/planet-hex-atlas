@@ -50,10 +50,23 @@ export function coordinates(lat, lon) {
   return `\u2066${angle.format(Math.abs(lat))}°${lat < 0 ? 'S' : 'N'}  ${angle.format(Math.abs(lon))}°${lon < 0 ? 'W' : 'E'}\u2069`;
 }
 
-export async function load(name, binary = false) {
-  const response = await fetch(new URL(name, DATA));
-  if (!response.ok) throw new Error(`HTTP ${response.status}: ${name}`);
-  return binary ? response.arrayBuffer() : response.json();
+export async function load(name, binary = false, attempts = 3) {
+  const url = new URL(name, DATA);
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      const response = await fetch(url);
+      // A missing asset will not appear on retry; transient failures and 5xx may.
+      if (!response.ok) {
+        if (response.status < 500 || attempt >= attempts) throw new Error(`HTTP ${response.status}: ${name}`);
+        throw Object.assign(new Error(`HTTP ${response.status}: ${name}`), { retryable: true });
+      }
+      return binary ? await response.arrayBuffer() : await response.json();
+    } catch (error) {
+      if (error?.retryable === false || attempt >= attempts) throw error;
+      if (error instanceof Error && /^HTTP 4\d\d/.test(error.message)) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 150 * attempt));
+    }
+  }
 }
 
 export function unpack(buffer) {
