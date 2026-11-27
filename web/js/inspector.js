@@ -63,10 +63,10 @@ export function renderInspector(host, ctx) {
         const industries = [['第一产业', official.primary], ['第二产业', official.secondary], ['第三产业', official.tertiary]];
         content += `<section class="inspector-section"><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('{year} 年国内生产总值（{revision}）：{value} 亿元人民币', {
           year: formatYear(year), revision: msg(official.revision), value: format(official.gdp),
-        })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}</div>
+        })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}${Number.isFinite(official.population) ? row('年末全国人口', `${format(official.population)} 万人`) : ''}${Number.isFinite(official.urban) ? row('城镇常住人口', `${format(official.urban)} 万人`) : ''}</div>
           <p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p>
           <a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText(official.revision.includes('年鉴') ? '《中国统计年鉴 2024》表 3-1（当年价）' : '国家统计局公告（{date}）', { date: official.published })} ↗</a>
-          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p></section>`;
+          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p>${ctx.chinaOfficial.populationNote && Number.isFinite(official.population) ? `<p class="atlas-memo">${htmlText(ctx.chinaOfficial.populationNote)}</p>` : ''}</section>`;
       } else {
         content += `<p class="atlas-memo">${htmlText('中国官方序列自 {first} 年起；{year} 年暂无官方口径，下方显示世界银行序列。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial?.series || { 1978: 1 })[0])), year: formatYear(year) })}</p>`;
       }

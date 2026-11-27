@@ -35,9 +35,11 @@ ANNOUNCEMENTS = {
                url='https://www.stats.gov.cn/sj/zxfb/202412/t20241227_1957915.html'),
     2024: dict(gdp=1348066, primary=91636, secondary=490305, tertiary=766125, manufacturing=334881,
                realGrowthPercent=5.0, revision='最终核实', published='2025-12-26',
+               population=140828, urban=94350, rural=46478,
                url='https://www.stats.gov.cn/sj/zxfb/202512/t20251226_1962144.html'),
     2025: dict(gdp=1401879, primary=93347, secondary=499653, tertiary=808879,
                realGrowthPercent=5.0, revision='初步核算', published='2026-02-28',
+               population=140489, urban=95380, rural=45109,
                url='https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html'),
 }
 
@@ -151,6 +153,7 @@ def build(cache):
         'perCapitaUnit': '元',
         'priceBasis': '当年价格',
         'scope': '全国年度 GDP，未包括香港、澳门特别行政区和台湾省的地区生产总值。',
+        'populationNote': '年末全国人口仅在 2024、2025 年统计公报中直接取得；更早年份待可机器读取的官方来源。',
         'scopeEn': 'National annual GDP. The series excludes the regional GDP of Hong Kong SAR, Macao SAR and Taiwan Province.',
         'source': {
             'yearbook': {'edition': 2024, 'table': '3-1 国内生产总值', 'url': YEARBOOK, 'page': YEARBOOK_PAGE,
@@ -161,6 +164,7 @@ def build(cache):
         'notes': [
             '1978–2022 来自《中国统计年鉴 2024》表 3-1（当年价）。',
             '2023 采用第五次全国经济普查后修订数；2024 采用最终核实；2025 采用初步核算。后续修订可能改变当年值。',
+            '2024、2025 年附年度统计公报的年末全国人口（万人）及城镇/乡村常住人口；更早年份的官方人口长序列待可机器读取来源。',
             '三次产业不等于 GDP 的部分为统计修约误差；本文件未作机械调整。',
         ],
         'series': yearly,

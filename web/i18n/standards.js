@@ -148,4 +148,6 @@ export default [
   ['指标', 'Indicator', '指標', 'Indicador', 'Indicateur', '指標', '지표', 'مؤشر'],
   ['图层', 'Layer', '圖層', 'Capa', 'Couche', 'レイヤー', '레이어', 'طبقة'],
   ['输入城市、地区、遗产、指标或代码', 'Search cities, regions, heritage, indicators or codes', '輸入城市、地區、遺產、指標或代碼', 'Buscar ciudades, regiones, patrimonio, indicadores o códigos', 'Rechercher villes, régions, patrimoine, indicateurs ou codes', '都市・地域・遺産・指標・コードを検索', '도시, 지역, 유산, 지표 또는 코드 검색', 'ابحث عن المدن أو المناطق أو التراث أو المؤشرات أو الرموز'],
+  ['年末全国人口', 'Year-end national population', '年末全國人口', 'Población nacional al final del año', 'Population nationale en fin d’année', '年末全国人口', '연말 전국 인구', 'السكان الوطنيون في نهاية العام'],
+  ['城镇常住人口', 'Urban resident population', '城鎮常住人口', 'Población urbana residente', 'Population urbaine résidente', '都市常住人口', '도시 상주 인구', 'السكان الحضريون المقيمون'],
 ];

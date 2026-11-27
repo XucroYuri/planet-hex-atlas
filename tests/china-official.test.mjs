@@ -41,6 +41,12 @@ test('later revisions supersede the yearbook for their year', () => {
   for (const year of ['2023', '2024', '2025']) {
     assert.match(record.series[year].url, /^https:\/\/www\.stats\.gov\.cn\//);
   }
+  assert.equal(record.series['2024'].population, 140828);
+  assert.equal(record.series['2024'].urban, 94350);
+  assert.equal(record.series['2025'].population, 140489);
+  assert.equal(record.series['2025'].urban, 95380);
+  assert.equal(record.series['2023'].population, undefined);
+  assert.match(record.populationNote, /2024、2025/);
 });
 
 test('missing values carry an explicit, sourced note instead of a substitute', () => {
