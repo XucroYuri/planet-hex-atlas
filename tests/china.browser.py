@@ -48,6 +48,12 @@ def main(url):
         expect(page.locator('#inspector')).to_contain_text('298,750')
         expect(page.locator('#inspector')).to_contain_text('65,035')
         expect(page.locator('#inspector')).to_contain_text('4.1%')
+        expect(page.locator('#inspector')).to_contain_text('2.8%')
+        spark = page.locator('[data-china-series] svg')
+        expect(spark).to_be_visible()
+        line = spark.locator('path.spark-line').get_attribute('d')
+        assert line and line.count('L') >= 46, line[:80]
+        expect(page.locator('[data-china-series] figcaption')).to_contain_text('对数刻度')
         with page.expect_download(timeout=30000) as pending:
             page.locator('[data-export-china]').click()
         download = pending.value

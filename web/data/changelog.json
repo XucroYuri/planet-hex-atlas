@@ -27,8 +27,8 @@
     },
     {
       "date": "2026-11-27",
-      "zh": "新增地图 PNG 导出、打印样式、年份跳转、指标搜索、离线 PWA、标准地图本机对照、自动核查状态清单，以及中国官方序列、历史/覆盖数据和指标字典 CSV 导出。",
-      "en": "Added PNG export, print styles, year jump, indicator search, offline PWA, local standard-map comparison, a machine-checked status list, and CSV exports for official China, history, coverage data and the indicator dictionary.",
+      "zh": "新增地图 PNG 导出、打印样式、年份跳转、指标搜索、离线 PWA、标准地图本机对照、自动核查状态清单、官方 GDP 对数迷你图，以及中国官方序列、历史/覆盖数据和指标字典 CSV 导出。",
+      "en": "Added PNG export, print styles, year jump, indicator search, offline PWA, local standard-map comparison, a machine-checked status list, a log-scale official GDP sparkline, and CSV exports for official China, history, coverage data and the indicator dictionary.",
       "url": "https://earth.xuyu.net/"
     },
     {

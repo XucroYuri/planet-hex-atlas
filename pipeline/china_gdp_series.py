@@ -45,7 +45,7 @@ ANNOUNCEMENTS = {
                urbanDisposableIncome=56502, ruralDisposableIncome=24456,
                eastGdp=730876, eastGrowth=5.0, centralGdp=299108, centralGrowth=5.2,
                westGdp=298750, westGrowth=5.1, northeastGdp=65035, northeastGrowth=4.1,
-               rdExpenditure=39262, disposableIncome=43377, urbanizationRate=67.89,
+               rdExpenditure=39262, rdIntensity=2.8, disposableIncome=43377, urbanizationRate=67.89,
                url='https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html'),
 }
 

@@ -260,3 +260,9 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .standard-status ul { list-style: none; margin: 6px 0; padding: 0; display: grid; gap: 6px; font-size: 13px; line-height: 1.55; }
 .standard-status li { padding-inline-start: 4px; }
 .standard-status .status-pill { display: inline-block; margin-inline-start: 5px; padding: 1px 7px; border-radius: 999px; background: #f3d8bf; color: #7a431d; font-size: 11px; font-weight: 700; }
+
+.china-spark { margin: 10px 0; padding: 8px; border: 1px solid var(--line); background: #fbfcf5; }
+.china-spark svg { display: block; width: 100%; height: auto; }
+.spark-line { fill: none; stroke: #39766c; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+.spark-area { fill: rgba(57, 118, 108, .14); }
+.china-spark figcaption { margin-top: 4px; color: var(--muted); font-size: 11px; }

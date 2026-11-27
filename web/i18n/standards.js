@@ -220,4 +220,6 @@ export default [
   ['中部地区生产总值', 'Central region GDP', '中部地區生產總值', 'PIB de la región central', 'PIB de la région centrale', '中部地域のGDP', '중부 지역 GDP', 'الناتج المحلي الإجمالي للمنطقة الوسطى'],
   ['西部地区生产总值', 'Western region GDP', '西部地區生產總值', 'PIB de la región occidental', 'PIB de la région occidentale', '西部地域のGDP', '서부 지역 GDP', 'الناتج المحلي الإجمالي للمنطقة الغربية'],
   ['东北地区生产总值', 'Northeast region GDP', '東北地區生產總值', 'PIB de la región nororiental', 'PIB de la région du Nord-Est', '東北地域のGDP', '동북 지역 GDP', 'الناتج المحلي الإجمالي لمنطقة الشمال الشرقي'],
+  ['1978–2025 年官方 GDP（亿元人民币，对数刻度）', 'Official GDP 1978–2025 (CNY 100 million, log scale)', '1978–2025 年官方 GDP（億元人民幣，對數刻度）', 'PIB oficial 1978–2025 (cientos de millones de CNY, escala logarítmica)', 'PIB officiel 1978–2025 (centaines de millions de CNY, échelle logarithmique)', '1978–2025年公式GDP（億元、対数目盛）', '1978–2025년 공식 GDP(억 위안, 로그 스케일)', 'الناتج المحلي الإجمالي الرسمي 1978–2025 (مئات ملايين اليوان، مقياس لوغاريتمي)'],
+  ['官方 GDP · 1978–2025 · 对数刻度', 'Official GDP · 1978–2025 · log scale', '官方 GDP · 1978–2025 · 對數刻度', 'PIB oficial · 1978–2025 · escala logarítmica', 'PIB officiel · 1978–2025 · échelle logarithmique', '公式GDP · 1978–2025 · 対数目盛', '공식 GDP · 1978–2025 · 로그 스케일', 'الناتج المحلي الإجمالي الرسمي · 1978–2025 · مقياس لوغاريتمي'],
 ];
