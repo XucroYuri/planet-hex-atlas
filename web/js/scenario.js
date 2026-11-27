@@ -1,15 +1,23 @@
 import {
   BUDGET, HORIZON, MODEL_VERSION, METRICS, PATHS, BRANCHES, SECTORS,
   advanceRun, allocationIssue, allocationTotal, createRun, decodeExperiment, encodeExperiment,
-  initialDraft, readObservation, replayRun, validBudgetPoint, validForestFloor,
+  equationLabel, initialDraft, readObservation, replayRun, validBudgetPoint, validForestFloor,
 } from './sim-model.js';
+import { formatCount, formatPercent, formatYear, getLocale, htmlText, msg, numberFormat, yearLabel } from './i18n.js';
+import { countryName } from './i18n-places.js';
 
 const STORAGE_KEY = 'orbis-atlas.scenario.v1';
 const STYLESHEET = new URL('../scenario.css', import.meta.url).href;
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const number = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 2 });
-const compact = new Intl.NumberFormat('zh-CN', { notation: 'compact', maximumFractionDigits: 1 });
-const precise = new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 21 });
+const number = numberFormat({ maximumFractionDigits: 2 });
+const compact = numberFormat({ notation: 'compact', maximumFractionDigits: 1 });
+const signedNumber = numberFormat({ maximumFractionDigits: 2, signDisplay: 'exceptZero' });
+const signedCompact = numberFormat({ notation: 'compact', maximumFractionDigits: 1, signDisplay: 'exceptZero' });
+const precise = numberFormat({ maximumSignificantDigits: 21 });
+const precisePercent = numberFormat({ style: 'percent', maximumSignificantDigits: 21 });
+const countryOrder = new Intl.Collator(getLocale());
+const listFormat = new Intl.ListFormat(getLocale());
+const advanceText = (years) => msg('推进 {years} 年', { years: formatCount(years) });
 let instance = 0;
 
 function element(document, tag, className, text) {
@@ -35,26 +43,27 @@ function installStyles(document) {
 }
 
 function budgetDescription(allocation) {
-  return SECTORS.map(({ id, name }) => `${name} ${allocation[id]}`).join(' / ');
+  return SECTORS.map(({ id, name }) => `${msg(name)} ${formatCount(allocation[id])}`).join(' / ');
 }
 
 function unitLabel(metric) {
-  return metric.id === 'income' ? '起点年美元' : metric.unit;
+  return msg(metric.id === 'income' ? '起点年美元' : metric.unit);
 }
 
 function displayValue(metric, value) {
   return (metric.id === 'pop' ? compact : number).format(value);
 }
 
-function withUnit(value, unit) {
-  return unit === '%' ? `${value}%` : `${value} ${unit}`;
+function withUnit(metric, value, exact = false) {
+  if (metric.unit === '%') return exact ? precisePercent.format(value / 100) : formatPercent(value);
+  return `${exact ? precise.format(value) : displayValue(metric, value)} ${msg(metric.unit)}`;
 }
 
 function budgetPanel(path, prefix) {
   return `<fieldset class="oas-budget" data-branch="${path.id}">
-    <legend>${path.name}</legend>
+    <legend>${htmlText(path.name)}</legend>
     <div class="oas-sector-inputs">${SECTORS.map(({ id, name }) => `
-      <label data-sector="${id}">${name}
+      <label data-sector="${id}">${htmlText(name)}
         <input type="number" name="${path.id}-${id}" min="0" max="${BUDGET}" step="1"
           inputmode="numeric" aria-describedby="${prefix}-${path.id}-budget">
       </label>`).join('')}
@@ -65,84 +74,84 @@ function budgetPanel(path, prefix) {
 }
 
 function panelMarkup(prefix) {
-  return `<section class="oas-panel" aria-label="观测起点">
+  return `<section class="oas-panel" aria-label="${htmlText('观测起点')}">
     <div class="oas-heading">
-      <h3>观测起点</h3>
+      <h3>${htmlText('观测起点')}</h3>
       <p class="oas-context" data-role="origin"></p>
     </div>
     <div class="oas-origin-controls">
-      <label>起点国家<select name="country"></select></label>
-      <label>起点年份<select name="year"></select></label>
-      <button type="button" data-action="adopt">采用起点</button>
+      <label>${htmlText('起点国家')}<select name="country"></select></label>
+      <label>${htmlText('起点年份')}<select name="year"></select></label>
+      <button type="button" data-action="adopt">${htmlText('采用起点')}</button>
     </div>
     <p class="oas-note" data-role="origin-change" role="status"></p>
     <dl class="oas-observations" data-role="observations"></dl>
     <p class="oas-note" data-role="origin-note"></p>
   </section>
-  <section class="oas-panel" aria-label="年度方案">
+  <section class="oas-panel" aria-label="${htmlText('年度方案')}">
     <div class="oas-heading">
-      <h3>年度方案</h3>
-      <p class="oas-context">每条路线每年 ${BUDGET} 点，结余归零。</p>
+      <h3>${htmlText('年度方案')}</h3>
+      <p class="oas-context">${htmlText('每条路线每年 {budget} 点，结余归零。', { budget: formatCount(BUDGET) })}</p>
     </div>
-    <p class="oas-note">基线固定为${budgetDescription(PATHS[0].budget)}。修改预算后，从下一推演年生效。</p>
+    <p class="oas-note">${htmlText('基线固定为{budget}。修改预算后，从下一推演年生效。', { budget: budgetDescription(PATHS[0].budget) })}</p>
     <div class="oas-budget-grid">${BRANCHES.map(path => budgetPanel(path, prefix)).join('')}</div>
     <div class="oas-floor">
-      <label>森林底线（%）
+      <label>${htmlText('森林底线（%）')}
         <input type="number" name="forest-floor" min="0" max="100" step="any" inputmode="decimal"
-          placeholder="可留空" aria-describedby="${prefix}-floor-help ${prefix}-floor-error">
+          placeholder="${htmlText('可留空')}" aria-describedby="${prefix}-floor-help ${prefix}-floor-error">
       </label>
-      <p class="oas-note" id="${prefix}-floor-help">任一分支的年末森林率低于底线，三条路线停在上一年。基线仅作对照。</p>
+      <p class="oas-note" id="${prefix}-floor-help">${htmlText('任一分支的年末森林率低于底线，三条路线停在上一年。基线仅作对照。')}</p>
       <p class="oas-note oas-error" id="${prefix}-floor-error" data-role="floor-error" role="status"></p>
     </div>
     <div class="oas-actions">
-      <button type="button" data-advance="1">推进 1 年</button>
-      <button type="button" data-advance="10">推进 10 年</button>
-      <button type="button" class="oas-primary" data-advance="${HORIZON}">推演至百年</button>
+      <button type="button" data-advance="1">${htmlText('推进 1 年')}</button>
+      <button type="button" data-advance="10">${htmlText('推进 {years} 年', { years: formatCount(10) })}</button>
+      <button type="button" class="oas-primary" data-advance="${HORIZON}">${htmlText('推演至百年')}</button>
     </div>
     <p class="oas-advance-status" data-role="advance-status" role="status"></p>
   </section>
-  <section class="oas-panel" aria-label="百年对照">
+  <section class="oas-panel" aria-label="${htmlText('百年对照')}">
     <div class="oas-heading">
-      <h3>百年对照</h3>
+      <h3>${htmlText('百年对照')}</h3>
       <p class="oas-context" data-role="progress"></p>
     </div>
     <div class="oas-timeline">
       <div class="oas-timeline-label">
-        <label for="${prefix}-timeline">查看年份</label>
+        <label for="${prefix}-timeline">${htmlText('查看年份')}</label>
         <span data-role="view-year"></span>
       </div>
-      <input type="range" id="${prefix}-timeline" name="timeline" min="0" max="0" value="0" step="1">
-      <div class="oas-timeline-label oas-note">
-        <span data-role="timeline-start"></span><span data-role="timeline-end"></span>
+      <input type="range" dir="ltr" id="${prefix}-timeline" name="timeline" min="0" max="0" value="0" step="1">
+      <div class="oas-timeline-label oas-note" dir="ltr">
+        <span data-role="timeline-start" dir="auto"></span><span data-role="timeline-end" dir="auto"></span>
       </div>
     </div>
-    <ul class="oas-legend" aria-label="图例">
+    <ul class="oas-legend" aria-label="${htmlText('图例')}">
       <li><i class="oas-origin-mark" aria-hidden="true"></i><span data-role="legend-origin"></span></li>
-      ${PATHS.map(({ id, name }) => `<li><i class="oas-line-mark" data-path="${id}" aria-hidden="true"></i>${name}</li>`).join('')}
-      <li><i class="oas-future-mark" aria-hidden="true"></i>待推进</li>
+      ${PATHS.map(({ id, name }) => `<li><i class="oas-line-mark" data-path="${id}" aria-hidden="true"></i>${htmlText(name)}</li>`).join('')}
+      <li><i class="oas-future-mark" aria-hidden="true"></i>${htmlText('待推进')}</li>
     </ul>
-    <p class="oas-note">曲线是情景模拟。分支差值按同年基线计算。</p>
+    <p class="oas-note">${htmlText('曲线是情景模拟。分支差值按同年基线计算。')}</p>
     <div class="oas-charts" data-role="charts"></div>
     <div class="oas-actions oas-file-actions">
-      <button type="button" data-action="replay">复演到起点</button>
-      <button type="button" data-action="export">导出 JSON</button>
-      <button type="button" data-action="import">导入复演</button>
-      <button type="button" data-action="reset">清空轨迹</button>
+      <button type="button" data-action="replay">${htmlText('复演到起点')}</button>
+      <button type="button" data-action="export">${htmlText('导出 JSON')}</button>
+      <button type="button" data-action="import">${htmlText('导入复演')}</button>
+      <button type="button" data-action="reset">${htmlText('清空轨迹')}</button>
       <input type="file" name="import" accept=".json,application/json" hidden>
     </div>
     <p class="oas-note" data-role="file-status" role="status"></p>
     <p class="oas-note" data-role="storage-status" role="status"></p>
   </section>
   <details class="oas-details">
-    <summary>年度方案记录 <span data-role="phase-count"></span></summary>
+    <summary>${htmlText('年度方案记录')} <span data-role="phase-count"></span></summary>
     <div class="oas-details-body" data-role="phases"></div>
   </details>
   <details class="oas-details">
-    <summary>观测来源与模型系数</summary>
+    <summary>${htmlText('观测来源与模型系数')}</summary>
     <div class="oas-details-body">
-      <p>地图观测取自所选国家和精确年份。起点缺失的指标保持空值，观测超出公式取值范围时仅展示原值。</p>
-      <p>模型 v${MODEL_VERSION} 逐年计算。公式中的 x 是上年数值，份额为投入点数 ÷ ${BUDGET}。占比按 0–100 计，寿命输入范围为 0–120 岁，其余输入取非负值。人均 GDP 观测采用现价美元，后续模拟沿用起点年美元口径，省略通胀和汇率变化。</p>
-      <p>系数是各国通用的思想实验设定。即使推演年份与已有历史年份重合，曲线也使用同一套情景公式。底线用未舍入的年末数值判断。</p>
+      <p>${htmlText('地图观测取自所选国家和精确年份。起点缺失的指标保持空值，观测超出公式取值范围时仅展示原值。')}</p>
+      <p>${htmlText('模型 v{version} 逐年计算。公式中的 x 是上年数值，份额为投入点数 ÷ {budget}。占比按 0–100 计，寿命输入范围为 0–120 岁，其余输入取非负值。人均 GDP 观测采用现价美元，后续模拟沿用起点年美元口径，省略通胀和汇率变化。', { version: MODEL_VERSION, budget: formatCount(BUDGET) })}</p>
+      <p>${htmlText('系数是各国通用的思想实验设定。即使推演年份与已有历史年份重合，曲线也使用同一套情景公式。底线用未舍入的年末数值判断。')}</p>
       <dl class="oas-formulas" data-role="formulas"></dl>
     </div>
   </details>`;
@@ -168,7 +177,7 @@ function drawPlot(document, metric, paths, year) {
   const y = value => bottom - (value - low) / (high - low) * (bottom - top);
   const lastX = x(paths.baseline.length - 1);
   const svg = svgElement(document, 'svg', {
-    class: 'oas-plot', viewBox: `0 0 ${width} ${height}`, 'aria-hidden': 'true', focusable: 'false',
+    class: 'oas-plot', viewBox: `0 0 ${width} ${height}`, direction: 'ltr', 'aria-hidden': 'true', focusable: 'false',
   });
   svg.append(svgElement(document, 'rect', {
     class: 'oas-plot-future', x: lastX, y: top, width: right - lastX, height: bottom - top,
@@ -182,7 +191,7 @@ function drawPlot(document, metric, paths, year) {
   for (const offset of [0, 25, 50, 75, HORIZON]) {
     const tickX = x(offset);
     svg.append(svgElement(document, 'line', { class: 'oas-grid-line', x1: tickX, x2: tickX, y1: top, y2: bottom }));
-    svg.append(svgElement(document, 'text', { x: tickX, y: 113, 'text-anchor': 'middle' }, year + offset));
+    svg.append(svgElement(document, 'text', { x: tickX, y: 113, 'text-anchor': 'middle' }, formatYear(year + offset)));
   }
   for (const { id } of PATHS) {
     const values = paths[id];
@@ -223,25 +232,25 @@ function drawPlot(document, metric, paths, year) {
 function chartCard(document, metric, observation, trajectories) {
   const card = element(document, 'article', 'oas-chart');
   const heading = element(document, 'div', 'oas-chart-heading');
-  heading.append(element(document, 'h4', '', metric.name), element(document, 'span', 'oas-unit', unitLabel(metric)));
+  heading.append(element(document, 'h4', '', msg(metric.name)), element(document, 'span', 'oas-unit', unitLabel(metric)));
   card.append(heading);
   const observed = trajectories.baseline[0][metric.id];
   if (observed === null) {
-    const reason = observation.values[metric.id] === null ? '起点缺少该年观测' : '观测超出模型取值范围';
+    const reason = msg(observation.values[metric.id] === null ? '起点缺少该年观测' : '观测超出模型取值范围');
     card.append(element(document, 'p', 'oas-chart-empty', reason));
     return { card, update() {} };
   }
 
   const paths = Object.fromEntries(PATHS.map(({ id }) => [id, trajectories[id].map(row => row[metric.id])]));
   const plot = drawPlot(document, metric, paths, observation.year);
-  const origin = element(document, 'p', 'oas-chart-observed', `共用起点 ${displayValue(metric, observed)}`);
+  const origin = element(document, 'p', 'oas-chart-observed', msg('共用起点 {value}', { value: displayValue(metric, observed) }));
   const values = element(document, 'dl', 'oas-compare-values');
   const readouts = PATHS.map(({ id, name }) => {
     const group = element(document, 'div');
     const value = element(document, 'dd');
     const change = element(document, 'span', 'oas-delta');
     group.dataset.path = id;
-    group.append(element(document, 'dt', '', name), value);
+    group.append(element(document, 'dt', '', msg(name)), value);
     value.append(change);
     values.append(group);
     return { value, change };
@@ -261,9 +270,10 @@ function chartCard(document, metric, observation, trajectories) {
         readout.value.textContent = value === null ? '—' : displayValue(metric, value);
         if (id === 'baseline' || value === null || baseline === null) continue;
         const delta = value - baseline;
-        const magnitude = displayValue(metric, Math.abs(delta));
-        const signed = magnitude === '0' ? (delta === 0 ? '0' : '≈0') : `${delta > 0 ? '+' : '−'}${magnitude}`;
-        readout.change.textContent = metric.unit === '%' ? `${signed} 百分点` : signed;
+        const zero = number.format(0);
+        const signed = displayValue(metric, Math.abs(delta)) === zero && delta !== 0 ? `≈${zero}`
+          : (metric.id === 'pop' ? signedCompact : signedNumber).format(delta);
+        readout.change.textContent = metric.unit === '%' ? msg('{delta} 百分点', { delta: signed }) : signed;
         readout.value.append(readout.change);
       }
     },
@@ -279,17 +289,17 @@ export function renderScenario(host, ctx) {
   const browser = document.defaultView;
   installStyles(document);
   const root = element(document, 'div', 'oa-scenario');
-  root.lang = 'zh-CN';
+  root.lang = getLocale();
   host.replaceChildren(root);
 
   const countries = new Map(ctx.countries.map(country => [String(country.id), country]));
   const years = new Set(ctx.years);
   if (!countries.size || !years.size) {
-    root.append(element(document, 'p', 'oas-note', '地图暂未提供可选国家或起点年份。'));
+    root.append(element(document, 'p', 'oas-note', msg('地图暂未提供可选国家或起点年份。')));
     return;
   }
   const countryOptions = Array.from(countries.values()).sort((first, second) =>
-    (first.zh || first.name).localeCompare(second.zh || second.name, 'zh-Hans'));
+    countryOrder.compare(countryName(first), countryName(second)));
   const yearOptions = Array.from(years).sort((first, second) => second - first);
   const defaultCountry = countries.get(String(ctx.country?.id)) ?? ctx.countries[0];
   const defaultYear = years.has(ctx.year) ? ctx.year : yearOptions[0];
@@ -338,9 +348,9 @@ export function renderScenario(host, ctx) {
       ({ state, trajectories } = restored);
     }
   } catch {
-    storageStatus.textContent = storage
+    storageStatus.textContent = msg(storage
       ? '本地存档读取失败。已载入当前地图起点。'
-      : '浏览器本地保存不可用，可导出 JSON 保留进度。';
+      : '浏览器本地保存不可用，可导出 JSON 保留进度。');
   }
   if (!state) {
     const observation = readObservation(ctx, defaultCountry, defaultYear);
@@ -354,7 +364,7 @@ export function renderScenario(host, ctx) {
       storage.setItem(STORAGE_KEY, JSON.stringify(encodeExperiment(state)));
       storageStatus.textContent = '';
     } catch {
-      storageStatus.textContent = '浏览器本地保存失败，可导出 JSON 保留进度。';
+      storageStatus.textContent = msg('浏览器本地保存失败，可导出 JSON 保留进度。');
     }
   }
 
@@ -369,12 +379,12 @@ export function renderScenario(host, ctx) {
   function renderOriginControls() {
     const { observation, draft } = state;
     const options = countryOptions.map(country => {
-      const option = element(document, 'option', '', country.zh || country.name);
+      const option = element(document, 'option', '', countryName(country));
       option.value = String(country.id);
       return option;
     });
     if (!countries.has(observation.countryId)) {
-      const archived = element(document, 'option', '', `${observation.countryName}（存档）`);
+      const archived = element(document, 'option', '', msg('{value}（存档）', { value: observation.countryName }));
       archived.value = observation.countryId;
       options.push(archived);
     }
@@ -383,7 +393,8 @@ export function renderScenario(host, ctx) {
 
     const yearsToShow = years.has(observation.year) ? yearOptions : [...yearOptions, observation.year];
     yearField.replaceChildren(...yearsToShow.map(year => {
-      const option = element(document, 'option', '', years.has(year) ? String(year) : `${year}（存档）`);
+      const label = formatYear(year);
+      const option = element(document, 'option', '', years.has(year) ? label : msg('{value}（存档）', { value: label }));
       option.value = year;
       return option;
     }));
@@ -397,32 +408,35 @@ export function renderScenario(host, ctx) {
 
   function renderObservation() {
     const { observation } = state;
-    const source = verified ? '地图原始观测' : '存档输入';
-    role('origin').textContent = `${observation.countryName} · ${observation.year} 年 · ${source}`;
-    role('legend-origin').textContent = verified ? '观测起点' : '存档起点';
+    const source = msg(verified ? '地图原始观测' : '存档输入');
+    const name = countryName(countries.get(observation.countryId)) || observation.countryName;
+    role('origin').textContent = `${name} · ${yearLabel(observation.year)} · ${source}`;
+    role('legend-origin').textContent = msg(verified ? '观测起点' : '存档起点');
     const readings = METRICS.map(metric => {
       const group = element(document, 'div', 'oas-reading');
       const value = observation.values[metric.id];
       const usable = trajectories.baseline[0][metric.id] !== null;
-      const title = element(document, 'dt', '', metric.name);
-      const reading = element(document, 'dd', '', value === null ? '缺失' : withUnit(displayValue(metric, value), metric.unit));
-      if (value !== null) reading.title = withUnit(precise.format(value), metric.unit);
+      const title = element(document, 'dt', '', msg(metric.name));
+      const reading = element(document, 'dd', '', value === null ? msg('缺失') : withUnit(metric, value));
+      if (value !== null) reading.title = withUnit(metric, value, true);
       if (!usable) reading.classList.add('oas-muted');
       group.append(title, reading);
       return group;
     });
     role('observations').replaceChildren(...readings);
-    role('origin-note').textContent = verified
+    role('origin-note').textContent = msg(verified
       ? '只取该年原始记录。显示值经格式化，推演使用原始精度。'
-      : '此快照与当前地图观测无法核对一致，复演使用存档中的原始输入。';
+      : '此快照与当前地图观测无法核对一致，复演使用存档中的原始输入。');
 
     role('formulas').replaceChildren(...METRICS.map(metric => {
       const group = element(document, 'div');
       const code = observation.codes[metric.id];
-      const title = element(document, 'dt', '', metric.name);
+      const title = element(document, 'dt', '', msg(metric.name));
       if (code) title.append(element(document, 'code', '', code));
       const calculation = element(document, 'dd');
-      calculation.append(element(document, 'p', 'oas-equation', metric.equation), element(document, 'p', '', metric.assumption));
+      const equation = element(document, 'p', 'oas-equation', equationLabel(metric.equation));
+      equation.dir = 'ltr';
+      calculation.append(equation, element(document, 'p', '', msg(metric.assumption)));
       group.append(title, calculation);
       return group;
     }));
@@ -446,9 +460,11 @@ export function renderScenario(host, ctx) {
       hasBudgetError ||= Boolean(issue);
       const total = issue === 'range' ? 0 : allocationTotal(allocation);
       controls.status.classList.toggle('oas-error', Boolean(issue));
-      controls.status.textContent = issue === 'range' ? `每项须填写 0–${BUDGET} 的整数。`
-        : issue === 'budget' ? `超出预算 ${total - BUDGET} 点，须削减投入。`
-          : `已分配 ${total} / ${BUDGET} 点 · 结余 ${BUDGET - total} 点`;
+      controls.status.textContent = issue === 'range' ? msg('每项须填写 0–{budget} 的整数。', { budget: formatCount(BUDGET) })
+        : issue === 'budget' ? msg('超出预算 {excess} 点，须削减投入。', { excess: formatCount(total - BUDGET) })
+          : msg('已分配 {total} / {budget} 点 · 结余 {remaining} 点', {
+            total: formatCount(total), budget: formatCount(BUDGET), remaining: formatCount(BUDGET - total),
+          });
       for (const [index, sector] of SECTORS.entries()) {
         const point = allocation[sector.id];
         const valid = validBudgetPoint(point);
@@ -458,17 +474,17 @@ export function renderScenario(host, ctx) {
     }
 
     const start = trajectories.baseline[0];
-    const floorError = !validForestFloor(plan.forestFloor) ? '森林底线须填写 0–100 之间的数值。'
-      : plan.forestFloor !== null && start.forest === null ? '森林底线需要可用的森林率起点。' : '';
+    const floorError = msg(!validForestFloor(plan.forestFloor) ? '森林底线须填写 0–100 之间的数值。'
+      : plan.forestFloor !== null && start.forest === null ? '森林底线需要可用的森林率起点。' : '');
     floorField.setAttribute('aria-invalid', String(Boolean(floorError)));
     role('floor-error').textContent = floorError;
 
     const pending = selectionChanged();
     const canAdopt = countries.has(countryField.value) && years.has(Number(yearField.value));
     action('adopt').disabled = !canAdopt || (!pending && verified);
-    role('origin-change').textContent = pending && !canAdopt ? '请选择地图中可用的国家和年份。'
+    role('origin-change').textContent = msg(pending && !canAdopt ? '请选择地图中可用的国家和年份。'
       : pending ? (elapsed() ? '采用新起点将清空当前轨迹。' : '采用所选起点后可推进。')
-        : !verified && canAdopt ? '采用地图起点将以当前观测重新开始。' : '';
+        : !verified && canAdopt ? '采用地图起点将以当前观测重新开始。' : '');
 
     const hasInput = METRICS.some(({ id }) => start[id] !== null);
     for (const button of advanceButtons) {
@@ -476,29 +492,32 @@ export function renderScenario(host, ctx) {
     }
     const tenYear = root.querySelector('[data-advance="10"]');
     const remaining = HORIZON - elapsed();
-    tenYear.textContent = `推进 ${Math.min(10, remaining || 10)} 年`;
-    return hasInput ? (elapsed() === HORIZON ? '已到百年终点。' : '')
-      : '此起点缺少可用于推演的观测。请选择其他国家或年份。';
+    const step = Math.min(10, remaining || 10);
+    tenYear.textContent = step === 1 ? msg('推进 1 年') : advanceText(step);
+    return msg(hasInput ? (elapsed() === HORIZON ? '已到百年终点。' : '')
+      : '此起点缺少可用于推演的观测。请选择其他国家或年份。');
   }
 
   function renderPhases() {
     const phases = role('phases');
-    role('phase-count').textContent = `${state.phases.length} 段`;
+    role('phase-count').textContent = msg('{count} 段', { count: formatCount(state.phases.length) });
     if (!state.phases.length) {
-      phases.replaceChildren(element(document, 'p', 'oas-note', '推进后会在这里列出各阶段的年度预算和森林底线。'));
+      phases.replaceChildren(element(document, 'p', 'oas-note', msg('推进后会在这里列出各阶段的年度预算和森林底线。')));
       return;
     }
     const list = element(document, 'ol', 'oas-phase-list');
     let year = state.observation.year + 1;
     for (const phase of state.phases) {
       const lastYear = year + phase.years - 1;
-      const title = year === lastYear ? `${year} 年` : `${year}–${lastYear} 年`;
+      const title = year === lastYear ? yearLabel(year)
+        : msg('{year}–{last} 年', { year: formatYear(year), last: formatYear(lastYear) });
       const entry = element(document, 'li');
       entry.append(element(document, 'strong', '', title));
       for (const { id, name } of BRANCHES) {
-        entry.append(element(document, 'span', '', `${name} · ${budgetDescription(phase.allocations[id])}`));
+        entry.append(element(document, 'span', '', `${msg(name)} · ${budgetDescription(phase.allocations[id])}`));
       }
-      const floor = phase.forestFloor === null ? '底线关闭' : `底线 ${precise.format(phase.forestFloor)}%`;
+      const floor = phase.forestFloor === null ? msg('底线关闭')
+        : msg('底线 {floor}', { floor: precisePercent.format(phase.forestFloor / 100) });
       entry.append(element(document, 'span', '', floor));
       list.append(entry);
       year = lastYear + 1;
@@ -508,19 +527,20 @@ export function renderScenario(host, ctx) {
 
   function renderCursor() {
     const year = state.observation.year + state.cursor;
-    const kind = state.cursor > 0 ? '模拟' : verified ? '观测' : '存档输入';
-    role('view-year').textContent = `${year} 年 · ${kind}`;
+    const kind = msg(state.cursor > 0 ? '模拟' : verified ? '观测' : '存档输入');
+    const label = `${yearLabel(year)} · ${kind}`;
+    role('view-year').textContent = label;
     timeline.value = state.cursor;
-    timeline.setAttribute('aria-valuetext', `${year} 年，${kind}`);
+    timeline.setAttribute('aria-valuetext', label);
     for (const chart of charts) chart.update(state.cursor);
   }
 
   function renderTrajectories() {
     const { observation } = state;
     const progress = elapsed();
-    role('progress').textContent = `已推进 ${progress} / ${HORIZON} 年`;
-    role('timeline-start').textContent = `${observation.year} 年起点`;
-    role('timeline-end').textContent = progress ? `${observation.year + progress} 年已推进` : '推进后可查看逐年结果';
+    role('progress').textContent = msg('已推进 {progress} / {horizon} 年', { progress: formatCount(progress), horizon: formatCount(HORIZON) });
+    role('timeline-start').textContent = msg('{year} 年起点', { year: formatYear(observation.year) });
+    role('timeline-end').textContent = progress ? msg('{year} 年已推进', { year: formatYear(observation.year + progress) }) : msg('推进后可查看逐年结果');
     timeline.max = progress;
     timeline.disabled = progress === 0;
     action('reset').disabled = progress === 0;
@@ -558,14 +578,15 @@ export function renderScenario(host, ctx) {
     if (result.blocked) {
       const { offset, floor, branches } = result.blocked;
       const year = state.observation.year + offset;
-      const cause = branches.map(({ name, forest }) => {
-        const rounded = number.format(forest);
-        const shown = Number(rounded) < floor ? rounded : precise.format(forest);
-        return `${name} ${shown}%`;
-      }).join('、');
-      setAdvanceMessage(`${year} 年被底线阻止。${cause}低于 ${precise.format(floor)}%，轨迹停在 ${year - 1} 年。`, true);
+      const cause = listFormat.format(branches.map(({ name, forest }) => {
+        const shown = Math.round(forest * 100) / 100 < floor ? formatPercent(forest) : precisePercent.format(forest / 100);
+        return `${msg(name)} ${shown}`;
+      }));
+      setAdvanceMessage(msg('{year} 年被底线阻止。{cause}低于 {floor}，轨迹停在 {last} 年。', {
+        year: formatYear(year), cause, floor: precisePercent.format(floor / 100), last: formatYear(year - 1),
+      }), true);
     } else {
-      setAdvanceMessage(status || `已推进至 ${state.observation.year + elapsed()} 年。`);
+      setAdvanceMessage(status || msg('已推进至 {year} 年。', { year: formatYear(state.observation.year + elapsed()) }));
     }
   }
 
@@ -607,7 +628,7 @@ export function renderScenario(host, ctx) {
     state.cursor = 0;
     renderTrajectories();
     save();
-    role('file-status').textContent = '已按年度方案记录复演。拖动年份可查看结果。';
+    role('file-status').textContent = msg('已按年度方案记录复演。拖动年份可查看结果。');
   });
   action('reset').addEventListener('click', () => {
     state = { ...state, phases: [], cursor: 0 };
@@ -615,11 +636,18 @@ export function renderScenario(host, ctx) {
     renderTrajectories();
     setAdvanceMessage(renderPlan());
     save();
-    role('file-status').textContent = '已清空轨迹。可以从当前起点重新推进。';
+    role('file-status').textContent = msg('已清空轨迹。可以从当前起点重新推进。');
   });
   action('export').addEventListener('click', () => {
     const payload = encodeExperiment(state, trajectories);
     payload.originVerification = verified ? 'matches-map' : 'archived-input';
+    payload.assumptions.metrics = payload.assumptions.metrics.map((metric) => ({
+      ...metric,
+      name: msg(metric.name),
+      unit: msg(metric.unit),
+      equation: equationLabel(metric.equation),
+      assumption: msg(metric.assumption),
+    }));
     const blob = new browser.Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = browser.URL.createObjectURL(blob);
     const anchor = element(document, 'a');
@@ -631,7 +659,7 @@ export function renderScenario(host, ctx) {
     anchor.click();
     anchor.remove();
     browser.setTimeout(() => browser.URL.revokeObjectURL(url), 1000);
-    role('file-status').textContent = '已生成 JSON，包含起点、模型系数、年度方案和逐年结果。';
+    role('file-status').textContent = msg('已生成 JSON，包含起点、模型系数、年度方案和逐年结果。');
   });
   action('import').addEventListener('click', () => upload.click());
   upload.addEventListener('change', async () => {
@@ -647,10 +675,10 @@ export function renderScenario(host, ctx) {
       ({ state, trajectories } = restored);
       refreshExperiment();
       save();
-      role('file-status').textContent = '已导入并按存档方案复演。';
+      role('file-status').textContent = msg('已导入并按存档方案复演。');
     } catch {
       if (request === importRequest) {
-        role('file-status').textContent = '导入失败。请使用此版本实验室导出的有效 JSON。';
+        role('file-status').textContent = msg('导入失败。请使用此版本实验室导出的有效 JSON。');
       }
     }
   });

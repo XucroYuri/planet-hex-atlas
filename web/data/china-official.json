@@ -1,0 +1,41 @@
+{
+  "schema": 2,
+  "authority": "国家统计局",
+  "authorityEn": "National Bureau of Statistics of China",
+  "scope": "全国年度 GDP，未包括香港、澳门特别行政区和台湾省的地区生产总值。",
+  "scopeEn": "National annual GDP. The series excludes the regional GDP of Hong Kong SAR, Macao SAR and Taiwan Province.",
+  "currency": "CNY",
+  "unit": "亿元",
+  "series": {
+    "2023": {
+      "gdp": 1294272,
+      "revision": "第五次全国经济普查后修订数",
+      "published": "2024-12-27",
+      "url": "https://www.stats.gov.cn/sj/zxfb/202412/t20241227_1957915.html",
+      "primary": 89169,
+      "secondary": 475936,
+      "tertiary": 729167
+    },
+    "2024": {
+      "gdp": 1348066,
+      "revision": "最终核实",
+      "published": "2025-12-26",
+      "url": "https://www.stats.gov.cn/sj/zxfb/202512/t20251226_1962144.html",
+      "primary": 91636,
+      "secondary": 490305,
+      "tertiary": 766125,
+      "manufacturing": 334881,
+      "realGrowthPercent": 5.0
+    },
+    "2025": {
+      "gdp": 1401879,
+      "revision": "初步核算",
+      "published": "2026-02-28",
+      "url": "https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html",
+      "primary": 93347,
+      "secondary": 499653,
+      "tertiary": 808879,
+      "realGrowthPercent": 5.0
+    }
+  }
+}

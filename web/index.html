@@ -4,70 +4,73 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f4eb">
-  <meta name="description" content="从全球到一格，探索真实地球的人口、地形、城市和基础设施，比较历史指标与未来情景。">
-  <title>地球六角志 · Orbis Atlas</title>
+  <meta name="description" data-i18n-attrs="content" content="从全球到一格，探索真实地球的人口、地形、城市和基础设施，比较历史指标与未来情景。">
+  <title>寰宇图志 · Orbis Atlas</title>
   <link rel="icon" href="mark.png" type="image/png">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="explorer.css">
   <link rel="stylesheet" href="scenario.css">
   <link rel="stylesheet" href="council.css">
+  <link rel="stylesheet" href="labs.css">
   <script defer src="vendor/h3.js"></script>
   <script type="module" src="js/app.js"></script>
 </head>
 <body>
   <header class="topbar">
-    <a href="./" class="brand" aria-label="地球六角志首页">
+    <a href="./" class="brand" aria-label="寰宇图志首页" data-i18n-attrs="aria-label">
       <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
-      <span><strong>地球六角志</strong><small>ORBIS ATLAS</small></span>
+      <span><strong data-i18n>寰宇图志</strong><small dir="ltr">ORBIS ATLAS</small></span>
     </a>
-    <nav class="views" aria-label="应用视图">
-      <button class="current" data-view="map" aria-current="page">地球图谱</button>
-      <button data-view="explorer">数据台</button>
-      <button data-view="scenario">百年推演</button>
+    <nav class="views" aria-label="应用视图" data-i18n-attrs="aria-label">
+      <button class="current" data-view="map" aria-current="page" data-i18n>地球图谱</button>
+      <button data-view="explorer" data-i18n>数据台</button>
+      <button data-view="scenario" data-i18n>百年推演</button>
+      <button data-view="history" data-i18n>更多研究</button>
     </nav>
     <div class="header-tools">
-      <button id="launch-search" class="search-trigger" aria-label="搜索城市或地区"><span class="magnifier" aria-hidden="true"></span><span class="search-label">搜索城市或地区</span><kbd>/</kbd></button>
-      <button id="show-sources" class="text-button" aria-label="查看数据来源">资料</button>
+      <button id="launch-search" class="search-trigger" aria-label="搜索城市或地区" data-i18n-attrs="aria-label"><span class="magnifier" aria-hidden="true"></span><span class="search-label" data-i18n>搜索城市或地区</span><kbd>/</kbd></button>
+      <button id="show-sources" class="text-button" aria-label="查看数据来源" data-i18n data-i18n-attrs="aria-label">资料</button>
+      <select id="language" class="language-select" aria-label="界面语言" title="界面语言" data-i18n-attrs="aria-label title"></select>
     </div>
   </header>
-  <main class="workspace" id="workspace" aria-label="地球图谱">
-    <section class="map-pane" aria-label="交互式世界地图">
-      <canvas id="atlas-map" tabindex="0" aria-label="世界地图。方向键平移，加减键缩放，回车选择中心位置。"></canvas>
-      <div id="map-status" class="map-status" role="status">正在读取全球图谱…</div>
+  <main class="workspace" id="workspace" aria-label="地球图谱" data-i18n-attrs="aria-label">
+    <section class="map-pane" aria-label="交互式世界地图" data-i18n-attrs="aria-label">
+      <canvas id="atlas-map" tabindex="0" aria-label="世界地图。方向键平移，加减键缩放，回车选择中心位置。" data-i18n-attrs="aria-label"></canvas>
+      <div id="map-status" class="map-status" role="status" data-i18n>正在读取全球图谱…</div>
       <div class="map-tools">
-        <button class="map-button lens-button" id="lens-button" type="button" aria-expanded="false" aria-controls="lens-panel"><span class="layer-icon" aria-hidden="true">◈</span><span id="lens-label">地形</span><span class="chevron" aria-hidden="true">⌄</span></button>
+        <button class="map-button lens-button" id="lens-button" type="button" aria-expanded="false" aria-controls="lens-panel"><span class="layer-icon" aria-hidden="true">◈</span><span id="lens-label" data-i18n>地形</span><span class="chevron" aria-hidden="true">⌄</span></button>
         <div class="lens-panel" id="lens-panel" hidden></div>
       </div>
-      <div class="map-actions" aria-label="地图操作">
-        <button class="map-button projection-button" id="projection" aria-label="切换为平面地图">展图</button>
+      <div class="map-actions" aria-label="地图操作" data-i18n-attrs="aria-label">
+        <button class="map-button projection-button" id="projection" aria-label="切换为平面地图" data-i18n data-i18n-attrs="aria-label">展图</button>
         <div class="stepper">
-          <button class="map-button icon-button" id="zoom-in" aria-label="放大" title="放大">＋</button>
-          <button class="map-button icon-button" id="zoom-out" aria-label="缩小" title="缩小">−</button>
+          <button class="map-button icon-button" id="zoom-in" aria-label="放大" title="放大" data-i18n-attrs="aria-label title">＋</button>
+          <button class="map-button icon-button" id="zoom-out" aria-label="缩小" title="缩小" data-i18n-attrs="aria-label title">−</button>
         </div>
-        <button class="map-button icon-button" id="world-view" aria-label="回到全球视野" title="回到全球视野"><span class="world-icon" aria-hidden="true"></span></button>
-        <button class="map-button icon-button" id="share" aria-label="复制当前地图链接" title="复制当前地图链接"><span aria-hidden="true">↗</span></button>
+        <button class="map-button icon-button" id="world-view" aria-label="回到全球视野" title="回到全球视野" data-i18n-attrs="aria-label title"><span class="world-icon" aria-hidden="true"></span></button>
+        <button class="map-button icon-button" id="share" aria-label="复制当前地图链接" title="复制当前地图链接" data-i18n-attrs="aria-label title"><span aria-hidden="true">↗</span></button>
       </div>
       <div id="map-toast" class="map-toast" role="status" hidden></div>
       <div id="map-tooltip" class="map-tooltip" hidden></div>
       <div class="map-foot">
-        <div class="legend" id="legend" aria-label="地图图例"></div>
-        <div class="location" aria-label="地图中心和格网尺度">
+        <div class="legend" id="legend" aria-label="地图图例" data-i18n-attrs="aria-label"></div>
+        <div class="location" aria-label="地图中心和格网尺度" data-i18n-attrs="aria-label">
           <span id="bearing">02.00°N 05.00°E</span><span id="scale-indicator">H3 / R2</span>
         </div>
       </div>
     </section>
-    <aside class="inspector" id="inspector" aria-label="地图档案" aria-live="polite"></aside>
-    <section class="timebar" aria-label="历史观测年份">
-      <button class="play-button" id="play-years" aria-label="播放历史年份" title="播放历史年份"><span aria-hidden="true">▶</span></button>
-      <div class="time-copy"><label for="year">观测年份</label><output id="year-label" for="year">2023</output></div>
-      <div class="timeline"><input type="range" id="year" min="1960" max="2025" value="2023" aria-label="观测年份"><div class="timeline-marks" id="timeline-marks" aria-hidden="true"><span>1960</span><span>1980</span><span>2000</span><span>2025</span></div></div>
-      <span class="time-note" id="time-note">格网人口固定为 2020 年估算</span>
+    <aside class="inspector" id="inspector" aria-label="地图档案" aria-live="polite" data-i18n-attrs="aria-label"></aside>
+    <section class="timebar" aria-label="历史观测年份" data-i18n-attrs="aria-label">
+      <button class="play-button" id="play-years" aria-label="播放历史年份" title="播放历史年份" data-i18n-attrs="aria-label title"><span aria-hidden="true">▶</span></button>
+      <div class="time-copy"><label for="year" data-i18n>观测年份</label><output id="year-label" for="year">2023</output></div>
+      <div class="timeline" dir="ltr"><input type="range" id="year" min="1960" max="2025" value="2023" aria-label="观测年份" data-i18n-attrs="aria-label"><div class="timeline-marks" id="timeline-marks" aria-hidden="true"><span>1960</span><span>1980</span><span>2000</span><span>2025</span></div></div>
+      <span class="time-note" id="time-note"></span>
     </section>
   </main>
   <dialog id="overlay" class="overlay" aria-labelledby="overlay-title">
-    <header class="dialog-head"><h2 id="overlay-title"></h2><button class="close-button" id="close-overlay" aria-label="关闭弹窗">×</button></header>
+    <header class="dialog-head"><h2 id="overlay-title"></h2><button class="close-button" id="close-overlay" aria-label="关闭弹窗" data-i18n-attrs="aria-label" data-dialog-close>×</button></header>
     <div id="overlay-body" class="dialog-body"></div>
   </dialog>
-  <noscript>请启用 JavaScript 以查看交互式地球图谱。</noscript>
+  <noscript><span lang="zh-CN">请启用 JavaScript 以查看交互式地球图谱。</span> <span lang="en">Enable JavaScript to use the interactive world atlas.</span></noscript>
 </body>
 </html>

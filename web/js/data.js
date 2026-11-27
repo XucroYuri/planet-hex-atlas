@@ -1,39 +1,53 @@
+import { formatPercent, msg, numberFormat } from './i18n.js';
+import { continentName } from './i18n-places.js';
+
+export { esc } from './i18n.js';
+
 export const DATA = new URL('../data/', import.meta.url);
 export const TILE_KM = { 2: 183, 3: 69, 4: 26 };
-export const TERRAIN = { id: 'terrain', name: '地形', group: '地球格网', scale: 'terrain' };
+export function localizeMetric(metric) {
+  const { name, group, unit, description } = metric;
+  return {
+    ...metric,
+    name: msg(name),
+    group: msg(group),
+    ...(unit && { unit: msg(unit) }),
+    ...(description && { description: msg(description) }),
+  };
+}
 export const LOCAL_LENSES = [
-  TERRAIN,
+  { id: 'terrain', name: '地形', group: '地球格网', scale: 'terrain' },
   { id: 'gridPop', name: '格网人口', unit: '人', group: '地球格网', scale: 'total', min: 100, max: 10000000 },
   { id: 'density', name: '人口密度', unit: '人/km²', group: '地球格网', scale: 'total', min: 0.1, max: 20000 },
   { id: 'height', name: '海拔与水深', unit: '米', group: '地球格网', scale: 'height', min: -9500, max: 6000 },
   { id: 'biome', name: '主要生态带', group: '地球格网', scale: 'biome' },
-];
-export const SITES = ['港口', '定期航班机场', '发电站', '世界遗产'];
-export const CONTINENTS = {
-  Asia: '亚洲', Europe: '欧洲', Africa: '非洲', Oceania: '大洋洲',
-  'North America': '北美洲', 'South America': '南美洲', Antarctica: '南极洲',
-  'Seven seas (open ocean)': '远洋岛屿',
-};
+].map(localizeMetric);
+export const TERRAIN = LOCAL_LENSES[0];
+export const SITES = ['港口', '定期航班机场', '发电站', '世界遗产'].map(name => msg(name));
+export const CONTINENTS = Object.fromEntries([
+  'Asia', 'Europe', 'Africa', 'Oceania', 'North America', 'South America', 'Antarctica', 'Seven seas (open ocean)',
+].map(name => [name, continentName(name)]));
 export const LANDING_CITIES = ['1850147', '1796236', '5128581', '2643743', '360630', '3448439'];
-export const esc = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 export const wrap = (lon) => ((lon + 180) % 360 + 360) % 360 - 180;
 export const near = (lon, center) => center + wrap(lon - center);
-const number = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 1 });
-const decimal = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 2 });
+const compact = numberFormat({ notation: 'compact', maximumFractionDigits: 1 });
+const decimal = numberFormat({ maximumFractionDigits: 2 });
+const angle = numberFormat({ useGrouping: false, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const kilometers = numberFormat({ style: 'unit', unit: 'kilometer', unitDisplay: 'short' });
 
 export function format(value, unit = '', concise = false) {
-  if (!Number.isFinite(value)) return '无数据';
-  const magnitude = Math.abs(value);
-  let shown = decimal.format(value);
-  if (concise && magnitude >= 1e12) shown = number.format(value / 1e12) + '万亿';
-  else if (concise && magnitude >= 1e8) shown = number.format(value / 1e8) + '亿';
-  else if (concise && magnitude >= 1e4) shown = number.format(value / 1e4) + '万';
-  return `${shown}${unit === '%' ? '%' : unit ? ` ${unit}` : ''}`;
+  if (!Number.isFinite(value)) return msg('无数据');
+  if (unit === '%') return formatPercent(value);
+  const shown = (concise && Math.abs(value) >= 1e4 ? compact : decimal).format(value);
+  const label = msg(unit);
+  return label ? `${shown} ${label}` : shown;
 }
 
+export const formatDistance = (value) => kilometers.format(value);
+
 export function coordinates(lat, lon) {
-  return `${Math.abs(lat).toFixed(2)}°${lat < 0 ? 'S' : 'N'}  ${Math.abs(lon).toFixed(2)}°${lon < 0 ? 'W' : 'E'}`;
+  return `\u2066${angle.format(Math.abs(lat))}°${lat < 0 ? 'S' : 'N'}  ${angle.format(Math.abs(lon))}°${lon < 0 ? 'W' : 'E'}\u2069`;
 }
 
 export async function load(name, binary = false) {
@@ -44,9 +58,9 @@ export async function load(name, binary = false) {
 
 export function unpack(buffer) {
   const view = new DataView(buffer);
-  if (view.byteLength < 8 || view.getUint32(0) !== 0x48584131) throw new Error('无效格网文件');
+  if (view.byteLength < 8 || view.getUint32(0) !== 0x48584131) throw new Error(msg('无效格网文件'));
   const count = view.getUint32(4, true);
-  if (view.byteLength !== count * 20 + 8) throw new Error('格网文件不完整');
+  if (view.byteLength !== count * 20 + 8) throw new Error(msg('格网文件不完整'));
   return Array.from({ length: count }, (_, i) => {
     const index = i * 20 + 8;
     const id = view.getBigUint64(index, true).toString(16);

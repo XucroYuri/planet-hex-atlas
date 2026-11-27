@@ -1,0 +1,21 @@
+name = "planet-hex-atlas-feedback"
+main = "worker.mjs"
+compatibility_date = "2026-11-27"
+workers_dev = false
+preview_urls = false
+
+[observability]
+enabled = false
+
+[vars]
+FEEDBACK_ENABLED = "false"
+FEEDBACK_ORIGIN = ""
+FEEDBACK_GITHUB_REPO = ""
+
+[[durable_objects.bindings]]
+name = "FEEDBACK_RATE_LIMITER"
+class_name = "FeedbackRateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["FeedbackRateLimiter"]

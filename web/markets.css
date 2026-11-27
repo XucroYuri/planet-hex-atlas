@@ -1,0 +1,325 @@
+.oa-markets {
+  --market-ink: #153e47;
+  --market-muted: #506661;
+  --market-paper: #faf9f0;
+  --market-surface: #fffef8;
+  --market-line: #d1dad0;
+  --market-wash: #eaf0e6;
+  --market-teal: #226858;
+  --market-copper: #914d31;
+  --market-serif: var(--serif, Georgia, serif);
+  --market-mono: var(--mono, ui-monospace, monospace);
+  container: market / inline-size;
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  color: var(--market-ink);
+  font: 400 14px / 1.5 var(--sans, system-ui, sans-serif);
+}
+
+.oa-markets *, .oa-markets *::before {
+  box-sizing: border-box;
+}
+
+.oa-markets [hidden] {
+  display: none !important;
+}
+
+.oa-markets :where(p, h3, figure) {
+  margin: 0;
+}
+
+.oa-markets :where(button, input, select) {
+  min-width: 0;
+  min-height: 44px;
+  padding: 7px 11px;
+  border: 1px solid var(--market-line);
+  border-radius: 5px;
+  background: var(--market-surface);
+  color: var(--market-ink);
+  font: inherit;
+}
+
+.oa-markets :where(button, select, summary) {
+  cursor: pointer;
+}
+
+.oa-markets :where(button, select):disabled {
+  color: var(--market-muted);
+  opacity: 0.57;
+  cursor: default;
+}
+
+.oa-markets :where(button, input, select, summary, a, .market-scroll):focus-visible {
+  outline: 2px solid var(--market-teal);
+  outline-offset: 2px;
+}
+
+.oa-markets button[aria-pressed="true"] {
+  border-color: var(--market-teal);
+  color: white;
+  background: var(--market-teal);
+}
+
+.oa-markets button:not(:disabled):not([aria-pressed="true"]):hover {
+  border-color: var(--market-teal);
+  background: var(--market-wash);
+}
+
+.oa-markets .market-sources,
+.oa-markets .market-file,
+.oa-markets .market-feedback,
+.oa-markets .market-periods,
+.oa-markets .market-dates,
+.oa-markets .market-pages {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.oa-markets .market-sources {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--market-line);
+}
+
+.oa-markets .market-import {
+  padding: 10px 12px;
+  border: 1px solid var(--market-line);
+  border-radius: 5px;
+  background: var(--market-wash);
+}
+
+.oa-markets .market-import p {
+  margin-top: 6px;
+}
+
+.oa-markets :where(.market-import p, .market-overview, .market-matches, .market-coverage, .market-pages, .market-credits p) {
+  color: var(--market-muted);
+  font-size: 13px;
+}
+
+.oa-markets :where(.market-overview, .market-feedback, .market-matches):empty,
+.oa-markets .market-feedback:not(:has(:not([hidden]))) {
+  display: none;
+}
+
+.oa-markets .market-file-name {
+  overflow-wrap: anywhere;
+}
+
+.oa-markets .market-lookup {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 4px 12px;
+}
+
+.oa-markets label {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  color: var(--market-muted);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.oa-markets .market-matches {
+  grid-column: 1 / -1;
+}
+
+.oa-markets .market-history {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.oa-markets .market-security {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--market-line);
+}
+
+.oa-markets .market-security h3 {
+  margin-bottom: 3px;
+  overflow-wrap: anywhere;
+  font: 750 clamp(20px, 4cqi, 28px) / 1.2 var(--market-serif);
+}
+
+.oa-markets .market-close {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  color: var(--market-muted);
+  font-size: 12px;
+}
+
+.oa-markets .market-close strong {
+  color: var(--market-ink);
+  font: 700 23px / 1.2 var(--market-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.oa-markets .market-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.oa-markets .market-periods button {
+  padding-inline: 9px;
+}
+
+.oa-markets .market-dates {
+  align-items: end;
+}
+
+.oa-markets .market-figure {
+  padding: 8px 10px 0;
+  border: 1px solid var(--market-line);
+  border-radius: 5px;
+  background: var(--market-surface);
+}
+
+.oa-markets .market-figure figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  padding-inline: 4px;
+  color: var(--market-muted);
+  font-size: 12px;
+}
+
+.oa-markets .market-figure figcaption span::before {
+  display: inline-block;
+  width: 13px;
+  margin-inline-end: 5px;
+  vertical-align: middle;
+  content: "";
+}
+
+.oa-markets .market-legend-price::before {
+  height: 2px;
+  background: var(--market-teal);
+}
+
+.oa-markets .market-legend-volume::before {
+  height: 7px;
+  background: var(--market-copper);
+}
+
+.oa-markets canvas {
+  display: block;
+  width: 100%;
+  height: 222px;
+}
+
+.oa-markets .market-scroll {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid var(--market-line);
+  border-radius: 5px;
+}
+
+.oa-markets table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.oa-markets th, .oa-markets td {
+  padding: 7px 9px;
+  border-bottom: 1px solid var(--market-line);
+  text-align: end;
+  font-size: 13px;
+}
+
+.oa-markets th {
+  font-weight: 650;
+}
+
+.oa-markets thead th {
+  background: var(--market-wash);
+}
+
+.oa-markets tr > :first-child {
+  position: sticky;
+  inset-inline-start: 0;
+  border-inline-end: 1px solid var(--market-line);
+  text-align: start;
+}
+
+.oa-markets tbody tr {
+  background: var(--market-surface);
+}
+
+.oa-markets tbody tr:nth-child(even) {
+  background: var(--market-paper);
+}
+
+.oa-markets tbody th {
+  background: inherit;
+}
+
+.oa-markets tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.oa-markets .market-no-trade {
+  display: block;
+  color: var(--market-copper);
+  font: 500 11px / 1.25 var(--sans, system-ui, sans-serif);
+}
+
+.oa-markets .market-pages {
+  justify-content: flex-end;
+}
+
+.oa-markets .market-credits {
+  padding-block-start: 4px;
+  border-top: 1px solid var(--market-line);
+}
+
+.oa-markets .market-credits summary {
+  min-height: 44px;
+  padding-block: 10px;
+  color: var(--market-ink);
+  font-weight: 650;
+}
+
+.oa-markets .market-credits ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oa-markets .market-credits a {
+  color: var(--market-teal);
+  text-underline-offset: 3px;
+}
+
+@container market (max-width: 510px) {
+  .oa-markets .market-lookup {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .oa-markets .market-lookup :where(input, select) {
+    width: 100%;
+  }
+
+  .oa-markets .market-tools {
+    align-items: start;
+  }
+}

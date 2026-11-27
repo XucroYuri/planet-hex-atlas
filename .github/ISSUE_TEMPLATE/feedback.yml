@@ -1,0 +1,37 @@
+name: 反馈与数据建议
+description: 报告数据来源、数值、地图标准或功能问题
+title: "[反馈] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请勿提交个人信息、联系方式或凭据。
+        涉及地图区划与边界的意见会按中国官方标准优先核对；涉及数值的意见请附可公开核查的来源。
+  - type: dropdown
+    id: category
+    attributes:
+      label: 反馈类型
+      options:
+        - 数据来源或数值纠错
+        - 地图标准、区划或命名
+        - 功能建议
+        - 其他反馈
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 具体意见
+      description: 请说明问题所在的位置（地区、年份、图层或页面），以及你建议的处理方式。
+      placeholder: 例如：某地 2023 年人口与官方公报不一致；建议来源为……
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 来源链接（可选）
+      description: 只接受公开可访问的 http/https 链接。
+      placeholder: https://
+    validations:
+      required: false

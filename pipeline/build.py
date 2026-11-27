@@ -25,6 +25,8 @@ from rasterio.windows import Window
 from shapely.geometry import shape
 from shapely.strtree import STRtree
 
+from annual import pack_annual
+from overview import pack_overview
 from sources import INDICATORS, POPULATION_NAME, download
 
 YEARS = list(range(1960, 2026))
@@ -140,10 +142,21 @@ def generate_geography(cache, output, wdi):
     if len({c['id'] for c in countries}) != len(countries):
         raise ValueError('Natural Earth ADM0 ids are not unique')
     duplicate_series = Counter(c['wdi'] for c in countries if c['wdi'])
+    # Official Chinese naming and administrative hierarchy per the one-China principle.
+    # This changes labels and hierarchy metadata only; boundary geometry still requires
+    # an approved standard map before the atlas can claim map-review compliance.
+    official = {
+        'CHN': ('中国', 'country', None),
+        'TWN': ('台湾省', 'province', 'CHN'),
+        'HKG': ('香港特别行政区', 'sar', 'CHN'),
+        'MAC': ('澳门特别行政区', 'sar', 'CHN'),
+        'SCR': ('黄岩岛', 'reef', 'CHN'),
+    }
     for country in countries:
         if duplicate_series[country['wdi']] > 1 and country['id'] != country['wdi']:
             country['wdi'] = None
-        country['zh'] = {'CHN': '中国', 'TWN': '台湾'}.get(country['id'], country['zh'])
+        if country['id'] in official:
+            country['zh'], country['adminLevel'], country['sovereignId'] = official[country['id']]
     dump(output / "outlines.json", outlines)
     waterways = {
         "rivers": [[r["scalerank"], r["name_zh"] or r["name"], xy(l.coords)] for r, g in extract_shapes(cache / "atlas-rivers.zip", 0.018) for l in lines(g)],
@@ -443,8 +456,11 @@ def main():
             digest = hashlib.file_digest(stream, 'sha256').hexdigest()
         hashes[name] = dict(url=url, bytes=file.stat().st_size, sha256=digest)
     dump(output / 'source-lock.json', hashes)
-    dump(output / 'observations.json', {r['id']: wdi[r['wdi']] for r in countries if r['wdi']} | {'WLD': wdi['WLD']})
+    observations = {r['id']: wdi[r['wdi']] for r in countries if r['wdi']} | {'WLD': wdi['WLD']}
+    dump(output / 'observations.json', observations)
+    pack_annual(output, observations, YEARS)
     city_count = generate_cities(cache, output, countries, geom)
+    pack_overview(output)
     site_counts = generate_infrastructure(cache, output, countries, geom)
     heritage = generate_heritage(cache, output, countries, geom)
     log(f'Saved {city_count:,} cities and {sum(site_counts.values()):,} infrastructure points')

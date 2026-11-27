@@ -13,7 +13,7 @@ from playwright.sync_api import expect, sync_playwright
 def check(url, screenshots):
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(channel='chrome', headless=True)
-        context = browser.new_context(viewport={'width': 1420, 'height': 900}, permissions=['clipboard-read', 'clipboard-write'])
+        context = browser.new_context(viewport={'width': 1420, 'height': 900}, locale='zh-CN', permissions=['clipboard-read', 'clipboard-write'])
         page = context.new_page()
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))

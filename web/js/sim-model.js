@@ -1,3 +1,8 @@
+import { msg, numberFormat, registerMessages } from './i18n.js';
+import simulation from '../i18n/simulation.js';
+
+registerMessages(simulation);
+
 export const HORIZON = 100;
 export const BUDGET = 100;
 export const MODEL_VERSION = 1;
@@ -47,6 +52,15 @@ function formula(terms) {
     text += `${sign}${Math.abs(coefficient)} × ${name}份额`;
   }
   return text;
+}
+
+const coefficientsFormat = numberFormat({ maximumSignificantDigits: 6 });
+export function equationLabel(equation) {
+  let localized = equation.replace(/\d+(?:\.\d+)?/g, (value) => coefficientsFormat.format(Number(value)));
+  for (const { name } of SECTORS) {
+    localized = localized.replaceAll(`${name}份额`, () => msg('{name}份额', { name: msg(name) }));
+  }
+  return localized;
 }
 
 export const METRICS = Object.freeze([
@@ -146,15 +160,15 @@ function advanceValues(previous, allocation) {
 }
 
 export function advanceRun(run, years, plan) {
-  if (!Number.isSafeInteger(years) || years < 1) throw new RangeError('推进年数须为正整数。');
+  if (!Number.isSafeInteger(years) || years < 1) throw new RangeError(msg('推进年数须为正整数。'));
   for (const { id, name } of BRANCHES) {
-    if (allocationIssue(plan?.allocations?.[id])) throw new RangeError(`${name}的年度预算无效。`);
+    if (allocationIssue(plan?.allocations?.[id])) throw new RangeError(msg('{name}的年度预算无效。', { name: msg(name) }));
   }
   const floor = plan.forestFloor;
-  if (!validForestFloor(floor)) throw new RangeError('森林底线须介于 0% 与 100% 之间。');
+  if (!validForestFloor(floor)) throw new RangeError(msg('森林底线须介于 0% 与 100% 之间。'));
   const first = run.baseline[0];
-  if (!METRICS.some(({ id }) => first[id] !== null)) throw new RangeError('起点缺少可用观测。');
-  if (floor !== null && first.forest === null) throw new RangeError('森林底线需要可用的森林率起点。');
+  if (!METRICS.some(({ id }) => first[id] !== null)) throw new RangeError(msg('起点缺少可用观测。'));
+  if (floor !== null && first.forest === null) throw new RangeError(msg('森林底线需要可用的森林率起点。'));
 
   const trajectories = Object.fromEntries(PATHS.map(({ id }) => [id, run[id].slice()]));
   const elapsed = run.baseline.length - 1;
@@ -180,7 +194,7 @@ export function replayRun(observation, phases) {
   let trajectories = createRun(observation);
   for (const { years, allocations, forestFloor } of phases) {
     const replay = advanceRun(trajectories, years, { allocations, forestFloor });
-    if (replay.advanced !== years) throw new RangeError('推演记录超出百年范围或触及森林底线。');
+    if (replay.advanced !== years) throw new RangeError(msg('推演记录超出百年范围或触及森林底线。'));
     trajectories = replay.trajectories;
   }
   return trajectories;
@@ -220,7 +234,7 @@ function storedObservation(source) {
     typeof source.countryName !== 'string' ||
     !Number.isSafeInteger(source.year) ||
     !METRICS.every(({ id }) => source.values?.[id] === null || Number.isFinite(source.values?.[id]))
-  ) throw new TypeError('存档的起点观测无效。');
+  ) throw new TypeError(msg('存档的起点观测无效。'));
   const values = Object.fromEntries(METRICS.map(({ id }) => [id, source.values[id]]));
   const codes = Object.fromEntries(METRICS.map(({ id }) => [
     id, typeof source.codes?.[id] === 'string' ? source.codes[id] : '',
@@ -238,21 +252,21 @@ function mapAllocations(allocations, transform) {
 
 function storedDraftValue(value) {
   if (typeof value !== 'string' || (value !== '' && !/^-?(?:\d+|\d*\.\d+)(?:[eE][+-]?\d+)?$/.test(value))) {
-    throw new TypeError('存档的预算或底线草稿无效。');
+    throw new TypeError(msg('存档的预算或底线草稿无效。'));
   }
   return value;
 }
 
 export function decodeExperiment(file) {
   if (file?.format !== FORMAT || file.modelVersion !== MODEL_VERSION) {
-    throw new TypeError('此文件的实验存档格式或模型版本无法读取。');
+    throw new TypeError(msg('此文件的实验存档格式或模型版本无法读取。'));
   }
   const observation = storedObservation(file.observation);
-  if (!Array.isArray(file.phases) || file.phases.length > HORIZON) throw new TypeError('存档的推演记录无效。');
+  if (!Array.isArray(file.phases) || file.phases.length > HORIZON) throw new TypeError(msg('存档的推演记录无效。'));
 
   const phases = file.phases.map(phase => {
     if (!Number.isInteger(phase?.years) || phase.years < 1 || phase.years > HORIZON) {
-      throw new RangeError('存档的阶段年数无效。');
+      throw new RangeError(msg('存档的阶段年数无效。'));
     }
     return {
       years: phase.years,
@@ -262,7 +276,7 @@ export function decodeExperiment(file) {
   });
   const trajectories = replayRun(observation, phases);
   if (!Number.isInteger(file.cursor) || file.cursor < 0 || file.cursor >= trajectories.baseline.length) {
-    throw new RangeError('存档的查看年份超出推演范围。');
+    throw new RangeError(msg('存档的查看年份超出推演范围。'));
   }
   const draft = {
     allocations: mapAllocations(file.draft?.allocations, storedDraftValue),

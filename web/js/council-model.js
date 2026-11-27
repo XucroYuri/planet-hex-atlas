@@ -1,3 +1,8 @@
+import { formatCount, msg, registerMessages } from './i18n.js';
+import councilLabels from '../i18n/council.js';
+
+registerMessages(councilLabels);
+
 export const COUNCIL_MODEL_VERSION = 1;
 
 function freezeRules(value) {
@@ -49,7 +54,7 @@ function seededDraw(seed) {
 }
 
 function measurement(value, fallback) {
-  if (value != null && !Number.isFinite(value)) throw new TypeError('地图比例须为有限数字或 null。');
+  if (value != null && !Number.isFinite(value)) throw new TypeError(msg('地图比例须为有限数字或 null。'));
   const observed = value == null ? null : value === 0 ? 0 : value;
   if (observed !== null && observed >= 0 && observed <= 100) {
     return { observed, used: Math.round(observed), source: 'observed', reason: 'rounded-percent' };
@@ -58,10 +63,10 @@ function measurement(value, fallback) {
 }
 
 export function createCouncil({ region, year, seed, urban, electric }) {
-  if (typeof region !== 'string' || !region.trim()) throw new TypeError('地区须为非空字符串。');
-  if (!Number.isSafeInteger(year) || year < 1) throw new TypeError('起始年份须为正整数。');
+  if (typeof region !== 'string' || !region.trim()) throw new TypeError(msg('地区须为非空字符串。'));
+  if (!Number.isSafeInteger(year) || year < 1) throw new TypeError(msg('起始年份须为正整数。'));
   if (!Number.isSafeInteger(seed) && (typeof seed !== 'string' || !seed.trim())) {
-    throw new TypeError('种子须为整数或非空字符串。');
+    throw new TypeError(msg('种子须为整数或非空字符串。'));
   }
   const measurements = { urban: measurement(urban, 50), electric: measurement(electric, 70) };
   const urbanPoints = measurements.urban.used;
@@ -96,16 +101,18 @@ function surveyRelief(state) {
 
 export function checkProposal(state, policy) {
   if (state?.modelVersion !== COUNCIL_MODEL_VERSION) {
-    return { ok: false, reason: '模型版本不受支持。', rules: [] };
+    return { ok: false, reason: msg('模型版本不受支持。'), rules: [] };
   }
   if (typeof policy !== 'string' || !Object.hasOwn(COUNCIL_RULES.policies, policy)) {
-    return { ok: false, reason: '请选择一项有效的议事行动。', rules: [] };
+    return { ok: false, reason: msg('请选择一项有效的议事行动。'), rules: [] };
   }
   const { cost, sponsor } = COUNCIL_RULES.policies[policy];
   const funded = state.budget >= cost;
   const rules = [{
     id: 'budget', ok: funded, available: state.budget, required: cost,
-    reason: funded ? `有 ${state.budget} 点可用，本次需 ${cost} 点。` : `预算不足，需 ${cost} 点，现有 ${state.budget} 点。`,
+    reason: msg(funded ? '有 {budget} 点可用，本次需 {cost} 点。' : '预算不足，需 {cost} 点，现有 {budget} 点。', {
+      budget: formatCount(state.budget), cost: formatCount(cost),
+    }),
   }];
   if (sponsor) {
     const circle = state.circles[sponsor];
@@ -113,11 +120,11 @@ export function checkProposal(state, policy) {
     const name = COUNCIL_RULES.roles[sponsor];
     rules.push({
       id: 'acceptance', ok: accepted, circle: sponsor,
-      reason: accepted ? `${name}达到本圈接受门槛。` : `${name}尚未达到本圈接受门槛。`,
+      reason: msg(accepted ? '{name}达到本圈接受门槛。' : '{name}尚未达到本圈接受门槛。', { name: msg(name) }),
     });
   }
   const blocked = rules.find(rule => !rule.ok);
-  return { ok: !blocked, reason: blocked?.reason ?? '符合公开规则。', rules };
+  return { ok: !blocked, reason: blocked?.reason ?? msg('符合公开规则。'), rules };
 }
 
 function shiftBeliefs(state, entry, role, wave, cause, gain) {
@@ -227,8 +234,8 @@ function projectSignal(event, role, knownAt) {
 }
 
 export function observeCouncil(state, role) {
-  if (state?.modelVersion !== COUNCIL_MODEL_VERSION) throw new RangeError('模型版本不受支持。');
-  if (typeof role !== 'string' || !Object.hasOwn(PROFILES, role)) throw new RangeError('请选择一个有效的生活圈。');
+  if (state?.modelVersion !== COUNCIL_MODEL_VERSION) throw new RangeError(msg('模型版本不受支持。'));
+  if (typeof role !== 'string' || !Object.hasOwn(PROFILES, role)) throw new RangeError(msg('请选择一个有效的生活圈。'));
 
   const relief = surveyRelief(state);
   const circle = state.circles[role];

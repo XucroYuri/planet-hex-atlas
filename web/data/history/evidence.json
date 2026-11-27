@@ -1,0 +1,92 @@
+[
+  {
+    "id": "irhoud",
+    "region": "MAR",
+    "kind": "margin",
+    "age": [281, 349],
+    "center": 315,
+    "papers": [
+      ["Richter et al.", 2017, "10.1038/nature22335"],
+      ["Hublin et al.", 2017, "10.1038/nature22336"]
+    ]
+  },
+  {
+    "id": "omo",
+    "region": "ETH",
+    "kind": "minimum",
+    "age": [211, 255],
+    "center": 233,
+    "papers": [["Vidal et al.", 2022, "10.1038/s41586-021-04275-8"]]
+  },
+  {
+    "id": "misliya",
+    "region": "ISR",
+    "kind": "range",
+    "age": [177, 194],
+    "papers": [["Hershkovitz et al.", 2018, "10.1126/science.aap8369"]]
+  },
+  {
+    "id": "herto",
+    "region": "ETH",
+    "kind": "range",
+    "age": [154, 160],
+    "papers": [
+      ["White et al.", 2003, "10.1038/nature01669"],
+      ["Clark et al.", 2003, "10.1038/nature01670"]
+    ]
+  },
+  {
+    "id": "tamPaLing",
+    "region": "LAO",
+    "kind": "range",
+    "age": [68, 86],
+    "papers": [["Freidline et al.", 2023, "10.1038/s41467-023-38715-y"]]
+  },
+  {
+    "id": "madjedbebe",
+    "region": "AUS",
+    "kind": "range",
+    "age": [59.3, 70.7],
+    "papers": [
+      ["Clarkson et al.", 2017, "10.1038/nature22968"],
+      ["O’Connell et al.", 2018, "10.1073/pnas.1808385115"]
+    ]
+  },
+  {
+    "id": "bachoKiro",
+    "region": "BGR",
+    "kind": "calibrated",
+    "age": [43.65, 45.82],
+    "papers": [
+      ["Fewlass et al.", 2020, "10.1038/s41559-020-1136-3"],
+      ["Hublin et al.", 2020, "10.1038/s41586-020-2259-z"]
+    ]
+  },
+  {
+    "id": "liujiang",
+    "region": "CHN",
+    "kind": "range",
+    "age": [23, 33],
+    "papers": [["Ge et al.", 2024, "10.1038/s41467-024-47787-3"]]
+  },
+  {
+    "id": "whiteSands",
+    "region": "USA",
+    "kind": "calibrated",
+    "age": [21.7, 23.5],
+    "papers": [
+      ["Springer et al.", 2026, "10.1126/sciadv.aeh0707"],
+      ["Pigati et al.", 2023, "10.1126/science.adh5007"]
+    ]
+  },
+  {
+    "id": "huacaPrieta",
+    "region": "PER",
+    "kind": "calibrated",
+    "age": [13.5, 15],
+    "papers": [
+      ["Dillehay et al.", 2017, "10.1126/sciadv.1602778"],
+      ["Science Advances", 2026, "10.1126/sciadv.aek2171"]
+    ]
+  }
+]

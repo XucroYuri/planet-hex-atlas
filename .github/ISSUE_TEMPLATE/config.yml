@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 标准与声明
+    url: https://github.com/XucroYuri/planet-hex-atlas/blob/main/docs/china-standards.md
+    about: 地图标准、行政命名与中国官方经济基准的核查记录
+  - name: 标准地图服务（自然资源部）
+    url: http://bzdt.ch.mnr.gov.cn/
+    about: 获取经审核的标准地图

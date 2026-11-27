@@ -1,11 +1,14 @@
-import { DATA, TILE_KM, cellValue, clamp, colorFor, coordinates, format, load, near, tileKey, unpack, wrap } from './data.js';
+import { DATA, TILE_KM, cellValue, clamp, colorFor, coordinates, format, formatDistance, load, near, tileKey, unpack, wrap } from './data.js';
+import { msg } from './i18n.js';
+import { cityName, countryName, siteName } from './i18n-places.js';
 import { Globe } from './globe.js';
 import { paintLand, cityGlyph, siteGlyph } from './civ-art.js';
 
 const GROUND = '#294f60';
 const GRID_LABEL = '#b7d2d3';
 const SITE_COLORS = ['#7bd4d7', '#f1ead4', '#eead69', '#e7a7a8'];
-const OCEANS = [['太平洋', 4, -147], ['太平洋', 8, 165], ['大西洋', 13, -43], ['印度洋', -25, 73], ['北冰洋', 76, -30], ['南大洋', -57, -55]];
+const OCEANS = [['太平洋', 4, -147], ['太平洋', 8, 165], ['大西洋', 13, -43], ['印度洋', -25, 73], ['北冰洋', 76, -30], ['南大洋', -57, -55]]
+  .map(([name, lat, lon]) => [msg(name), lat, lon]);
 
 function addLine(path, points, close = false) {
   if (!points.length) return;
@@ -57,13 +60,15 @@ export class AtlasMap {
     this.outlines = [];
     this.relief = new Image();
     this.relief.onload = () => { this.globe.invalidate(); this.repaint(); };
-    this.relief.onerror = () => onProblem('底图加载失败');
+    this.relief.onerror = () => onProblem(msg('底图加载失败'));
     this.relief.src = new URL('relief.webp', DATA).href;
     this.cities = [];
     this.sites = [];
     this.rivers = [];
     this.lakes = [];
     this.data = new Map();
+    this.detailsReady = false;
+    this.detailRequested = false;
     this.pending = new Map();
     this.failed = new Map();
     this.pointers = new Map();
@@ -91,7 +96,7 @@ export class AtlasMap {
       return tile;
     }).catch(() => {
       this.failed.set(key, Date.now());
-      this.onProblem('部分六角格加载失败。平移或缩放可重试。');
+      this.onProblem(msg('部分六角格加载失败。平移或缩放可重试。'));
       return null;
     }).finally(() => this.pending.delete(key));
     this.pending.set(key, pending);
@@ -211,6 +216,10 @@ export class AtlasMap {
 
   currentTiles(bounds) {
     const requested = tileLevel(this.camera.scale);
+    if (requested > 2 && !this.detailsReady && !this.detailRequested && this.onDetailNeeded) {
+      this.detailRequested = true;
+      void this.onDetailNeeded().catch(() => {});
+    }
     const names = this.visibleTiles(requested, bounds);
     for (const name of names) {
       if (!this.data.has(`${requested}/${name}`)) void this.getTile(requested, name);
@@ -428,10 +437,13 @@ export class AtlasMap {
     for (const country of this.manifest.countries) {
       if (country.rank > maxRank) continue;
       const [x, y] = this.screen(country.lat, country.lon);
-      if (!this.inside(x, y, -15) || occupied.some(([px, py]) => Math.abs(px - x) < 43 && Math.abs(py - y) < 14)) continue;
-      occupied.push([x, y]);
-      ctx.strokeText(country.zh, x, y);
-      ctx.fillText(country.zh, x, y);
+      if (!this.inside(x, y, -15)) continue;
+      const name = countryName(country);
+      const halfWidth = ctx.measureText(name).width / 2;
+      if (occupied.some(([px, py, half]) => Math.abs(px - x) < half + halfWidth + 6 && Math.abs(py - y) < 14)) continue;
+      occupied.push([x, y, halfWidth]);
+      ctx.strokeText(name, x, y);
+      ctx.fillText(name, x, y);
     }
   }
 
@@ -452,7 +464,7 @@ export class AtlasMap {
       occupied.add(key);
       if (options.art && this.projection === 'flat' && scale >= 36 && this.lens?.id === 'terrain' && (pop(city) >= 160000 || scale >= 96)) {
         const size = cityGlyph(ctx, city, x, y, scale);
-        if (options.labels && (pop(city) > 1500000 || scale > 100 && pop(city) > 250000)) this.placeName(city[2] || city[1], x + size*.45, y + size*.3);
+        if (options.labels && (pop(city) > 1500000 || scale > 100 && pop(city) > 250000)) this.placeName(cityName(city), x + size*.45, y + size*.3);
         this.hits.push(cityHit(city, x, y, Math.max(8, size*.7)));
         continue;
       }
@@ -464,7 +476,7 @@ export class AtlasMap {
       ctx.fillStyle = pop(city) > 3000000 ? '#fbdb92' : '#e6c07e';
       ctx.fill();
       ctx.stroke();
-      if (options.labels && (scale > 90 || scale > 18 && (pop(city) > 700000 || !!city[7]))) this.placeName(city[2] || city[1], x, y);
+      if (options.labels && (scale > 90 || scale > 18 && (pop(city) > 700000 || !!city[7]))) this.placeName(cityName(city), x, y);
       this.hits.push(cityHit(city, x, y, Math.max(8, radius + 4)));
     }
     if (options.sites.size) this.drawSites(occupied, coordinatesOf);
@@ -553,14 +565,17 @@ export class AtlasMap {
     const hit = this.markAt(x, y);
     if (hit) {
       const item = hit.item;
-      this.onHover(x, y, item[2] || item[1], hit.type === 'city' ? format(item[6], '人', true) : coordinates(item[4], item[5]));
+      const city = hit.type === 'city';
+      this.onHover(x, y, city ? cityName(item) : siteName(item), city ? format(item[6], '人', true) : coordinates(item[4], item[5]));
       return;
     }
     const [lat, lon] = this.geo(x, y);
     const cell = this.placeCell(this.level, lat, lon)?.cell;
     if (!cell) { this.onHover(); return; }
     const country = this.manifest.countries[cell.region - 1];
-    this.onHover(x, y, country?.zh || (cell.land ? '陆地' : '海洋'), `${Math.round(TILE_KM[this.level])} km 边长 · ${coordinates(lat, lon)}`);
+    this.onHover(x, y, countryName(country) || msg(cell.land ? '陆地' : '海洋'), msg('{distance} 边长 · {coordinates}', {
+      distance: formatDistance(TILE_KM[this.level]), coordinates: coordinates(lat, lon),
+    }));
   }
 
   attachInput() {

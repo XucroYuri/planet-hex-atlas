@@ -1,27 +1,26 @@
+import { formatCount, formatYear, getLocale, msg, numberFormat, registerMessages, yearLabel } from "./i18n.js";
+import { continentName, countryName } from "./i18n-places.js";
+import explorer from "../i18n/explorer.js";
+
+registerMessages(explorer);
+
 const svgNamespace = "http://www.w3.org/2000/svg";
-const countryNames = new Intl.Collator("zh-CN", { numeric: true });
-const valueFormat = new Intl.NumberFormat("zh-CN", { maximumSignificantDigits: 6 });
-const tickFormat = new Intl.NumberFormat("zh-CN", {
+const countryNames = new Intl.Collator(getLocale(), { numeric: true });
+const valueFormat = numberFormat({ maximumSignificantDigits: 6 });
+const tinyValueFormat = numberFormat({ notation: "scientific", maximumSignificantDigits: 17 });
+const tinyTickFormat = numberFormat({ notation: "scientific", maximumFractionDigits: 1 });
+const tickFormat = numberFormat({
   notation: "compact",
   maximumSignificantDigits: 4,
 });
-const continentNames = new Map([
-  ["africa", "非洲"],
-  ["antarctica", "南极洲"],
-  ["asia", "亚洲"],
-  ["europe", "欧洲"],
-  ["north america", "北美洲"],
-  ["south america", "南美洲"],
-  ["oceania", "大洋洲"],
-  ["seven seas (open ocean)", "远洋岛屿"],
-]);
-
-const countryName = (country) => country.zh || country.name || String(country.id);
-const continentName = (name) => continentNames.get(name.toLowerCase()) ?? (name || "洲别未标注");
-const metricName = (metric) => metric ? `${metric.name}${metric.unit ? `（${metric.unit}）` : ""}` : "无可用指标";
+const metricName = (metric) => {
+  if (!metric) return msg("无可用指标");
+  if (!metric.unit) return msg(metric.name);
+  return msg("{name}（{unit}）", { name: msg(metric.name), unit: msg(metric.unit) });
+};
 const valueText = (value) => {
-  if (value === null) return "缺失";
-  return value !== 0 && Math.abs(value) < 0.001 ? String(value) : valueFormat.format(value);
+  if (value === null) return msg("缺失");
+  return (value !== 0 && Math.abs(value) < 0.001 ? tinyValueFormat : valueFormat).format(value);
 };
 const percent = (position) => `${position}%`;
 const plotPosition = (fraction) => 4 + 92 * fraction;
@@ -77,7 +76,7 @@ function numericScale(values) {
   }
   const position = (value) => plotPosition((value - start) / (end - start));
   const tickValues = Array.from({ length: last - first + 1 }, (_, index) => (first + index) * step);
-  const labels = tickValues.map((value) => Math.abs(value) < 0.001 && value !== 0 ? value.toExponential(1) : tickFormat.format(value));
+  const labels = tickValues.map((value) => (Math.abs(value) < 0.001 && value !== 0 ? tinyTickFormat : tickFormat).format(value));
   const distinct = new Set(labels).size === labels.length;
   return {
     position,
@@ -88,6 +87,7 @@ function numericScale(values) {
 function chart() {
   const box = element("div", "oe-chart");
   const plot = element("div", "oe-plot");
+  plot.dir = "ltr";
   const drawing = graphic("svg", { class: "oe-plot-svg", focusable: "false" });
   const labels = element("div", "oe-ticks");
   const empty = element("p", "oe-empty oe-chart-empty");
@@ -166,7 +166,7 @@ function closeHostDialog(host) {
   const closeControl = [...dialog.querySelectorAll('button, [role="button"]')].find((control) => {
     if (host.contains(control)) return false;
     const label = (control.getAttribute("aria-label") || control.title || control.textContent).trim();
-    return /^(关闭(?:弹窗|对话框)?|close(?: dialog)?|[×✕])$/i.test(label)
+    return label === msg("关闭弹窗") || /^(关闭(?:弹窗|对话框)?|close(?: dialog)?|[×✕])$/i.test(label)
       || control.matches("[data-close], [data-dialog-close], .modal-close, .dialog-close");
   });
   if (closeControl) closeControl.click();
@@ -189,15 +189,15 @@ export function renderExplorer(host, ctx) {
   const years = [...ctx.years].sort((left, right) => left - right);
   const continents = [...new Set(countries.map((country) => country.continent ?? ""))]
     .sort((left, right) => countryNames.compare(continentName(left), continentName(right)));
-  const metricOptions = metrics.length ? metrics.map((metric) => [metric.id, metricName(metric)]) : [["", "无可用指标"]];
+  const metricOptions = metrics.length ? metrics.map((metric) => [metric.id, metricName(metric)]) : [["", msg("无可用指标")]];
   const countryOptions = countries.map((country) => [country.id, countryName(country)]);
-  const xField = field("横轴指标", metricOptions);
-  const yField = field("纵轴指标", metricOptions);
-  const yearField = field("年份", years.length ? years.map((year) => [year, `${year} 年`]) : [["", "无可用年份"]]);
-  const continentField = field("地区筛选", [["", "全部地区"], ...continents.map((name, index) => [index, continentName(name)])]);
-  const historyField = field("历史指标", [["x", "横轴"], ["y", "纵轴"]]);
-  const primaryField = field("地区一", [["", "选择地区"], ...countryOptions]);
-  const compareField = field("地区二", [["", "不比较"], ...countryOptions]);
+  const xField = field(msg("横轴指标"), metricOptions);
+  const yField = field(msg("纵轴指标"), metricOptions);
+  const yearField = field(msg("年份"), years.length ? years.map((year) => [year, yearLabel(year)]) : [["", msg("无可用年份")]]);
+  const continentField = field(msg("地区筛选"), [["", msg("全部地区")], ...continents.map((name, index) => [index, continentName(name)])]);
+  const historyField = field(msg("历史指标"), [["x", msg("横轴")], ["y", msg("纵轴")]]);
+  const primaryField = field(msg("地区一"), [["", msg("选择地区")], ...countryOptions]);
+  const compareField = field(msg("地区二"), [["", msg("不比较")], ...countryOptions]);
 
   yField.select.selectedIndex = metrics.length > 1 ? 1 : 0;
   xField.select.disabled = yField.select.disabled = !metrics.length;
@@ -210,15 +210,15 @@ export function renderExplorer(host, ctx) {
 
   ensureStylesheet();
   const root = element("div", "orbis-explorer");
-  root.lang = "zh-CN";
+  root.lang = getLocale();
   const controls = element("div", "oe-controls");
   controls.append(xField.label, yField.label, yearField.label, continentField.label);
   const toolbar = element("div", "oe-toolbar");
   const selection = element("span", "oe-selection");
   selection.setAttribute("role", "status");
-  const locate = button("在地图定位", "oe-button-primary");
-  const lensX = button("横轴上图");
-  const lensY = button("纵轴上图");
+  const locate = button(msg("在地图定位"), "oe-button-primary");
+  const lensX = button(msg("横轴上图"));
+  const lensY = button(msg("纵轴上图"));
   const locationActions = element("div", "oe-actions");
   locationActions.append(locate, selection);
   const lensActions = element("div", "oe-actions");
@@ -234,23 +234,23 @@ export function renderExplorer(host, ctx) {
   const yCaption = element("p", "oe-axis oe-axis-y");
   const scatter = chart();
   const pointReadout = element("p", "oe-readout");
-  scatterSection.append(element("h3", "", "同年散点"), totals, missing, yCaption, scatter.box, xCaption, pointReadout);
+  scatterSection.append(element("h3", "", msg("同年散点")), totals, missing, yCaption, scatter.box, xCaption, pointReadout);
 
   const tableSection = element("section", "oe-panel oe-data");
   const tableHeader = element("div", "oe-panel-heading");
   const exportActions = element("div", "oe-actions");
-  const exportYear = button("本年 CSV");
-  const exportAll = button("全量 CSV");
-  exportYear.title = "下载当前年份和筛选范围内的两轴数据";
-  exportAll.title = "下载所有地区、指标和年份";
+  const exportYear = button(msg("本年 CSV"));
+  const exportAll = button(msg("全量 CSV"));
+  exportYear.title = msg("下载当前年份和筛选范围内的两轴数据");
+  exportAll.title = msg("下载所有地区、指标和年份");
   exportActions.append(exportYear, exportAll);
-  tableHeader.append(element("h3", "", "数据表"), exportActions);
-  const currentTable = tableRegion("同年散点数据表", "筛选范围内的同年数据，包含缺失值");
+  tableHeader.append(element("h3", "", msg("数据表")), exportActions);
+  const currentTable = tableRegion(msg("同年散点数据表"), msg("筛选范围内的同年数据，包含缺失值"));
   const sortHeaders = new Map();
   for (const [key, text] of [["country", "地区"], ["x", "横轴"], ["y", "纵轴"]]) {
     const heading = element("th");
     const control = button("", "oe-sort");
-    const label = element("span", "", text);
+    const label = element("span", "", msg(text));
     const arrow = element("span", "oe-sort-arrow");
     arrow.setAttribute("aria-hidden", "true");
     heading.scope = "col";
@@ -271,23 +271,23 @@ export function renderExplorer(host, ctx) {
   const historyReadout = element("p", "oe-readout");
   historyReadout.setAttribute("role", "status");
   const historyDetails = element("details", "oe-details");
-  const historyTable = tableRegion("历史折线逐年数据", "各地区在每个年份的原始数值");
-  historyDetails.append(element("summary", "", "查看逐年数据"), historyTable.wrapper);
+  const historyTable = tableRegion(msg("历史折线逐年数据"), msg("各地区在每个年份的原始数值"));
+  historyDetails.append(element("summary", "", msg("查看逐年数据")), historyTable.wrapper);
   historySection.append(
-    element("h3", "", "历史折线"), historyControls, historyLegend, historyAxis, history.box, historyReadout, historyDetails,
+    element("h3", "", msg("历史折线")), historyControls, historyLegend, historyAxis, history.box, historyReadout, historyDetails,
   );
 
   const sources = element("details", "oe-panel oe-details oe-sources");
   const sourceList = element("ul", "oe-source-list");
   sources.append(
-    element("summary", "", "世界银行指标来源"),
+    element("summary", "", msg("世界银行指标来源")),
     sourceList,
-    element("p", "oe-note", "全量 CSV 包含所有地区、指标和年份。CSV 中的缺失值留空。"),
+    element("p", "oe-note", msg("全量 CSV 包含所有地区、指标和年份。CSV 中的缺失值留空。")),
   );
   root.append(controls, toolbar, overview, historySection, sources);
   host.append(root);
 
-  const csvHeaders = ["年份", "地区代码", "地区中文名", "地区英文名", "洲别"];
+  const csvHeaders = ["年份", "地区代码", "地区中文名", "地区英文名", "洲别"].map((key) => msg(key));
   const countryCells = (country, year) => [year, country.id, country.zh, country.name, country.continent];
   const metricColumn = (metric) => `${metricName(metric)} [${metric.code || metric.id}]`;
   const read = (country, metric, year) => {
@@ -333,7 +333,7 @@ export function renderExplorer(host, ctx) {
     }));
     if (!sorted.length) {
       const tr = element("tr");
-      const cell = element("td", "oe-empty", "当前范围暂无地区数据。");
+      const cell = element("td", "oe-empty", msg("当前范围暂无地区数据。"));
       cell.colSpan = 3;
       tr.append(cell);
       currentTable.body.append(tr);
@@ -344,9 +344,11 @@ export function renderExplorer(host, ctx) {
     const selected = countryFrom(primaryField.select);
     const row = hoverPoint?.row ?? snapshot.rowsById.get(selected?.id);
     if (row) {
-      pointReadout.textContent = `${countryName(row.country)} · 横轴 ${valueText(row.x)} · 纵轴 ${valueText(row.y)}`;
+      pointReadout.textContent = msg("{country} · 横轴 {x} · 纵轴 {y}", {
+        country: countryName(row.country), x: valueText(row.x), y: valueText(row.y),
+      });
     } else {
-      pointReadout.textContent = selected ? "已选地区在当前筛选范围外。" : "点按散点或在数据表中选择地区。";
+      pointReadout.textContent = msg(selected ? "已选地区在当前筛选范围外。" : "点按散点或在数据表中选择地区。");
     }
   }
 
@@ -354,15 +356,20 @@ export function renderExplorer(host, ctx) {
     const { paired, rows, year, xMetric, yMetric } = snapshot;
     const missingX = rows.filter((row) => row.x === null).length;
     const missingY = rows.filter((row) => row.y === null).length;
-    totals.textContent = `${year === undefined ? "" : `${year} 年 · `}可比 ${paired.length} / ${rows.length} · 缺任一轴 ${rows.length - paired.length}`;
-    missing.textContent = `横轴缺失 ${missingX} · 纵轴缺失 ${missingY} · 双轴缺失 ${missingX + missingY - rows.length + paired.length}`;
-    xCaption.textContent = `横轴 · ${metricName(xMetric)}`;
-    yCaption.textContent = `纵轴 · ${metricName(yMetric)}`;
+    const yearPrefix = year === undefined ? "" : `${yearLabel(year)} · `;
+    totals.textContent = yearPrefix + msg("可比 {paired} / {total} · 缺任一轴 {missing}", {
+      paired: formatCount(paired.length), total: formatCount(rows.length), missing: formatCount(rows.length - paired.length),
+    });
+    missing.textContent = msg("横轴缺失 {x} · 纵轴缺失 {y} · 双轴缺失 {both}", {
+      x: formatCount(missingX), y: formatCount(missingY), both: formatCount(missingX + missingY - rows.length + paired.length),
+    });
+    xCaption.textContent = `${msg("横轴")} · ${metricName(xMetric)}`;
+    yCaption.textContent = `${msg("纵轴")} · ${metricName(yMetric)}`;
     hoverPoint = undefined;
     points = [];
     scatter.plot.classList.remove("oe-hit");
     if (!paired.length) {
-      drawGrid(scatter, [], [], "当前筛选下没有同年双轴样本。");
+      drawGrid(scatter, [], [], msg("当前筛选下没有同年双轴样本。"));
       return;
     }
     const xScale = numericScale(paired.map((row) => row.x));
@@ -420,25 +427,27 @@ export function renderExplorer(host, ctx) {
     historyReadout.hidden = !hasSeries;
     historyLegend.replaceChildren(...series.map(({ country, values: observations }, index) => {
       const valid = observations.filter((value) => value !== null).length;
-      return element("span", `oe-series-key oe-series-key-${index}`, `${countryName(country)} · 有值 ${valid} / ${years.length} 年`);
+      return element("span", `oe-series-key oe-series-key-${index}`, msg("{country} · 有值 {valid} / {total} 年", {
+        country: countryName(country), valid: formatCount(valid), total: formatCount(years.length),
+      }));
     }));
-    if (values.length) historyLegend.append(element("span", "oe-note", "断点表示缺失"));
+    if (values.length) historyLegend.append(element("span", "oe-note", msg("断点表示缺失")));
 
     if (hasSeries) {
       const yearIndex = yearField.select.selectedIndex;
       historyReadout.textContent = [
-        `${snapshot.year} 年`,
+        yearLabel(snapshot.year),
         ...series.map((entry) => `${countryName(entry.country)} ${valueText(entry.values[yearIndex])}`),
       ].join(" · ");
-      historyTable.caption.textContent = `历史数据 · ${metricName(metric)}`;
-      historyTable.heading.replaceChildren(...["年份", ...series.map((entry) => countryName(entry.country))].map((name) => {
+      historyTable.caption.textContent = `${msg("历史数据")} · ${metricName(metric)}`;
+      historyTable.heading.replaceChildren(...[msg("年份"), ...series.map((entry) => countryName(entry.country))].map((name) => {
         const heading = element("th", "", name);
         heading.scope = "col";
         return heading;
       }));
       historyTable.body.replaceChildren(...years.map((year, index) => {
         const row = element("tr", year === snapshot.year ? "oe-current-year" : "");
-        const heading = element("th", "oe-number", year);
+        const heading = element("th", "oe-number", formatYear(year));
         heading.scope = "row";
         if (year === snapshot.year) heading.setAttribute("aria-current", "true");
         row.append(heading, ...series.map((entry) => valueCell(entry.values[index])));
@@ -447,9 +456,9 @@ export function renderExplorer(host, ctx) {
     }
 
     if (!values.length) {
-      const message = !metric || !years.length ? "暂无可用指标或年份。" : primary
+      const message = msg(!metric || !years.length ? "暂无可用指标或年份。" : primary
         ? "所选地区在此指标下没有历史观测。"
-        : "选择地区一查看历史，可加入地区二进行比较。";
+        : "选择地区一查看历史，可加入地区二进行比较。");
       drawGrid(history, [], [], message);
       return;
     }
@@ -459,7 +468,7 @@ export function renderExplorer(host, ctx) {
     const ticks = years.filter((year) => year === start || year === end
       || (year % 20 === 0 && year - start >= 10 && end - year >= 10));
     const scale = numericScale(values);
-    drawGrid(history, ticks.map((year) => ({ at: yearAt(year), label: year })), scale.ticks);
+    drawGrid(history, ticks.map((year) => ({ at: yearAt(year), label: formatYear(year) })), scale.ticks);
     const mark = percent(yearAt(snapshot.year));
     history.drawing.append(graphic("line", { x1: mark, x2: mark, y1: 0, y2: "100%", class: "oe-year-marker" }));
     const curves = graphic("svg", { width: "100%", height: "100%", viewBox: "0 0 100 100", preserveAspectRatio: "none" });
@@ -494,7 +503,7 @@ export function renderExplorer(host, ctx) {
     }
     const comparison = countryFrom(compareField.select);
     locate.disabled = !primary;
-    selection.textContent = primary ? `已选 ${countryName(primary)}` : "尚未选择地区";
+    selection.textContent = primary ? msg("已选 {country}", { country: countryName(primary) }) : msg("尚未选择地区");
     for (const [id, control] of tableButtons) control.setAttribute("aria-pressed", String(id === primary?.id));
     for (const { dot, row } of points) {
       const selected = row.country.id === primary?.id;
@@ -527,20 +536,20 @@ export function renderExplorer(host, ctx) {
       rowsById: new Map(rows.map((row) => [row.country.id, row])),
       paired: rows.filter((row) => row.x !== null && row.y !== null),
     };
-    const axes = [["x", "横轴", xMetric], ["y", "纵轴", yMetric]];
+    const axes = [["x", msg("横轴"), xMetric], ["y", msg("纵轴"), yMetric]];
     sourceList.replaceChildren(...axes.map(([key, label, metric], index) => {
       sortHeaders.get(key).label.textContent = `${label} · ${metricName(metric)}`;
       historyField.select.options[index].textContent = `${label} · ${metricName(metric)}`;
       const source = element("li");
       source.append(element("strong", "", `${label} · ${metricName(metric)}`));
       if (metric?.code) {
-        const link = element("a", "", `World Bank · ${metric.code}`);
+        const link = element("a", "", `${msg("世界银行")} · ${metric.code}`);
         link.href = `https://data.worldbank.org/indicator/${encodeURIComponent(metric.code)}`;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         source.append(link);
       }
-      if (metric?.description) source.append(element("p", "oe-note", metric.description));
+      if (metric?.description) source.append(element("p", "oe-note", msg(metric.description)));
       return source;
     }));
     lensX.disabled = !xMetric || year === undefined;
@@ -589,7 +598,7 @@ export function renderExplorer(host, ctx) {
     const { year, rows, xMetric, yMetric } = snapshot;
     downloadCsv(
       `orbis-atlas-${year}.csv`,
-      [...csvHeaders, `横轴 · ${metricColumn(xMetric)}`, `纵轴 · ${metricColumn(yMetric)}`],
+      [...csvHeaders, `${msg("横轴")} · ${metricColumn(xMetric)}`, `${msg("纵轴")} · ${metricColumn(yMetric)}`],
       rows.map((row) => [...countryCells(row.country, year), row.x, row.y]),
     );
   });

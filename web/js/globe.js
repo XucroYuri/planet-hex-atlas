@@ -1,3 +1,4 @@
+import { createSphereGPU } from './sphere-gpu.js';
 // Orthographic overview. The texture is painted by the same cartographic layers as the flat map.
 const RAD = Math.PI / 180;
 const DEG = 180 / Math.PI;
@@ -11,6 +12,8 @@ export class Globe {
     this.canvas.width = W;
     this.canvas.height = H;
     this.dirty = true;
+    this.revision = 0;
+    this.gpu = createSphereGPU(() => { this.gpu = null; this.owner?.repaint(); });
   }
 
   invalidate() { this.dirty = true; }
@@ -61,7 +64,8 @@ export class Globe {
     for (let lat = -75; lat < 90; lat += 15) { ctx.moveTo(-180, -lat); ctx.lineTo(180, -lat); }
     for (let lon = -180; lon < 180; lon += 15) { ctx.moveTo(lon, -90); ctx.lineTo(lon, 90); }
     ctx.stroke();
-    this.pixels = ctx.getImageData(0, 0, W, H).data;
+    this.pixels = null;
+    this.revision++;
     this.dirty = false;
     this.frameKey = null;
   }
@@ -75,15 +79,25 @@ export class Globe {
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, width, height);
     this.surround(ctx, x, y, radius, width, height);
-    if (this.dirty || !this.pixels) this.texture(map);
+    this.owner = map;
+    if (this.dirty) this.texture(map);
     const dragging = map.pointers.size > 0;
     const diameter = Math.max(32, Math.min(dragging ? 430 : 1120, Math.round(radius * 2 * (dragging ? .72 : Math.min(1.45, dpr)))));
-    const key = [diameter, camera.lat, camera.lon].join('/');
-    if (key !== this.frameKey) {
-      this.shadeSphere(diameter, camera.lat, camera.lon);
-      this.frameKey = key;
+    let surface = null;
+    if (this.gpu) {
+      try { surface = this.gpu.render(diameter, camera.lat, camera.lon, this.canvas, this.revision); }
+      catch { this.gpu = null; }
     }
-    ctx.drawImage(this.raster, x - radius, y - radius, radius * 2, radius * 2);
+    if (!surface) {
+      if (!this.pixels) this.pixels = this.canvas.getContext('2d').getImageData(0,0,W,H).data;
+      const key = [diameter, camera.lat, camera.lon].join('/');
+      if (key !== this.frameKey) {
+        this.shadeSphere(diameter, camera.lat, camera.lon);
+        this.frameKey = key;
+      }
+      surface = this.raster;
+    }
+    ctx.drawImage(surface, x - radius, y - radius, radius * 2, radius * 2);
     ctx.lineWidth = 1.2;
     ctx.strokeStyle = '#b2d6cf9c';
     ctx.beginPath(); ctx.arc(x, y, radius, 0, 2*Math.PI); ctx.stroke();
