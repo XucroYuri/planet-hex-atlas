@@ -160,7 +160,7 @@ def build(cache):
         'perCapitaUnit': '元',
         'priceBasis': '当年价格',
         'scope': '全国年度 GDP，未包括香港、澳门特别行政区和台湾省的地区生产总值。',
-        'populationNote': '年末全国人口仅在 2024、2025 年统计公报中直接取得；更早年份待可机器读取的官方来源。',
+        'populationNote': '年末全国人口：2024–2025 来自年度统计公报；1949–2023 采用《中国统计年鉴 2024》表 2-1 选年值（1949、1950、1951、1955、1960、1965、1970–2023），该表不列 1952–1954 等年份，不插值补齐。',
         'scopeEn': 'National annual GDP. The series excludes the regional GDP of Hong Kong SAR, Macao SAR and Taiwan Province.',
         'source': {
             'yearbook': {'edition': 2024, 'table': '3-1 国内生产总值', 'url': YEARBOOK, 'page': YEARBOOK_PAGE,
@@ -171,12 +171,20 @@ def build(cache):
         'notes': [
             '1978–2022 来自《中国统计年鉴 2024》表 3-1（当年价）。',
             '2023 采用第五次全国经济普查后修订数；2024 采用最终核实；2025 采用初步核算。后续修订可能改变当年值。',
-            '2024、2025 年附年度统计公报的年末全国人口（万人）及城镇/乡村常住人口；更早年份的官方人口长序列待可机器读取来源。',
+            '2024、2025 年附年度统计公报的年末全国人口（万人）及城镇/乡村常住人口；1949–2023 附《中国统计年鉴 2024》表 2-1 的官方选年值。',
             '2025 年公报另列全年人均国内生产总值 99,665 元、国民总收入 1,393,700 亿元、全员劳动生产率 184,413 元/人，以及粮食产量、货物进出口、社会消费品零售、研发经费、居民人均可支配收入与常住人口城镇化率。',
             '三次产业不等于 GDP 的部分为统计修约误差；本文件未作机械调整。',
         ],
         'series': yearly,
     }
+    population_file = ROOT / 'web/data/china-population-official.json'
+    if population_file.is_file():
+        population = json.loads(population_file.read_text())
+        document['populationBenchmarks'] = {
+            'source': population['source'], 'url': population['url'],
+            'imageSha256': population['imageSha256'], 'note': population['note'],
+            'years': population['years'],
+        }
     target = ROOT / 'web/data/china-official.json'
     target.write_text(json.dumps(document, ensure_ascii=False, separators=(',', ':')) + '\n')
     print(f'{len(yearly)} 年官方 GDP 序列，{target}')

@@ -64,18 +64,23 @@ def main(url):
         assert download.suggested_filename == 'orbis-china-official.csv', download.suggested_filename
         rows = list(csv.DictReader(io.StringIO(open(download.path(), encoding='utf-8-sig').read())))
         assert len(rows) == 48, len(rows)
-        assert len(rows[0]) == 22, len(rows[0])
+        assert len(rows[0]) == 23, len(rows[0])
         latest = rows[-1]
         assert latest['year'] == '2025' and latest['gdp'] == '1401879'
         assert latest['perCapitaGdp'] == '99665' and latest['urbanizationRate'] == '67.89'
         assert latest['url'].startswith('https://www.stats.gov.cn/')
-        expect(page.locator('#inspector')).to_contain_text('仅在 2024、2025 年')
+        assert latest['populationSource'] == 'annual-communique'
+        early = next(row for row in rows if row['year'] == '1978')
+        assert early['population'] == '96259', early
+        assert early['populationSource'] == 'yearbook-2024-table-2-1', early
+        expect(page.locator('#inspector')).to_contain_text('表 2-1')
         open_profile(1978)
         expect(page.locator('#inspector')).to_contain_text('3,678.7')
-        expect(page.locator('#inspector')).not_to_contain_text('年末全国人口')
+        expect(page.locator('#inspector')).to_contain_text('96,259')
+        expect(page.locator('#inspector')).to_contain_text('17,245')
         assert not errors, errors[:3]
         browser.close()
-        print('China profile shows official GDP and the published population years only.')
+        print('China profile shows official GDP and yearbook/population-communiqué population values.')
 
 
 if __name__ == '__main__':

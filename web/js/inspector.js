@@ -60,13 +60,17 @@ export function renderInspector(host, ctx) {
     const official = ctx.chinaOfficial?.series?.[String(year)];
     if (c.id === 'CHN') {
       if (official) {
+        const benchmark = ctx.chinaOfficial.populationBenchmarks?.years?.[String(year)];
+        const population = Number.isFinite(official.population) ? official.population : benchmark?.total;
+        const urban = Number.isFinite(official.urban) ? official.urban : benchmark?.urban;
+        const rural = Number.isFinite(official.rural) ? official.rural : benchmark?.rural;
         const industries = [['第一产业', official.primary], ['第二产业', official.secondary], ['第三产业', official.tertiary]];
         content += `<section class="inspector-section"><h3>${htmlText('中国官方经济基准')}</h3><p>${htmlText('{year} 年国内生产总值（{revision}）：{value} 亿元人民币', {
           year: formatYear(year), revision: msg(official.revision), value: format(official.gdp),
-        })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}${Number.isFinite(official.population) ? row('年末全国人口', `${format(official.population)} 万人`) : ''}${Number.isFinite(official.urban) ? row('城镇常住人口', `${format(official.urban)} 万人`) : ''}${Number.isFinite(official.birthRate) ? row('出生率', `${official.birthRate}‰`) : ''}${Number.isFinite(official.deathRate) ? row('死亡率', `${official.deathRate}‰`) : ''}${Number.isFinite(official.naturalGrowthRate) ? row('自然增长率', `${official.naturalGrowthRate}‰`) : ''}${Number.isFinite(official.surveyedUnemployment) ? row('城镇调查失业率', `${official.surveyedUnemployment}%`) : ''}${Number.isFinite(official.perCapitaGdp) ? row('人均国内生产总值', `${format(official.perCapitaGdp)} 元`) : ''}${Number.isFinite(official.gni) ? row('国民总收入', `${format(official.gni)} 亿元`) : ''}${Number.isFinite(official.laborProductivity) ? row('全员劳动生产率', `${format(official.laborProductivity)} 元/人`) : ''}${Number.isFinite(official.grainOutput) ? row('粮食产量', `${format(official.grainOutput)} 万吨`) : ''}${Number.isFinite(official.merchandiseTrade) ? row('货物进出口总额', `${format(official.merchandiseTrade)} 亿元`) : ''}${Number.isFinite(official.retailSales) ? row('社会消费品零售总额', `${format(official.retailSales)} 亿元`) : ''}${Number.isFinite(official.rdExpenditure) ? row('研发经费支出', `${format(official.rdExpenditure)} 亿元${Number.isFinite(official.rdIntensity) ? `（占 GDP ${official.rdIntensity}%）` : ''}`) : ''}${Number.isFinite(official.disposableIncome) ? row('居民人均可支配收入', `${format(official.disposableIncome)} 元`) : ''}${Number.isFinite(official.urbanDisposableIncome) ? row('城镇居民人均可支配收入', `${format(official.urbanDisposableIncome)} 元`) : ''}${Number.isFinite(official.ruralDisposableIncome) ? row('农村居民人均可支配收入', `${format(official.ruralDisposableIncome)} 元`) : ''}${Number.isFinite(official.urbanizationRate) ? row('常住人口城镇化率', `${official.urbanizationRate}%`) : ''}${Number.isFinite(official.eastGdp) ? row('东部地区生产总值', `${format(official.eastGdp)} 亿元（+${official.eastGrowth}%）`) : ''}${Number.isFinite(official.centralGdp) ? row('中部地区生产总值', `${format(official.centralGdp)} 亿元（+${official.centralGrowth}%）`) : ''}${Number.isFinite(official.westGdp) ? row('西部地区生产总值', `${format(official.westGdp)} 亿元（+${official.westGrowth}%）`) : ''}${Number.isFinite(official.northeastGdp) ? row('东北地区生产总值', `${format(official.northeastGdp)} 亿元（+${official.northeastGrowth}%）`) : ''}</div>
+        })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}${Number.isFinite(population) ? row('年末全国人口', `${format(population)} 万人`) : ''}${Number.isFinite(urban) ? row('城镇常住人口', `${format(urban)} 万人`) : ''}${Number.isFinite(rural) ? row('乡村常住人口', `${format(rural)} 万人`) : ''}${Number.isFinite(official.birthRate) ? row('出生率', `${official.birthRate}‰`) : ''}${Number.isFinite(official.deathRate) ? row('死亡率', `${official.deathRate}‰`) : ''}${Number.isFinite(official.naturalGrowthRate) ? row('自然增长率', `${official.naturalGrowthRate}‰`) : ''}${Number.isFinite(official.surveyedUnemployment) ? row('城镇调查失业率', `${official.surveyedUnemployment}%`) : ''}${Number.isFinite(official.perCapitaGdp) ? row('人均国内生产总值', `${format(official.perCapitaGdp)} 元`) : ''}${Number.isFinite(official.gni) ? row('国民总收入', `${format(official.gni)} 亿元`) : ''}${Number.isFinite(official.laborProductivity) ? row('全员劳动生产率', `${format(official.laborProductivity)} 元/人`) : ''}${Number.isFinite(official.grainOutput) ? row('粮食产量', `${format(official.grainOutput)} 万吨`) : ''}${Number.isFinite(official.merchandiseTrade) ? row('货物进出口总额', `${format(official.merchandiseTrade)} 亿元`) : ''}${Number.isFinite(official.retailSales) ? row('社会消费品零售总额', `${format(official.retailSales)} 亿元`) : ''}${Number.isFinite(official.rdExpenditure) ? row('研发经费支出', `${format(official.rdExpenditure)} 亿元${Number.isFinite(official.rdIntensity) ? `（占 GDP ${official.rdIntensity}%）` : ''}`) : ''}${Number.isFinite(official.disposableIncome) ? row('居民人均可支配收入', `${format(official.disposableIncome)} 元`) : ''}${Number.isFinite(official.urbanDisposableIncome) ? row('城镇居民人均可支配收入', `${format(official.urbanDisposableIncome)} 元`) : ''}${Number.isFinite(official.ruralDisposableIncome) ? row('农村居民人均可支配收入', `${format(official.ruralDisposableIncome)} 元`) : ''}${Number.isFinite(official.urbanizationRate) ? row('常住人口城镇化率', `${official.urbanizationRate}%`) : ''}${Number.isFinite(official.eastGdp) ? row('东部地区生产总值', `${format(official.eastGdp)} 亿元（+${official.eastGrowth}%）`) : ''}${Number.isFinite(official.centralGdp) ? row('中部地区生产总值', `${format(official.centralGdp)} 亿元（+${official.centralGrowth}%）`) : ''}${Number.isFinite(official.westGdp) ? row('西部地区生产总值', `${format(official.westGdp)} 亿元（+${official.westGrowth}%）`) : ''}${Number.isFinite(official.northeastGdp) ? row('东北地区生产总值', `${format(official.northeastGdp)} 亿元（+${official.northeastGrowth}%）`) : ''}</div>
           <p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p>
           <a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText(official.revision.includes('年鉴') ? '《中国统计年鉴 2024》表 3-1（当年价）' : '国家统计局公告（{date}）', { date: official.published })} ↗</a>
-          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p>${ctx.chinaOfficial.populationNote && Number.isFinite(official.population) ? `<p class="atlas-memo">${htmlText(ctx.chinaOfficial.populationNote)}</p>` : ''}${chinaSpark(ctx.chinaOfficial.series)}<p><button type="button" class="panel-action" data-export-china>${htmlText('下载官方序列 CSV')}</button></p></section>`;
+          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p>${ctx.chinaOfficial.populationNote && Number.isFinite(population) ? `<p class="atlas-memo">${htmlText(ctx.chinaOfficial.populationNote)}</p>` : ''}${chinaSpark(ctx.chinaOfficial.series)}<p><button type="button" class="panel-action" data-export-china>${htmlText('下载官方序列 CSV')}</button></p></section>`;
       } else {
         content += `<p class="atlas-memo">${htmlText('中国官方序列自 {first} 年起；{year} 年暂无官方口径，下方显示世界银行序列。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial?.series || { 1978: 1 })[0])), year: formatYear(year) })}</p>`;
       }
@@ -159,12 +163,23 @@ function chinaSpark(series) {
 
 function exportChinaOfficial(official) {
   const fields = ['year', 'gdp', 'primary', 'secondary', 'tertiary', 'manufacturing', 'realGrowthPercent',
-    'revision', 'published', 'population', 'urban', 'rural', 'perCapitaGdp', 'gni', 'laborProductivity',
-    'grainOutput', 'merchandiseTrade', 'retailSales', 'rdExpenditure', 'disposableIncome', 'urbanizationRate', 'url'];
+    'revision', 'published', 'population', 'urban', 'rural', 'populationSource', 'perCapitaGdp', 'gni',
+    'laborProductivity', 'grainOutput', 'merchandiseTrade', 'retailSales', 'rdExpenditure', 'disposableIncome',
+    'urbanizationRate', 'url'];
   const quote = (value) => /[",\n]/.test(String(value ?? '')) ? `"${String(value).replace(/"/g, '""')}"` : String(value ?? '');
   const lines = [fields.join(',')];
   for (const [year, entry] of Object.entries(official.series).sort((a, b) => Number(a[0]) - Number(b[0]))) {
-    lines.push(fields.map((field) => quote(field === 'year' ? year : entry[field])).join(','));
+    const benchmark = official.populationBenchmarks?.years?.[year];
+    const values = { ...entry };
+    if (!Number.isFinite(values.population) && benchmark) {
+      values.population = benchmark.total;
+      values.urban = benchmark.urban;
+      values.rural = benchmark.rural;
+      values.populationSource = 'yearbook-2024-table-2-1';
+    } else if (Number.isFinite(entry.population)) {
+      values.populationSource = 'annual-communique';
+    }
+    lines.push(fields.map((field) => quote(field === 'year' ? year : values[field])).join(','));
   }
   const blob = new Blob(['\ufeff' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);

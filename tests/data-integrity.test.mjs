@@ -99,6 +99,11 @@ test('space, market and official China datasets keep their published shape', () 
   assert.equal(china.series['2024'].population, 140828);
   assert.equal(china.series['2025'].population, 140489);
   assert.equal(china.series['2023'].population, undefined);
+  const benchmarks = read('china-population-official.json').years;
+  assert.equal(Object.keys(benchmarks).length, 60);
+  assert.equal(benchmarks['1955'].total, 61465);
+  assert.equal(benchmarks['1978'].total, 96259);
+  assert.equal(china.populationBenchmarks.years['2023'].total, 140967);
 });
 
 test('missing notes, changelog and source checksums are well formed', () => {

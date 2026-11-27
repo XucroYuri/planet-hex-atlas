@@ -227,4 +227,5 @@ export default [
   ['死亡率', 'Death rate', '死亡率', 'Tasa de mortalidad', 'Taux de mortalité', '死亡率', '사망률', 'معدل الوفيات'],
   ['自然增长率', 'Natural growth rate', '自然增長率', 'Tasa de crecimiento natural', 'Taux d’accroissement naturel', '自然増加率', '자연증가율', 'معدل النمو الطبيعي'],
   ['城镇调查失业率', 'Urban surveyed unemployment rate', '城鎮調查失業率', 'Tasa de desempleo urbana encuestada', 'Taux de chômage urbain enquêté', '都市調査失業率', '도시 조사 실업률', 'معدل البطالة الحضري المبحوث'],
+  ['乡村常住人口', 'Rural resident population', '鄉村常住人口', 'Población rural residente', 'Population rurale résidente', '農村常住人口', '농촌 상주 인구', 'السكان الريفيون المقيمون'],
 ];

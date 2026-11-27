@@ -67,7 +67,13 @@ test('later revisions supersede the yearbook for their year', () => {
   assert.equal(record.series['2025'].naturalGrowthRate, -2.41);
   assert.equal(record.series['2025'].surveyedUnemployment, 5.2);
   assert.equal(record.series['2023'].population, undefined);
-  assert.match(record.populationNote, /2024、2025/);
+  assert.match(record.populationNote, /2024–2025/);
+  const benchmarks = record.populationBenchmarks.years;
+  assert.equal(Object.keys(benchmarks).length, 60);
+  assert.equal(benchmarks['1955'].total, 61465);
+  assert.equal(benchmarks['1978'].total, 96259);
+  assert.equal(benchmarks['2023'].total, 140967);
+  assert.match(record.populationBenchmarks.url, /^https:\/\/www\.stats\.gov\.cn\//);
 });
 
 test('missing values carry an explicit, sourced note instead of a substitute', () => {
