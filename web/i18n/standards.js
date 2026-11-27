@@ -206,4 +206,5 @@ export default [
   ['研发经费支出', 'R&D expenditure', '研發經費支出', 'Gasto en I+D', 'Dépenses de R&D', '研究開発費', '연구개발비 지출', 'نفقات البحث والتطوير'],
   ['居民人均可支配收入', 'Per capita disposable income', '居民人均可支配收入', 'Renta disponible per cápita', 'Revenu disponible par habitant', '一人当たり可処分所得', '1인당 가처분소득', 'الدخل المتاح للفرد'],
   ['常住人口城镇化率', 'Urbanization rate', '常住人口城鎮化率', 'Tasa de urbanización', 'Taux d’urbanisation', '常住人口の都市化率', '상주인구 도시화율', 'معدل التحضر'],
+  ['下载官方序列 CSV', 'Download official series CSV', '下載官方序列 CSV', 'Descargar serie oficial en CSV', 'Télécharger la série officielle en CSV', '公式系列を CSV でダウンロード', '공식 시계열 CSV 다운로드', 'تنزيل السلسلة الرسمية بصيغة CSV'],
 ];

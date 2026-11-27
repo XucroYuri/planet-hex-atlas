@@ -66,7 +66,7 @@ export function renderInspector(host, ctx) {
         })}</p><div class="detail-list">${industries.filter(([, v]) => Number.isFinite(v)).map(([label, v]) => row(label, `${format(v)} 亿元`)).join('')}${Number.isFinite(official.population) ? row('年末全国人口', `${format(official.population)} 万人`) : ''}${Number.isFinite(official.urban) ? row('城镇常住人口', `${format(official.urban)} 万人`) : ''}${Number.isFinite(official.perCapitaGdp) ? row('人均国内生产总值', `${format(official.perCapitaGdp)} 元`) : ''}${Number.isFinite(official.gni) ? row('国民总收入', `${format(official.gni)} 亿元`) : ''}${Number.isFinite(official.laborProductivity) ? row('全员劳动生产率', `${format(official.laborProductivity)} 元/人`) : ''}${Number.isFinite(official.grainOutput) ? row('粮食产量', `${format(official.grainOutput)} 万吨`) : ''}${Number.isFinite(official.merchandiseTrade) ? row('货物进出口总额', `${format(official.merchandiseTrade)} 亿元`) : ''}${Number.isFinite(official.retailSales) ? row('社会消费品零售总额', `${format(official.retailSales)} 亿元`) : ''}${Number.isFinite(official.rdExpenditure) ? row('研发经费支出', `${format(official.rdExpenditure)} 亿元`) : ''}${Number.isFinite(official.disposableIncome) ? row('居民人均可支配收入', `${format(official.disposableIncome)} 元`) : ''}${Number.isFinite(official.urbanizationRate) ? row('常住人口城镇化率', `${official.urbanizationRate}%`) : ''}</div>
           <p class="atlas-memo">${htmlText(ctx.chinaOfficial.scope)}</p>
           <a href="${esc(official.url)}" target="_blank" rel="noopener">${htmlText(official.revision.includes('年鉴') ? '《中国统计年鉴 2024》表 3-1（当年价）' : '国家统计局公告（{date}）', { date: official.published })} ↗</a>
-          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p>${ctx.chinaOfficial.populationNote && Number.isFinite(official.population) ? `<p class="atlas-memo">${htmlText(ctx.chinaOfficial.populationNote)}</p>` : ''}</section>`;
+          <p class="atlas-memo">${htmlText('中国官方序列覆盖 {first}–{last} 年；后续修订可能改变当年值。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial.series)[0])), last: formatYear(Number(Object.keys(ctx.chinaOfficial.series).at(-1))) })}</p>${ctx.chinaOfficial.populationNote && Number.isFinite(official.population) ? `<p class="atlas-memo">${htmlText(ctx.chinaOfficial.populationNote)}</p>` : ''}<p><button type="button" class="panel-action" data-export-china>${htmlText('下载官方序列 CSV')}</button></p></section>`;
       } else {
         content += `<p class="atlas-memo">${htmlText('中国官方序列自 {first} 年起；{year} 年暂无官方口径，下方显示世界银行序列。', { first: formatYear(Number(Object.keys(ctx.chinaOfficial?.series || { 1978: 1 })[0])), year: formatYear(year) })}</p>`;
       }
@@ -135,6 +135,26 @@ export function renderInspector(host, ctx) {
     content += `<div class="panel-buttons">${button(msg('查看设施所在格'), 'fine-cell', `${site[4]},${site[5]}`, true)}${c ? countryButton(c) : ''}</div>`;
   }
   host.innerHTML = content;
+  const chinaExport = host.querySelector('[data-export-china]');
+  if (chinaExport) chinaExport.addEventListener('click', () => exportChinaOfficial(ctx.chinaOfficial));
+}
+
+function exportChinaOfficial(official) {
+  const fields = ['year', 'gdp', 'primary', 'secondary', 'tertiary', 'manufacturing', 'realGrowthPercent',
+    'revision', 'published', 'population', 'urban', 'rural', 'perCapitaGdp', 'gni', 'laborProductivity',
+    'grainOutput', 'merchandiseTrade', 'retailSales', 'rdExpenditure', 'disposableIncome', 'urbanizationRate', 'url'];
+  const quote = (value) => /[",\n]/.test(String(value ?? '')) ? `"${String(value).replace(/"/g, '""')}"` : String(value ?? '');
+  const lines = [fields.join(',')];
+  for (const [year, entry] of Object.entries(official.series).sort((a, b) => Number(a[0]) - Number(b[0]))) {
+    lines.push(fields.map((field) => quote(field === 'year' ? year : entry[field])).join(','));
+  }
+  const blob = new Blob(['\ufeff' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'orbis-china-official.csv';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 const advisors = [
