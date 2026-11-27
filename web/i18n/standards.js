@@ -234,4 +234,5 @@ export default [
   ['能源消费总量', 'Total energy consumption', '能源消費總量', 'Consumo total de energía', 'Consommation énergétique totale', 'エネルギー消費総量', '에너지 소비 총량', 'إجمالي استهلاك الطاقة'],
   ['煤炭消费占比', 'Coal share of energy consumption', '煤炭消費占比', 'Proporción de carbón', 'Part du charbon', '石炭消費の割合', '석탄 소비 비중', 'حصة الفحم من استهلاك الطاقة'],
   ['清洁能源消费占比', 'Clean energy share', '清潔能源消費占比', 'Proporción de energía limpia', 'Part des énergies propres', 'クリーンエネルギー比率', '청정에너지 비중', 'حصة الطاقة النظيفة'],
+  ['2025 年公报其他指标', 'Other 2025 communiqué indicators', '2025 年公報其他指標', 'Otros indicadores del comunicado 2025', 'Autres indicateurs du communiqué 2025', '2025年公報のその他指標', '2025년 공보 기타 지표', 'مؤشرات أخرى من بيان 2025'],
 ];

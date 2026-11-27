@@ -29,6 +29,7 @@ def main(url):
 
         open_profile(2025)
         expect(page.locator('#inspector')).to_contain_text('1,401,879')
+        page.locator('#inspector details.atlas-extra summary').click()
         expect(page.locator('#inspector')).to_contain_text('年末全国人口')
         expect(page.locator('#inspector')).to_contain_text('140,489')
         expect(page.locator('#inspector')).to_contain_text('95,380')

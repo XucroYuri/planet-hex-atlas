@@ -266,3 +266,7 @@ kbd { font: 12px var(--mono); border: 1px solid #c8d1c5; border-radius: 3px; col
 .spark-line { fill: none; stroke: #39766c; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
 .spark-area { fill: rgba(57, 118, 108, .14); }
 .china-spark figcaption { margin-top: 4px; color: var(--muted); font-size: 11px; }
+.atlas-extra { margin: 8px 0 4px; }
+.atlas-extra summary { cursor: pointer; color: var(--ink); font-size: 12px; font-weight: 650; padding: 4px 0; }
+.atlas-extra summary:focus-visible { outline: 2px solid var(--copper); outline-offset: 2px; }
+.atlas-extra .detail-list { margin-top: 4px; }
