@@ -171,8 +171,8 @@ def build(input_dir, output_dir, fetch):
     if blob != expected_blob:
         raise ValueError(f"HYDE source Git blob mismatch: {blob}")
     for row in csv_rows(crop_raw):
-        if row["indicator"] == "cropland":
-            add_point(shards, "WORLD", "cropland", int(row["year"]), float(row["area_km2"]))
+        if row["indicator"] in ("cropland", "pasture"):
+            add_point(shards, "WORLD", row["indicator"], int(row["year"]), float(row["area_km2"]))
 
     crop_regions_raw = (DATA / "hyde-32-table2.csv").read_bytes()
     for row in csv_rows(crop_regions_raw):

@@ -76,6 +76,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   lifeExpectancy: { zh: '预期寿命', en: 'Life expectancy' },
   literacy: { zh: '成人识字率', en: 'Adult literacy' },
   cropland: { zh: '耕地总面积', en: 'Cropland area' },
+  pasture: { zh: '牧场面积', en: 'Pasture area' },
   arable: { zh: '可耕地占陆地比例', en: 'Arable land share' },
   census: { zh: '人口普查实报', en: 'Census population counts' },
   people: { zh: '人', en: 'people' },
@@ -89,6 +90,7 @@ export const HISTORY_TRANSLATIONS = Object.freeze({
   lifeExpectancyNote: { zh: '出生时预期寿命，由 Riley、Zijdeman 等、人类死亡率数据库与联合国世界人口展望汇编；英国样本可追溯至 1543 年，全球合计自 1770 年起。单年危机可能造成明显下凹。', en: 'Period life expectancy at birth, compiled from Riley, Zijdeman et al., the Human Mortality Database and UN World Population Prospects. Country samples reach back to 1543 and the world aggregate to 1770. Single-year crises can cause sharp dips.' },
   literacyNote: { zh: '成人识字率来自联合国教科文组织统计研究所的调查与估计，按不规则的调查年份发布，后一次调查可能修订先前值；100% 表示报告值，不代表已逐人测量。', en: 'Adult literacy comes from UNESCO Institute for Statistics surveys and estimates, reported at irregular survey years; later surveys may revise earlier values. A reported 100% is a published rate, not a person-by-person measurement.' },
   croplandNote: { zh: 'HYDE 全球耕地面积模型估计，包含永久作物。发布的零值保留。', en: 'HYDE models global cropland area including permanent crops. Published zero values are retained.' },
+  pastureNote: { zh: 'HYDE 全球牧场面积模型估计，与耕地同源；早期年份为模型反推，零值保留。', en: 'HYDE models global pasture area from the same source as cropland. Early years are model reconstructions; published zeros are retained.' },
   croplandRegionalNote: { zh: 'HYDE 3.2 论文表 2 的区域耕地基准点，已换算为平方公里。分区与现代地图边界可能不同。', en: 'Regional cropland benchmarks from HYDE 3.2 Table 2, converted to square kilometres. Study regions may differ from present-day map boundaries.' },
   arableNote: { zh: 'FAO 经世界银行发布的可耕地占比。下载表未提供逐条观测标志，记为汇编统计。此指标采用可耕地口径和比例单位。', en: 'FAO arable land share via the World Bank. The download lacks point-level observation flags, so entries are labelled as compiled statistics. The definition is arable land and the unit is a share.' },
   censusNote: { zh: '美国人口普查局发布的居民普查人数，覆盖美国及波多黎各。历史统计覆盖范围可能变化。', en: 'Published resident counts from the U.S. Census Bureau for the United States and Puerto Rico. Historical enumeration coverage can vary.' },
@@ -171,6 +173,7 @@ const METRICS = {
   lifeExpectancy: { unit: 'years', status: 'estimated', source: 'owidLife' },
   literacy: { unit: 'percent', status: 'estimated', source: 'owidLiteracy' },
   cropland: { unit: 'squareKm', status: 'estimated', source: 'hyde' },
+  pasture: { unit: 'squareKm', status: 'estimated', source: 'hyde' },
   arable: { unit: 'share', status: 'compiled', source: 'wdi' },
   census: { unit: 'people', status: 'observed', source: 'censusBureau' },
 };

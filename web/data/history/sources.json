@@ -141,6 +141,18 @@
      "https://creativecommons.org/licenses/by/4.0/"
     ]
    ]
+  },
+  "pasture": {
+   "url": "https://doi.org/10.24416/UU01-94FNH0",
+   "chart": "https://datahub.io/climate-and-environment/hyde-history-database-of-the-global-environment",
+   "paper": "https://doi.org/10.5194/essd-9-927-2017",
+   "citation": "Klein Goldewijk, K., Beusen, A., Doelman, J., and Stehfest, E. (2017, database updated 2024). Anthropogenic land use estimates for the Holocene. HYDE 3.3 baseline global aggregates via DataHub. Includes the pasture aggregate.",
+   "licenses": [
+    [
+     "HYDE 3.3 · CC BY 4.0",
+     "https://creativecommons.org/licenses/by/4.0/"
+    ]
+   ]
   }
  }
 }
