@@ -51,7 +51,7 @@ test('history catalog coverage matches every published series shard', () => {
   assert.equal(areas.length, 275);
   const published = areas.filter(([, area]) => Object.keys(area.coverage || {}).length > 0);
   assert.equal(published.length, 243);
-  assert.equal(Object.keys(catalog.totals).length, 12);
+  assert.equal(Object.keys(catalog.totals).length, 13);
   for (const [id, area] of published) {
     const series = read(`history/series/${encodeURIComponent(id)}.json`);
     for (const [metric, [first, last, count]] of Object.entries(area.coverage)) {

@@ -182,6 +182,9 @@ def build(input_dir, output_dir, fetch):
         for year, row in benchmark["years"].items():
             add_point(shards, "CHN", "officialPopulation", int(year), row["total"])
         official = json.loads(official_file.read_text())
+        for year, row in official["series"].items():
+            if row.get("gdp") is not None:
+                add_point(shards, "CHN", "officialGdp", int(year), row["gdp"])
         for year in ("2024", "2025"):
             value = official["series"].get(year, {}).get("population")
             if value is not None:

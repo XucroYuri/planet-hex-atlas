@@ -237,6 +237,18 @@
      "https://www.stats.gov.cn/"
     ]
    ]
+  },
+  "officialGdp": {
+   "url": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "chart": "https://www.stats.gov.cn/sj/ndsj/2024/indexch.htm",
+   "citation": "国家统计局《中国统计年鉴 2024》表 3-1 国内生产总值（1978–2022，当年价，亿元人民币）与 2023–2025 年国民经济和社会发展统计公报。",
+   "note": "官方人民币当年价 GDP，未包括香港、澳门特别行政区和台湾省；2023 为经普修订、2024 最终核实、2025 初步核算。",
+   "licenses": [
+    [
+     "国家统计局公开数据",
+     "https://www.stats.gov.cn/"
+    ]
+   ]
   }
  }
 }
