@@ -31,6 +31,9 @@ def main(url):
         expect(changelog).to_contain_text('2026-11-28')
         expect(changelog.locator('li')).to_have_count(6)
         expect(page.locator('.about-build')).to_contain_text('无第三方分析')
+        expect(page.locator('.about-build')).to_contain_text('MIT 许可')
+        assert page.locator('.about-build a[href*="/blob/main/LICENSE"]').count() == 1
+        assert page.locator('.about-build a[href*="ATTRIBUTION.txt"]').count() == 1
         repo = page.locator('.about-build a[href="https://github.com/XucroYuri/planet-hex-atlas"]')
         expect(repo).to_have_count(1)
         citation = page.locator('[data-citation]')

@@ -69,6 +69,12 @@ PYTHONPATH=. uv run python tests/china_source_audit_test.py
 
 [反馈通道说明](docs/feedback.md) · [中国标准核查](docs/china-standards.md) · [标准地图送审路径](docs/china-map-submission/README.md)
 
+## 许可与引用
+
+- **代码**：MIT 许可，见 [LICENSE](LICENSE)。
+- **数据**：不适用 MIT，按各来源条款使用；完整署名、输入地址与校验值见 [web/data/ATTRIBUTION.txt](web/data/ATTRIBUTION.txt) 与 [web/data/source-lock.json](web/data/source-lock.json)。
+- **引用**：仓库内提供 [CITATION.cff](CITATION.cff)；站内“关于与版本”可一键复制带发布快照的引用文本。
+
 ## 自动验证
 
 每次推送 `main` 会在 GitHub Actions 运行两组校验：

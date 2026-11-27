@@ -224,6 +224,7 @@ export function renderSources(host, atlas) {
         years: formatCount(atlas.years.length), cells: formatCount(atlas.counts.cells),
       })}</p>
       <p>${htmlText('无第三方分析或广告脚本；所有交互在你的浏览器中运行。')}</p>
+      <p>${htmlText('代码以 MIT 许可发布；数据按各来源许可使用。')} <a href="https://github.com/XucroYuri/planet-hex-atlas/blob/main/LICENSE" target="_blank" rel="noopener">MIT License ↗</a> · <a href="./data/ATTRIBUTION.txt" target="_blank" rel="noopener">${htmlText('完整署名与许可')} ↗</a></p>
       <div class="panel-buttons"><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas" target="_blank" rel="noopener">${htmlText('开源仓库')} ↗</a><a class="panel-action" href="https://github.com/XucroYuri/planet-hex-atlas/issues" target="_blank" rel="noopener">${htmlText('反馈与数据建议')} ↗</a></div>
     </section>`;
   const build = host.querySelector('[data-build]');

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use 寰宇图志 · Orbis Atlas, cite it and the underlying data sources listed in web/data/ATTRIBUTION.txt."
+title: "寰宇图志 · Orbis Atlas"
+abstract: "A static global atlas of real annual, historical, space and local-market data with explicit sources, missing-value notes, adaptive visualization and offline support."
+authors:
+  - name: "Orbis Atlas contributors"
+version: 0.1.0
+date-released: 2026-11-28
+url: "https://earth.xuyu.net/"
+repository-code: "https://github.com/XucroYuri/planet-hex-atlas"
+license: MIT
+keywords:
+  - atlas
+  - geography
+  - history
+  - space
+  - open-data
