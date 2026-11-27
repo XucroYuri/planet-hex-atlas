@@ -166,4 +166,6 @@ export default [
   ['无第三方分析或广告脚本；所有交互在你的浏览器中运行。', 'No third-party analytics or advertising scripts; all interaction runs in your browser.', '無第三方分析或廣告指令碼；所有互動在你的瀏覽器中執行。', 'Sin análisis de terceros ni scripts publicitarios; toda la interacción se ejecuta en su navegador.', 'Aucun script d’analyse ou de publicité tiers ; toute l’interaction s’exécute dans votre navigateur.', 'サードパーティの分析や広告スクリプトはなく、すべての操作はブラウザ内で実行されます。', '타사 분석이나 광고 스크립트가 없으며 모든 상호작용은 브라우저에서 실행됩니다.', 'لا توجد نصوص تحليل أو إعلانات من جهات خارجية؛ كل التفاعل يعمل في متصفحك.'],
   ['开源仓库', 'Open-source repository', '開源倉庫', 'Repositorio de código abierto', 'Dépôt open source', 'オープンソースリポジトリ', '오픈소스 저장소', 'مستودع مفتوح المصدر'],
   ['版本信息暂不可用。', 'Version information is temporarily unavailable.', '版本資訊暫時無法使用。', 'La información de versión no está disponible temporalmente.', 'Les informations de version sont temporairement indisponibles.', 'バージョン情報は一時的に利用できません。', '버전 정보를 일시적으로 사용할 수 없습니다.', 'معلومات الإصدار غير متاحة مؤقتًا.'],
+  ['更新', 'Updated', '更新', 'Actualizado', 'Mis à jour', '更新日', '업데이트', 'آخر تحديث'],
+  ['下载覆盖数据 CSV', 'Download coverage CSV', '下載覆蓋資料 CSV', 'Descargar cobertura en CSV', 'Télécharger la couverture en CSV', 'カバレッジを CSV でダウンロード', '커버리지 CSV 다운로드', 'تنزيل بيانات التغطية بصيغة CSV'],
 ];

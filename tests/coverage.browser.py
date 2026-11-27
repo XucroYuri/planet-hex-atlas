@@ -35,6 +35,15 @@ def main(url):
         assert annual_links.count() == 29, annual_links.count()
         assert history_links.count() >= 10, history_links.count()
         expect(annual_links.first).to_contain_text('SP.')
+        expect(summary).to_contain_text('2026-11-11')
+        with page.expect_download(timeout=30000) as pending:
+            summary.locator('[data-export-coverage]').click()
+        download = pending.value
+        assert download.suggested_filename == 'orbis-coverage.csv'
+        text = open(download.path(), encoding='utf-8-sig').read().strip().splitlines()
+        assert text[0] == 'section,metric,unit,code,updated,count,total,coverage', text[0]
+        assert len(text) == 1 + 29 + 10, len(text)
+        assert text[1].startswith('annual,')
         assert not errors, errors[:3]
         annual_count, history_count = annual_rows.count(), history_rows.count()
         browser.close()
