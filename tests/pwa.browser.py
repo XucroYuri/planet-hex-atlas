@@ -28,6 +28,14 @@ def main(url):
         shortcuts = data.get('shortcuts') or []
         assert len(shortcuts) == 3, shortcuts
         assert {shortcut['url'] for shortcut in shortcuts} == {'/?mode=space', '/?mode=history', '/?mode=sources'}
+        screenshots = data.get('screenshots') or []
+        assert len(screenshots) >= 2, screenshots
+        assert {shot['form_factor'] for shot in screenshots} == {'wide', 'narrow'}
+        for shot in screenshots:
+            response = page.request.get(page.evaluate('href => new URL(href, new URL(document.querySelector("link[rel=manifest]").href, document.baseURI)).href', shot['src']))
+            assert response.ok, (shot['src'], response.status)
+            assert response.headers.get('content-type', '').startswith('image/')
+            assert response.body()[:2] == b'\xff\xd8', shot['src']
         for shortcut in shortcuts:
             assert shortcut['name'] and shortcut['description'] and shortcut['icons']
         for icon in data['icons']:

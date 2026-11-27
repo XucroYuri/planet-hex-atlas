@@ -72,5 +72,21 @@
         }
       ]
     }
+  ],
+  "screenshots": [
+    {
+      "src": "meta/screenshot-wide.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "寰宇图志：全球地图与中国官方档案"
+    },
+    {
+      "src": "meta/screenshot-narrow.jpg",
+      "sizes": "375x812",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "寰宇图志：手机上的地图与年份跳转"
+    }
   ]
 }
