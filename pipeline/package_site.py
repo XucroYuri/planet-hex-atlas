@@ -20,7 +20,7 @@ except ImportError:  # imported as a module from another working directory
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / 'web'
 # Bump when packaging rules change so that identical assets still get a new snapshot.
-PACKAGING_VERSION = 6
+PACKAGING_VERSION = 7
 
 
 def link_or_copy(source, target):
@@ -33,7 +33,8 @@ def link_or_copy(source, target):
 
 def package(destination):
     destination.mkdir(exist_ok=True, parents=True)
-    files = sorted(path for path in PUBLIC.rglob('*') if path.is_file())
+    files = sorted(path for path in PUBLIC.rglob('*') if path.is_file()
+                   and (path.relative_to(PUBLIC).parts[:2] != ('data', 'downloads')))
     entries = {path.relative_to(PUBLIC).as_posix():hashlib.sha256(path.read_bytes()).hexdigest() for path in files}
     digest = hashlib.sha256(json.dumps({'version':PACKAGING_VERSION,'assets':entries},sort_keys=True).encode()).hexdigest()[:16]
     final = destination / digest
@@ -65,7 +66,7 @@ def package(destination):
     page = page.replace('href="./" class="brand"','href="/" class="brand"')
     (work/'index.html').write_text(page)
     if build_open_data and (PUBLIC/'data'/'atlas.json').is_file():
-        build_open_data(work/'data'/'downloads'/'orbis-open-data.zip')
+        build_open_data(assets/'data'/'downloads'/'orbis-open-data.zip')
     if (PUBLIC/'sw.js').is_file():
         shutil.copyfile(PUBLIC/'sw.js',work/'sw.js')
     (work/'404.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Orbis Atlas · 404</title><p>Resource unavailable. <a href="/">Open the current atlas</a>.</p></html>')

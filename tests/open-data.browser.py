@@ -31,6 +31,9 @@ def main(url):
             manifest = json.loads(archive.read('manifest.json'))
             assert manifest['counts']['annualYears'] == 66
             assert 'china-population-official.json' in archive.namelist()
+            official = json.loads(archive.read('china-official.json'))
+            assert official['series']['2025']['energyConsumption'] == 61.7
+            assert official['series']['2025']['cleanEnergyShare'] == 30.4
         browser.close()
         print(f'Open data bundle downloaded and verified: {len(payload)} bytes.')
 
