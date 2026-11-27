@@ -33,6 +33,7 @@ export function renderWishlist(host,ctx) {
         <li><a href="data/markets/index.json" download>${esc(t('市场数据目录','Market data index'))}</a><small>data/markets/index.json</small></li>
         <li><a href="data/atlas.json" download>${esc(t('指标与来源清单','Indicator and source catalog'))}</a><small>data/atlas.json · data/source-lock.json</small></li>
       </ul>
+      <p><button type="button" class="panel-action" data-export-annual disabled>${esc(t('下载年度观测 CSV','Download annual observations CSV'))}</button><small>orbis-annual-${Number(ctx.year)}.csv · 地区 × 指标，缺失留空</small></p>
     </section>`;
   const draw=()=>{
     const selected=host.querySelector('select').value;
@@ -72,6 +73,11 @@ export function renderWishlist(host,ctx) {
         <p class="coverage-note">${esc(t('缺失原因与来源见“资料 → 数据来源与方法”，逐项取得的原始文件校验值见 source-lock.json。','Missing reasons and sources are in Data sources and methods; per-file checksums are in source-lock.json.'))}</p>`;
       const exporter = box.querySelector('[data-export-coverage]');
       exporter.addEventListener('click', () => exportCoverage(rows, historyRows));
+      const annualButton = host.querySelector('[data-export-annual]');
+      if (annualButton) {
+        annualButton.disabled = false;
+        annualButton.addEventListener('click', () => exportAnnual(annual, ctx));
+      }
     } catch {
       box.innerHTML=`<p class="coverage-note">${esc(t('覆盖概览暂时无法载入。','Coverage overview is temporarily unavailable.'))}</p>`;
     }
@@ -94,6 +100,21 @@ function exportCoverage(rows, historyRows) {
   const link = document.createElement('a');
   link.href = url;
   link.download = 'orbis-coverage.csv';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportAnnual(annual, ctx) {
+  const ids = ctx.metrics.map((metric) => metric.id);
+  const lines = [['region', ...ids].join(',')];
+  for (const [region, values] of Object.entries(annual.regions)) {
+    lines.push([region, ...ids.map((id) => (Number.isFinite(values[id]) ? values[id] : ''))].join(','));
+  }
+  const blob = new Blob(['\ufeff' + lines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `orbis-annual-${annual.year}.csv`;
   link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

@@ -4,6 +4,8 @@
 # ///
 """Check that the raw-data download links resolve to real JSON files."""
 import argparse
+import csv
+import io
 
 from playwright.sync_api import expect, sync_playwright
 
@@ -33,9 +35,19 @@ def main(url):
         assert any('/data/annual/' in href for href in hrefs), hrefs
         assert any('/data/history/catalog.json' in href for href in hrefs), hrefs
         assert any('/data/space/launches.json' in href for href in hrefs), hrefs
+        annual = section.locator('[data-export-annual]')
+        expect(annual).to_be_enabled(timeout=30000)
+        with page.expect_download(timeout=30000) as pending:
+            annual.click()
+        download = pending.value
+        assert download.suggested_filename == 'orbis-annual-2023.csv', download.suggested_filename
+        rows = list(csv.reader(io.StringIO(open(download.path(), encoding='utf-8-sig').read())))
+        assert rows[0][0] == 'region' and len(rows[0]) == 30, rows[0]
+        assert len(rows) > 200, len(rows)
+        assert any(any(cell == '' for cell in row[1:]) for row in rows[1:]), 'missing values should stay blank'
         assert not errors, errors[:3]
         browser.close()
-        print(f'All {len(hrefs)} raw-data download links resolve to JSON.')
+        print(f'All {len(hrefs)} raw-data download links and the annual CSV export are valid.')
 
 
 if __name__ == '__main__':
