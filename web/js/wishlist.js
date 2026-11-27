@@ -55,7 +55,7 @@ export function renderWishlist(host,ctx) {
       const rows=ctx.metrics.map((metric)=>{
         const localized=localizeMetric(metric);
         const count=regions.reduce((sum,region)=>sum+(Number.isFinite(region[metric.id])?1:0),0);
-        return {name:localized.name,unit:localized.unit||'',code:metric.code||'',updated:metric.updated||'',count,total,missing:total-count};
+        return {id:metric.id,name:localized.name,group:localized.group||'',description:localized.description||'',unit:localized.unit||'',code:metric.code||'',updated:metric.updated||'',count,total,missing:total-count};
       });
       const historyRows=labels.filter(([key])=>history.totals[key]).map(([key,zh,en])=>{
         const world=history.areas.WORLD?.coverage?.[key];
@@ -69,7 +69,7 @@ export function renderWishlist(host,ctx) {
         <div class="table-scroll" tabindex="0" role="region" aria-label="${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}"><table><caption>${esc(t('当前年份各指标的有值地区数','Regions with published values by indicator'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('单位','Unit'))}</th><th scope="col">${esc(t('有值地区','Regions with data'))}</th><th scope="col">${esc(t('覆盖率','Coverage'))}</th><th scope="col">${esc(t('更新','Updated'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${rows.map(row=>`<tr><th scope="row">${esc(row.name)}</th><td>${esc(row.unit)}</td><td>${row.count} / ${row.total}</td><td>${percentage(row.count,row.total)}</td><td>${esc(row.updated||'—')}</td><td>${row.code?`<a href="https://data.worldbank.org/indicator/${encodeURIComponent(row.code)}" target="_blank" rel="noopener" title="${esc(row.updated)}">${esc(row.code)} ↗</a>`:'—'}</td></tr>`).join('')}</tbody></table></div>
         <h4>${esc(t('历史序列','Historical series'))}</h4>
         <div class="table-scroll"><table><caption>${esc(t('历史数据的总发布值与地区数，全球序列的时间范围','Published values, covered areas and world span for each historical series'))}</caption><thead><tr><th scope="col">${esc(t('指标','Indicator'))}</th><th scope="col">${esc(t('地区数','Areas'))}</th><th scope="col">${esc(t('发布值','Published values'))}</th><th scope="col">${esc(t('全球范围','World span'))}</th><th scope="col">${esc(t('来源','Source'))}</th></tr></thead><tbody>${historyRows.map(row=>{let host='';try{host=new URL(row.url).hostname.replace(/^www\./,'')}catch{}return `<tr><th scope="row">${esc(row.name)}</th><td>${row.areas}</td><td>${row.rows.toLocaleString(ctx.locale||undefined)}</td><td>${row.first==null?'—':`${row.first}–${row.last}`}</td><td>${host?`<a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(host)} ↗</a>`:'—'}</td></tr>`}).join('')}</tbody></table></div>
-        <p><button type="button" class="panel-action" data-export-coverage>${esc(t('下载覆盖数据 CSV','Download coverage CSV'))}</button></p>
+        <p><button type="button" class="panel-action" data-export-coverage>${esc(t('下载覆盖数据 CSV','Download coverage CSV'))}</button> <button type="button" class="panel-action" data-export-metrics>${esc(t('下载指标字典 CSV','Download indicator dictionary CSV'))}</button></p>
         ${launches || market ? `<h4>${esc(t('其他数据集','Other datasets'))}</h4><ul class="coverage-other">${launches ? `<li>${esc(t('太空发射：{years} 年、{parties} 个登记方、{objects} 个入轨物体（{year} 年 {count} 个）', {
           years: launches.years.length, parties: Object.keys(launches.countries).length,
           objects: launches.totals.objects.toLocaleString(ctx.locale || undefined),
@@ -83,6 +83,7 @@ export function renderWishlist(host,ctx) {
         <p><button type="button" class="panel-action" data-action="feedback">${esc(t('反馈缺失或纠错','Report a gap or correction'))}</button></p>`;
       const exporter = box.querySelector('[data-export-coverage]');
       exporter.addEventListener('click', () => exportCoverage(rows, historyRows));
+      box.querySelector('[data-export-metrics]')?.addEventListener('click', () => exportMetricDictionary(rows));
       const annualButton = host.querySelector('[data-export-annual]');
       if (annualButton) {
         annualButton.disabled = false;
@@ -158,4 +159,14 @@ function exportMarketCatalog(market) {
   downloadCsv(['code,name,currency,first,last,count',
     ...market.symbols.map((symbol) => [symbol.code, symbol.name, symbol.currency, symbol.first, symbol.last, symbol.count].map(quote).join(','))],
   'orbis-market-catalog.csv');
+}
+
+function exportMetricDictionary(rows) {
+  const quote = (value) => /[",\n]/.test(String(value ?? '')) ? `"${String(value ?? '').replace(/"/g, '""')}"` : String(value ?? '');
+  const lines = ['id,name,group,unit,code,updated,count,total,coverage,description'];
+  for (const row of rows) {
+    lines.push([row.id, row.name, row.group, row.unit, row.code, row.updated, row.count, row.total,
+      `${Math.round((row.count / row.total) * 100)}%`, row.description].map(quote).join(','));
+  }
+  downloadCsv(lines, 'orbis-indicator-dictionary.csv');
 }

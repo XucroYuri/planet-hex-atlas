@@ -4,6 +4,8 @@
 # ///
 """Check the quantified data-coverage overview on the wishlist tab."""
 import argparse
+import csv
+import io
 
 from playwright.sync_api import expect, sync_playwright
 
@@ -63,6 +65,14 @@ def main(url):
         assert catalog_rows[0] == 'code,name,currency,first,last,count'
         assert len(catalog_rows) == 1 + 1404, len(catalog_rows)
         annual_count, history_count = annual_rows.count(), history_rows.count()
+        with page.expect_download(timeout=30000) as pending:
+            summary.locator('[data-export-metrics]').click()
+        dictionary = pending.value
+        assert dictionary.suggested_filename == 'orbis-indicator-dictionary.csv'
+        dictionary_rows = list(csv.reader(io.StringIO(open(dictionary.path(), encoding='utf-8-sig').read())))
+        assert dictionary_rows[0][0] == 'id' and len(dictionary_rows[0]) == 10, dictionary_rows[0]
+        assert len(dictionary_rows) == 1 + 29, len(dictionary_rows)
+        assert dictionary_rows[1][9], dictionary_rows[1]
         summary.locator('button[data-action="feedback"]').click()
         expect(page.locator('#overlay-title')).to_contain_text('反馈', timeout=20000)
         page.keyboard.press('Escape')

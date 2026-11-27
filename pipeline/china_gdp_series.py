@@ -42,6 +42,7 @@ ANNOUNCEMENTS = {
                population=140489, urban=95380, rural=45109,
                perCapitaGdp=99665, gni=1393700, laborProductivity=184413,
                grainOutput=71488, merchandiseTrade=454685, retailSales=501202,
+               urbanDisposableIncome=56502, ruralDisposableIncome=24456,
                rdExpenditure=39262, disposableIncome=43377, urbanizationRate=67.89,
                url='https://www.stats.gov.cn/sj/zxfb/202602/t20260228_1962662.html'),
 }

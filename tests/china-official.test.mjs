@@ -54,6 +54,8 @@ test('later revisions supersede the yearbook for their year', () => {
   assert.equal(record.series['2025'].rdExpenditure, 39262);
   assert.equal(record.series['2025'].disposableIncome, 43377);
   assert.equal(record.series['2025'].urbanizationRate, 67.89);
+  assert.equal(record.series['2025'].urbanDisposableIncome, 56502);
+  assert.equal(record.series['2025'].ruralDisposableIncome, 24456);
   assert.equal(record.series['2023'].population, undefined);
   assert.match(record.populationNote, /2024、2025/);
 });

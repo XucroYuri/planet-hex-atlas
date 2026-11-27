@@ -41,6 +41,8 @@ def main(url):
         expect(page.locator('#inspector')).to_contain_text('39,262')
         expect(page.locator('#inspector')).to_contain_text('43,377')
         expect(page.locator('#inspector')).to_contain_text('67.89%')
+        expect(page.locator('#inspector')).to_contain_text('56,502')
+        expect(page.locator('#inspector')).to_contain_text('24,456')
         with page.expect_download(timeout=30000) as pending:
             page.locator('[data-export-china]').click()
         download = pending.value

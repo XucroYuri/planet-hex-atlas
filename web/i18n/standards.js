@@ -213,4 +213,7 @@ export default [
   ['标准核查状态', 'Standard-map check status', '標準核查狀態', 'Estado de la verificación del mapa estándar', 'État de la vérification de la carte normalisée', '標準地図チェック状況', '표준 지도 점검 상태', 'حالة التحقق من الخريطة القياسية'],
   ['自动核查：{passed} 项通过，{blocked} 项待解决', 'Automated check: {passed} passed, {blocked} unresolved', '自動核查：{passed} 項通過，{blocked} 項待解決', 'Verificación automática: {passed} aprobadas, {blocked} pendientes', 'Vérification automatique : {passed} validés, {blocked} en attente', '自動チェック：{passed} 件合格、{blocked} 件未解決', '자동 점검: {passed}개 통과, {blocked}개 미해결', 'تحقق آلي: {passed} ناجحة و{blocked} قيد الانتظار'],
   ['待解决', 'Unresolved', '待解決', 'Pendiente', 'En attente', '未解決', '미해결', 'قيد الانتظار'],
+  ['城镇居民人均可支配收入', 'Urban per capita disposable income', '城鎮居民人均可支配收入', 'Renta disponible per cápita urbana', 'Revenu disponible par habitant en ville', '都市部一人当たり可処分所得', '도시 1인당 가처분소득', 'الدخل المتاح للفرد في الحضر'],
+  ['农村居民人均可支配收入', 'Rural per capita disposable income', '農村居民人均可支配收入', 'Renta disponible per cápita rural', 'Revenu disponible par habitant à la campagne', '農村部一人当たり可処分所得', '농촌 1인당 가처분소득', 'الدخل المتاح للفرد في الريف'],
+  ['下载指标字典 CSV', 'Download indicator dictionary CSV', '下載指標字典 CSV', 'Descargar diccionario de indicadores en CSV', 'Télécharger le dictionnaire des indicateurs en CSV', '指標辞書を CSV でダウンロード', '지표 사전 CSV 다운로드', 'تنزيل قاموس المؤشرات بصيغة CSV'],
 ];
