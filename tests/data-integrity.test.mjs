@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 
-const ROOT = new URL('../web/data/', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('../web/data/', import.meta.url));
 const read = (path) => JSON.parse(readFileSync(join(ROOT, path), 'utf8'));
 const atlas = read('atlas.json');
 
