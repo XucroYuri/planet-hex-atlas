@@ -37,6 +37,7 @@
 - `pipeline/test_release.py`：发布隔离、上一版保留、URL 别名与缓存规则通过。
 - `pipeline/china_source_audit.py`：状态 `blocked`，仍为 `MAP_SOURCE`、`LEGACY_GEOMETRY`、`ISLAND_GEOMETRY` 三项。
 - `gh auth status`：已登录 `XucroYuri`，具备 `repo`/`workflow` 权限。
+- Playwright 浏览器测试：服务器系统 Chrome 下 `browser_smoke.py` 与 `a11y.browser.py`（15 个界面，axe WCAG A/AA）通过。
 - **Cloudflare 未登录**：服务器 `npx wrangler whoami` 显示未认证，部署前需由账户所有者在服务器执行一次 `npx wrangler login`。
 
 ## 4. 运行手册（服务器）
@@ -52,10 +53,12 @@ uv sync --frozen                           # Python 数据管线依赖
 uv run --frozen python pipeline/package_site.py
 ```
 
-浏览器级测试需要 Playwright 与 Chromium（服务器当前未预装）：
+浏览器级测试使用 Playwright；服务器系统 Chrome 已验证，可在另一个终端启动本地服务器后运行：
 
 ```bash
-uv run --with playwright playwright install chromium
+python3 -m http.server 8000 --directory web
+uv run --with playwright python tests/browser_smoke.py http://127.0.0.1:8000/
+uv run --with playwright python tests/a11y.browser.py http://127.0.0.1:8000/
 ```
 
 数据重建命令见 `README.md` 与 `progress.md`；其中 `pipeline/china_population_series.py` 依赖 macOS Vision OCR，Linux 上不要重跑，直接使用仓库内已提交的 `web/data/china-population-official.json`。
@@ -86,7 +89,6 @@ npx --yes wrangler@4 pages deploy .releases/<digest> \
 
 - 中国标准地图送审仍需外部输入：持测绘资质单位提供的权威几何、审图号及审核意见；站内标准核查状态如实显示三项阻断，且不声称合规。
 - 服务器部署凭据（Cloudflare）需账户所有者登录。
-- 服务器浏览器测试环境（Playwright Chromium）尚未安装。
 - 反馈复查任务的服务器端重建尚未执行（见第 5 节）。
 
 ## 7. 验收清单
@@ -96,6 +98,7 @@ npx --yes wrangler@4 pages deploy .releases/<digest> \
 - [x] 当前会话与反馈复查会话导入服务器 DSH（cwd 改写）
 - [x] 服务器 Node 22 测试 116/116 通过
 - [x] 发布规则、数据源审计在服务器通过
+- [x] 服务器浏览器 smoke 与 a11y 通过
 - [x] 私有归档位于 `~/code/local/planet-hex-atlas-handover/`，在仓库与索引之外
 - [ ] 服务器 Cloudflare 登录并完成一次部署演练
 - [ ] 服务器 DSH 重建每日反馈复查任务并暂停 macOS 任务
