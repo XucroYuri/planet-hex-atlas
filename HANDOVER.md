@@ -20,16 +20,16 @@
 
 - GitHub 仓库完整克隆（全部提交与分支），`origin` 指向 GitHub。
 - 开发记录：`progress.md`（38 KB，逐轮记录）复制到仓库根目录；该文件按原 `.gitignore` 不纳入公开仓库。
-- 送审交接包：`dist/standard-map-submission.zip` 归档到私有 `_handover/artifacts/`。
+- 送审交接包：`dist/standard-map-submission.zip` 归档到私有 `/home/xuyu/code/local/planet-hex-atlas-handover/artifacts/`。
 - 会话迁移：
   - 当前开发会话 `session-9253b25f-c5df-4cc0-b5bd-70cdff0fc9eb`（标题“寰宇图志历史模拟开发”）；
   - 关联的反馈复查会话 `session-4806b3e4-bad4-4837-8e67-40f1370a34fc`（“审阅寰宇图志用户反馈”）；
   - 同项目 8 个 Codex 会话日志。
-- 原始会话归档位于私有 `_handover/sessions/`；DSH 可恢复副本已导入服务器 `~/.dsh/sessions/<按工作区编码的目录>/`，其 `cwd` 已改写为服务器工作区。
+- 原始会话归档位于私有 `/home/xuyu/code/local/planet-hex-atlas-handover/sessions/`；DSH 可恢复副本已导入服务器 `~/.dsh/sessions/<按工作区编码的目录>/`，其 `cwd` 已改写为服务器工作区。
 - 未迁移 `.releases/`（2.4 GB 发布快照）、`.venv/`、`.wrangler/`、`mcp/node_modules/`：这些均可由仓库脚本重新生成，避免把平台相关产物带入服务器。
-- 校验清单：`_handover/manifest.json`（文件大小、SHA-256、会话列表、生产快照）。
+- 校验清单：`/home/xuyu/code/local/planet-hex-atlas-handover/manifest.json`（文件大小、SHA-256、会话列表、生产快照）。
 
-私有目录 `_handover/` 已通过服务器仓库的 `.git/info/exclude` 排除，不会推送到公开 GitHub。
+私有目录 `~/code/local/planet-hex-atlas-handover/` 位于 `~/code/local/` 下、不在 GitHub 项目索引与仓库内，不会推送到公开 GitHub。
 
 ## 3. 服务器侧验证结果
 
@@ -74,13 +74,13 @@ npx --yes wrangler@4 pages deploy .releases/<digest> \
 
 - 服务器 DSH 会话目录名：
   `--home-xuyu-code-Github-01-~6838~5fc3~4ea7~54c1-~7ad9~70b9~6742~9879-planet-hex-atlas--`
-- 已导入的会话可在服务器 DSH 中按原会话 ID 打开；原始归档保留在 `_handover/sessions/`，未改写路径，供审计与灾难恢复。
+- 已导入的会话可在服务器 DSH 中按原会话 ID 打开；原始归档保留在 `/home/xuyu/code/local/planet-hex-atlas-handover/sessions/`，未改写路径，供审计与灾难恢复。
 - 每日反馈复查任务原运行于 macOS DSH：
   - 任务 ID：`schedule-1018d6b6-4b4b-4f02-8936-34c80067295b`
   - 规则：每日 09:00（Asia/Shanghai）
   - 内容：只读检查 GitHub issue，静默结束；对新反馈生成 `docs/feedback-recommendations/` 建议，不自动回复/关闭 issue。
-- **协调待办**：在服务器 DSH 以新路径 `/home/xuyu/code/Github/01-核心产品/站点杂项/planet-hex-atlas` 重建同一规则的任务后，再暂停 macOS 侧任务，避免双端重复处理。提示词在 `_handover/sessions/dsh-feedback/` 对应会话与本文第 5 节可复原。
-- 同项目 Codex 会话日志已归档在 `_handover/sessions/codex/`；它们是历史审查记录，不是可继续运行的进程。
+- **协调待办**：在服务器 DSH 以新路径 `/home/xuyu/code/Github/01-核心产品/站点杂项/planet-hex-atlas` 重建同一规则的任务后，再暂停 macOS 侧任务，避免双端重复处理。提示词在 `/home/xuyu/code/local/planet-hex-atlas-handover/sessions/dsh-feedback/` 对应会话与本文第 5 节可复原。
+- 同项目 Codex 会话日志已归档在 `/home/xuyu/code/local/planet-hex-atlas-handover/sessions/codex/`；它们是历史审查记录，不是可继续运行的进程。
 
 ## 6. 未完成与阻塞
 
@@ -96,7 +96,7 @@ npx --yes wrangler@4 pages deploy .releases/<digest> \
 - [x] 当前会话与反馈复查会话导入服务器 DSH（cwd 改写）
 - [x] 服务器 Node 22 测试 116/116 通过
 - [x] 发布规则、数据源审计在服务器通过
-- [x] `_handover/` 已排除出公开仓库
+- [x] 私有归档位于 `~/code/local/planet-hex-atlas-handover/`，在仓库与索引之外
 - [ ] 服务器 Cloudflare 登录并完成一次部署演练
 - [ ] 服务器 DSH 重建每日反馈复查任务并暂停 macOS 任务
 - [ ] 外部权威几何/审图号到位后关闭 3 项地图阻断
