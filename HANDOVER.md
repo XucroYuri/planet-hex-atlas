@@ -101,5 +101,6 @@ npx --yes wrangler@4 pages deploy .releases/<digest> \
 - [x] 服务器浏览器 smoke 与 a11y 通过
 - [x] 私有归档位于 `~/code/local/planet-hex-atlas-handover/`，在仓库与索引之外
 - [ ] 服务器 Cloudflare 登录并完成一次部署演练
-- [ ] 服务器 DSH 重建每日反馈复查任务并暂停 macOS 任务
+- [x] macOS 反馈复查任务已改为优先通过 SSH 审查服务器权威仓库
+- [ ] （可选）服务器 DSH 重建每日任务后暂停 macOS 任务
 - [ ] 外部权威几何/审图号到位后关闭 3 项地图阻断
